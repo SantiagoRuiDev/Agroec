@@ -3,101 +3,24 @@
     <div
       class="content-cards grid grid-cols-3 gap-2 items-center justify-center"
     >
-      <!--TOP GRID-->
-      <RouterLink to="/app/propuestas/Maiz">
+      <RouterLink :to="'/app/propuestas/' + product.id" v-for="product in products" :key="product.id">
         <div
           class="card p-1 w-full h-28 border rounded-md border-gray-300 grid text-center items-center relative"
         >
           <img
-            src="@/assets/Products/Corn.svg"
+            :src="product.imagen"
             alt="App Icon"
             class="w-12 h-12 mx-auto"
           />
-          <h1 class="text-gray-500 text-sm">Maiz</h1>
-
+          <h1 class="text-gray-500 text-sm">{{product.nombre}}</h1>
+          
           <span
+            v-if="proposals.filter(proposal => proposal.lastMessage != null).length"
             class="h-6 w-6 bg-red-600 rounded-full p-0.5 absolute grid items-center justify-center top-0 right-0 text-white"
-            >3</span
+            >{{ proposals.filter(proposal => proposal.lastMessage.id_remitente != proposal.id_comprador).length }}</span
           >
         </div>
       </RouterLink>
-
-      <RouterLink to="/app/propuestas/Cacao">
-        <div
-          class="card p-1 w-full h-28 border rounded-md border-gray-300 grid text-center items-center relative"
-        >
-          <img
-            src="@/assets/Products/Cacao.svg"
-            alt="App Icon"
-            class="w-12 h-12 mx-auto"
-          />
-          <h1 class="text-gray-500 text-sm">Cacao</h1>
-        </div>
-      </RouterLink>
-
-      <RouterLink to="/app/propuestas/Tomate">
-        <div
-          class="card p-1 w-full h-28 border rounded-md border-gray-300 grid text-center items-center relative"
-        >
-          <img
-            src="@/assets/Products/Tomato.svg"
-            alt="App Icon"
-            class="w-12 h-12 mx-auto"
-          />
-          <h1 class="text-gray-500 text-sm">Tomate</h1>
-        </div>
-      </RouterLink>
-      <!--TOP GRID-->
-
-      <!--MAIN GRID-->
-      <RouterLink to="/app/propuestas/Maracuya">
-        <div
-          class="card p-1 w-full h-28 border rounded-md border-gray-300 grid text-center items-center relative"
-        >
-          <img
-            src="@/assets/Products/Maracuya.svg"
-            alt="App Icon"
-            class="w-12 h-12 mx-auto"
-          />
-          <h1 class="text-gray-500 text-sm">Maracuya</h1>
-          <span
-            class="h-6 w-6 bg-red-600 rounded-full p-0.5 absolute grid items-center justify-center top-0 right-0 text-white"
-            >1</span
-          >
-        </div>
-      </RouterLink>
-
-      <RouterLink to="/app/propuestas/Arroz">
-        <div
-          class="card p-1 w-full h-28 border rounded-md border-gray-300 grid text-center items-center relative"
-        >
-          <img
-            src="@/assets/Products/Rice.svg"
-            alt="App Icon"
-            class="w-12 h-12 mx-auto"
-          />
-          <h1 class="text-gray-500 text-sm">Arroz</h1>
-        </div>
-      </RouterLink>
-
-      <RouterLink to="/app/propuestas/Polvillo de Arroz">
-        <div
-          class="card p-1 w-full h-28 border rounded-md border-gray-300 grid text-center items-center relative"
-        >
-          <img
-            src="@/assets/Products/Bag.svg"
-            alt="App Icon"
-            class="w-12 h-12 mx-auto"
-          />
-          <h1 class="text-gray-500 text-sm">Polvillo de Arroz</h1>
-          <span
-            class="h-6 w-6 bg-red-600 rounded-full p-0.5 absolute grid items-center justify-center top-0 right-0 text-white"
-            >5</span
-          >
-        </div>
-      </RouterLink>
-      <!--MAIN GRID-->
-      <Modal size="xl" />
     </div>
   </div>
 </template>
@@ -107,3 +30,43 @@ span {
   font-size: 12px;
 }
 </style>
+
+<script>
+import { emitAlert } from "@/libs/alert.js";
+import event from "../libs/event.js";
+import * as productService from '../services/product.service.js';
+import * as proposalService from '../services/proposal.service.js';
+export default {
+  data() {
+    return {
+      deleteProducts: false,
+      products: [],
+      proposals: []
+    };
+  },
+  created: async function () {
+    event.on("change-deleteProduct", this.changeDeleteProduct);
+    await this.getMarketProducts();
+    await this.getLicitationsProposal();
+  },
+  methods: {
+    changeDeleteProduct() {
+      this.deleteProducts = !this.deleteProducts;
+    },
+    async getLicitationsProposal(){
+      try {
+        this.proposals = await proposalService.getLicitationProposalByUser();
+      } catch (error) {
+        return emitAlert(error.message, "error");
+      }
+    },
+    async getMarketProducts(){
+      try {
+        this.products = await productService.getMarketProducts();
+      } catch (error) {
+        return emitAlert(error.message, "error");
+      }
+    }
+  },
+};
+</script>

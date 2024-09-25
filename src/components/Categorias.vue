@@ -4,45 +4,39 @@
       class="content-cards grid grid-cols-3 gap-2 items-center justify-center"
     >
       <!--TOP GRID-->
-      <RouterLink to="/app/tutorials">
+      <RouterLink :to="'/app/tutorials/' + category.id" v-for="category in categories" :key="category.id">
         <div
           class="card p-1 w-full h-28 border rounded-md border-gray-300 grid text-center items-center"
         >
           <img
-            src="@/assets/Defensive.svg"
+            :src="category.imagen"
             alt="App Icon"
             class="w-12 h-12 mx-auto"
           />
-          <h1 class="text-gray-500 text-sm">Química</h1>
-        </div>
-      </RouterLink>
-
-      <RouterLink to="/app/tutorials">
-        <div
-          class="card p-1 w-full h-28 border rounded-md border-gray-300 grid text-center items-center"
-        >
-          <img
-            src="@/assets/Insumos.svg"
-            alt="App Icon"
-            class="w-12 h-12 mx-auto"
-          />
-          <h1 class="text-gray-500 text-sm">Fertilidad</h1>
-        </div>
-      </RouterLink>
-
-      <RouterLink to="/app/tutorials">
-        <div
-          class="card p-1 w-full h-28 border rounded-md border-gray-300 grid text-center items-center"
-        >
-          <img
-            src="@/assets/People/Aso.svg"
-            alt="App Icon"
-            class="w-12 h-12 mx-auto"
-          />
-          <h1 class="text-gray-500 text-sm">Gestión</h1>
+          <h1 class="text-gray-500 text-sm">{{category.nombre}}</h1>
         </div>
       </RouterLink>
       <!--TOP GRID-->
     </div>
   </div>
 </template>
+
+<script>
+import * as categoryService from '../services/category.service.js';
+export default {
+  name: 'Categories',
+  data(){
+    return {
+      categories: [],
+    }
+  },
+  methods: {
+    async getCategories(){
+      this.categories = await categoryService.getCategories();
+    }
+  },
+  created: async function () {
+    await this.getCategories();
+  },
+}
+</script>

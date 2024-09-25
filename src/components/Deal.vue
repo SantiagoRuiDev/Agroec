@@ -1,20 +1,20 @@
 <template>
-  <div class="grid gap-3">
+  <div class="grid gap-3" v-if="sale">
     
-    <Slider />
+    <Slider :images="sale.images"/>
     
-    <RouterLink to="/app/vendedor/1/2" class="profilepad inline-flex w-5/6 mx-auto gap-3 items-center md:w-1/2">
+    <RouterLink :to="'/app/vendedor/' + sale.id_usuario" class="profilepad inline-flex w-5/6 mx-auto gap-3 items-center md:w-1/2">
       <img src="@/assets/People/Business.svg" alt="Profile Image" />
       <div class="grid gap-1 items-center">
-        <h2 class="text-xl font-bold text-gray-500">Vendedor A</h2>
-        <p class="text-sm text-gray-400">Produagri</p>
+        <h2 class="text-xl font-bold text-gray-500">{{sale.type}}</h2>
+        <p class="text-sm text-gray-400">{{sale.nombre}} {{sale.apellido}}</p>
       </div>
     </RouterLink>
 
     <div class="pricepad bg-gray-200 text-center h-28 grid items-center">
       <div class="">
         <h2 class="text-sm font-bold text-gray-900">Precio con transacción protegida</h2>
-        <p class="text-3xl font-bold text-gray-700">USD $50.00 x QQ</p>
+        <p class="text-3xl font-bold text-gray-700">USD ${{ sale.precio }} x {{ sale.precio_unidad }}</p>
       </div>
     </div>
 
@@ -27,11 +27,11 @@
         <p>Fecha de entrega</p>
       </div>
       <div class="titles grid gap-2 text-gray-700">
-        <p>Maiz</p>
-        <p>200 QQ</p>
-        <p>Guayas, Pedro Carbo</p>
-        <p>En sacos</p>
-        <p>24/7/2024</p>
+        <p>{{sale.id_producto}}</p>
+        <p>{{sale.cantidad}} {{sale.cantidad_unidad}}</p>
+        <p>{{ sale.provincia }}, {{ sale.canton }}</p>
+        <p>{{sale.presentacion_entrega}}</p>
+        <p>{{sale.fecha_entrega.slice(0,10)}}</p>
       </div>
     </div>
 
@@ -52,7 +52,7 @@
         Para proceder con la compra de este producto debes generar una propuesta al vendedor.
       </div>
 
-      <RouterLink class="default-bar p-3 rounded-md text-center text-zinc-50 md:w-1/2 mx-auto" :to="{name: 'propuestaDeals', params: { id: '1' }}">Generar propuesta de compra</RouterLink>
+      <RouterLink class="default-bar p-3 rounded-md text-center text-zinc-50 md:w-1/2 mx-auto" :to="{name: 'propuestaDeals', params: { name: product, identifier: sale.id }}">Generar propuesta de compra</RouterLink>
 
     </div>
   </div>
@@ -61,11 +61,26 @@
 
 <script>
 import Slider from '@/components/SliderImage.vue';
+import * as saleService from '../services/sale.service.js';
 export default {
   name: 'Home',
   components: {
     Slider
-  }
+  },
+  data(){
+    return {
+      sale: null,
+      product: this.$route.params.name
+    }
+  },
+  methods: {
+    async getSale(){
+      this.sale = await saleService.getSaleByIdentifier(this.$route.params.identifier, this.$route.params.name);
+    }
+  },
+  created: async function () {
+    await this.getSale();
+  },
 }
 </script>
 

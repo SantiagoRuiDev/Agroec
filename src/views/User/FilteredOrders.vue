@@ -3,9 +3,9 @@
     <ion-header>
       <ion-toolbar color="tertiary">
         <div class="grid grid-cols-3 items-center mx-auto w-11/12">
-          <RouterLink to="/app/home">
+          <button @click="goBack">
             <img src="@/assets/Arrow.svg" alt="Back" class="w-4 h-4" />
-          </RouterLink>
+          </button>
           <h2 class="text-center">Ordenes</h2>
         </div>
 
@@ -50,6 +50,9 @@ export default {
     };
   },
   methods: {
+    goBack() {
+      this.$router.go(-1)
+    },
     changeStatus() {
       this.status = !this.status;
     },

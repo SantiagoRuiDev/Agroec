@@ -5,9 +5,9 @@
         <div
           class="inline-flex gap-5 items-center w-3/4 ml-3 md:grid md:grid-cols-3 md:mx-auto md:w-11/12"
         >
-          <RouterLink to="/app/home" class="w-1/6 md:w-full">
+          <button @click="goBack" class="w-1/6 md:w-full">
             <img src="@/assets/Arrow.svg" alt="Back" class="w-4 h-4" />
-          </RouterLink>
+          </button>
           <h2 class="text-center">Propuestas enviadas {{ product }}</h2>
         </div>
       </ion-toolbar>
@@ -43,6 +43,11 @@ export default {
     return {
       product: this.$route.params.product,
     };
+  },
+  methods: {
+    goBack() {
+      this.$router.go(-1);
+    }
   },
 };
 </script>

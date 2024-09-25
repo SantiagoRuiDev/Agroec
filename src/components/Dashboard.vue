@@ -49,8 +49,6 @@
                     <h1 class="text-gray-500 text-sm">Polvillo de Arroz</h1>
                 </div>
             </RouterLink>
-            <!--MAIN GRID-->
-            <Modal size="xl"/>
         </div>
     </div>
 

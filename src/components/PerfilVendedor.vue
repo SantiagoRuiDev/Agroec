@@ -1,14 +1,10 @@
 <template>
-  <div class="bg-gray-100 p-4 grid items-center justify-items-center gap-4">
-    <img
-      src="@/assets/People/Farmer.svg"
-      alt="App Icon"
-      class="h-24 w-24 mx-auto"
-    />
+  <div class="bg-gray-100 p-4 grid items-center justify-items-center gap-4" v-if="user">
+    <ProfileIcon :profile="user.type"></ProfileIcon>
 
     <div class="grid gap-2 text-center">
-      <h1 class="font-bold text-md text-gray-600">Agricultor</h1>
-      <p class="text-md text-gray-400">Cultivando S.A</p>
+      <h1 class="font-bold text-md text-gray-600">{{ user.type }}</h1>
+      <p class="text-md text-gray-400">{{ user.nombre }} {{ user.apellido }}</p>
     </div>
   </div>
   <div
@@ -35,7 +31,7 @@
         <h1 class="text-gray-500 text-xs font-bold">Calificación</h1>
       </div>
 
-      <RouterLink to="/app/tutorials">
+      <div v-if="user">
         <div
           class="card p-1 w-full h-28 border rounded-md border-gray-300 grid text-center items-center justify-items-center"
         >
@@ -60,23 +56,23 @@
             </g>
           </svg>
           <div class="grid gap-1">
-            <h1 class="text-gray-500 text-sm font-bold">Azuay</h1>
+            <h1 class="text-gray-500 text-sm font-bold">{{user.provincia}}</h1>
 
-            <h3 class="text-gray-400 text-xs font-bold">Cuenca</h3>
+            <h3 class="text-gray-400 text-xs font-bold">{{ user.parroquia }}</h3>
           </div>
         </div>
-      </RouterLink>
+      </div>
 
-      <RouterLink to="/app/insumos">
+      <div>
         <div
-          class="card p-1 w-full h-28 border rounded-md border-gray-300 grid text-center items-center"
+          class="card p-1 w-full h-28 border rounded-md border-gray-300 grid text-center items-center" v-if="user"
         >
-          <span class="text-green-new text-4xl font-bold">8</span>
+          <span class="text-green-new text-4xl font-bold">{{ user.sales.length }}</span>
           <h1 class="text-gray-500 text-xs md:text-md font-bold">
             Publicaciones
           </h1>
         </div>
-      </RouterLink>
+      </div>
       <!--TOP GRID-->
     </div>
   </div>
@@ -107,52 +103,28 @@
         <ion-label class="text-gray-800">Pólvillo</ion-label>
       </ion-segment-button>
     </ion-segment>
-    <div class="content-cards grid grid-cols-2 gap-2 items-center">
-      <div class="flex gap-1">
+    <div class="content-cards grid grid-cols-2 md:grid-cols-4 gap-2 items-center" v-if="user">
+      <div class="flex gap-1" v-for="sale in user.sales" :key="sale">
         <img
-          src="@/assets/maracuya.webp"
+          :src="sale.producto_imagen"
           alt="Incoming Message Profile Icon"
           class="h-24 w-24 p-1 rounded-lg"
         />
 
-        <div class="mx-auto grid items-center justify-start py-2">
-          <p class="text-gray-800 text-sm">Maracuya</p>
-          <h1 class="font-bold text-gray-600">$13.50</h1>
-          <p class="text-gray-400">200 KG</p>
+        <div class="grid items-center justify-start py-2">
+          <p class="text-gray-800 text-sm">{{sale.id_producto}}</p>
+          <h1 class="font-bold text-gray-600">${{sale.precio}}</h1>
+          <p class="text-gray-400">{{sale.cantidad}} {{sale.cantidad_unidad}}</p>
         </div>
       </div>
-      <div class="flex gap-1">
-        <img
-          src="@/assets/maiz.webp"
-          alt="Incoming Message Profile Icon"
-          class="h-24 w-24 p-1 rounded-lg"
-        />
-
-        <div class="mx-auto grid items-center justify-start py-2">
-          <p class="text-gray-800 text-sm">Maiz</p>
-          <h1 class="font-bold text-gray-600">$17.50</h1>
-          <p class="text-gray-400">300 QQ</p>
-        </div>
-      </div>
-      <div class="flex gap-1">
-        <img
-          src="@/assets/cacao.webp"
-          alt="Incoming Message Profile Icon"
-          class="h-24 w-24 p-1 rounded-lg"
-        />
-
-        <div class="mx-auto grid items-center justify-start py-2">
-          <p class="text-gray-800 text-sm">Cacao</p>
-          <h1 class="font-bold text-gray-600">$16.50</h1>
-          <p class="text-gray-400">50 KG</p>
-        </div>
-      </div>
+      
       <!--TOP GRID-->
     </div>
   </div>
 </template>
 
 <script>
+import * as profileService from '../services/profile.service.js';
 import {
   IonPage,
   IonHeader,
@@ -164,6 +136,7 @@ import {
   IonLabel,
   IonSegmentButton,
 } from "@ionic/vue";
+import ProfileIcon from './ProfileIcon.vue';
 
 export default {
   components: {
@@ -176,6 +149,20 @@ export default {
     IonSegmentButton,
     IonContent,
     IonIcon,
+    ProfileIcon
+  },
+  data(){
+    return {
+      user: null
+    }
+  },
+  methods: {
+    async getProfile(){
+      this.user = await profileService.getProfileByIdentifier(this.$route.params.identifier);
+    }
+  },
+  created: async function () {
+    await this.getProfile();
   },
 };
 </script>

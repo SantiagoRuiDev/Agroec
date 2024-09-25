@@ -18,18 +18,19 @@
               class="text-gray-400 w-full mx-auto bg-transparent border-2 border-gray-300 px-3 py-3 rounded-md"
             >
               <option value="" selected disabled>Metodo de pago</option>
-              <option value="1">TC/TD</option>
-              <option value="2">Transferencia</option>
+              <option value="TC/TD">TC/TD</option>
+              <option value="TRANSFERENCIA">Transferencia</option>
             </select>
           </div>
 
-          <div class="form-input grid gap-1" v-if="paymentMethod != 2">
+          <div class="form-input grid gap-1" v-if="paymentMethod != 'TRANSFERENCIA'">
             <label for="monto" class="text-gray-600 font-bold w-5/6"
               >Monto de recarga</label
             >
             <input
               type="number"
               id="monto"
+              v-model="monto_recarga"
               placeholder="Monto"
               class="text-gray-400 w-full mx-auto bg-transparent border-2 border-gray-300 px-3 py-3 rounded-md"
             />
@@ -37,7 +38,7 @@
 
           <div
             class="grid gap-1 mx-auto mt-3 w-full"
-            v-if="paymentMethod == 2"
+            v-if="paymentMethod == 'TRANSFERENCIA'"
           >
             <label for="garantia" class="text-gray-700"
               >Transferencia Bancaria</label
@@ -138,6 +139,8 @@
 
 <script>
 import { CModal, CModalBody } from "@coreui/vue";
+import { emitAlert } from '../libs/alert.js'
+import * as walletService from '../services/wallet.service.js'
 export default {
   components: {
     CModal,
@@ -148,7 +151,8 @@ export default {
       visible: false,
       paid: false,
       cancelled: false,
-      paymentMethod: 0,
+      paymentMethod: "TC/TD",
+      monto_recarga: 0
     };
   },
   methods: {
@@ -161,9 +165,14 @@ export default {
       this.paid = false;
       this.cancelled = false;
     },
-    pay() {
+    async pay() {
       this.closeModal();
-      this.paid = true;
+      try {
+        await walletService.rechargeWallet(this.monto_recarga, this.paymentMethod);
+        this.paid = true;
+      } catch (error) {
+        emitAlert(error, 'error');
+      }
     },
     cancel() {
       this.closeModal();

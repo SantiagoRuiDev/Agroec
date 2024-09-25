@@ -1,62 +1,50 @@
 <template>
-    <ion-page>
-      <ion-header>
-        <ion-toolbar color="tertiary">
-          <div class="flex items-center mx-auto w-11/12">
-            <RouterLink to="#" v-if="backToDetails" @click="goBack">
-              <img src="@/assets/Arrow.svg" alt="Back" class="w-4 h-4" />
-            </RouterLink>
-            <RouterLink :to="{ name: 'chatDeals', params: { name: 'Maiz' } }" v-if="!backToDetails">
-              <img src="@/assets/Arrow.svg" alt="Back" class="w-4 h-4" />
-            </RouterLink>
-            <h2 class="text-center mx-auto">Iniciar Compra</h2>
-          </div>
-        </ion-toolbar>
-      </ion-header>
-      <ion-content :fullscreen="true">
-        <Propuesta Item="Maiz" @back-to-details="changeDetailsState"/>
-      </ion-content>
-    </ion-page>
-  </template>
-  
-  <script allowJs>
-  import Event from '../../libs/event.js';
-  import Propuesta from "@/components/Propuesta.vue";
-  import {
+  <ion-page>
+    <ion-header>
+      <ion-toolbar color="tertiary">
+        <div class="flex items-center mx-auto w-11/12">
+          <button @click="goBack">
+            <img src="@/assets/Arrow.svg" alt="Back" class="w-4 h-4" />
+          </button>
+          <h2 class="text-center mx-auto">Iniciar Compra</h2>
+        </div>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content :fullscreen="true">
+      <Propuesta :Item="$route.params.name"/>
+    </ion-content>
+  </ion-page>
+</template>
+
+<script allowJs>
+import Propuesta from "@/components/Propuesta.vue";
+import {
+  IonPage,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent,
+  IonIcon,
+} from "@ionic/vue";
+
+export default {
+  components: {
+    Propuesta,
     IonPage,
     IonHeader,
     IonToolbar,
     IonTitle,
     IonContent,
     IonIcon,
-  } from "@ionic/vue";
-  
-  export default {
-    components: {
-     Propuesta,
-      IonPage,
-      IonHeader,
-      IonToolbar,
-      IonTitle,
-      IonContent,
-      IonIcon,
-    },
-    data() {
-      return {
-        backToDetails: false,
-      };
-    },
-    methods: {
-      goBack() {
-        // Emitir evento para volver atrás o cerrar detalles según sea necesario
-        if (this.backToDetails) {
-          Event.emit('back-to-details');
-        } 
-      },
-      changeDetailsState() {
-        this.backToDetails = !this.backToDetails;
-      },
+  },
+  data() {
+    return {
+    };
+  },
+  methods: {
+    goBack() {
+      this.$router.go(-1);
     }
-  };
-  </script>
-  
+  }
+};
+</script>

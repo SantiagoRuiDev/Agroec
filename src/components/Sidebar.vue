@@ -285,8 +285,7 @@
           </RouterLink>
         </li>
         <li>
-          <a
-            href="/signin"
+          <button @click="logout"
             class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-300 group"
           >
             <svg
@@ -301,7 +300,7 @@
               />
             </svg>
             <span class="flex-1 ml-3 text-gray-500 whitespace-nowrap">Cerrar Sesión</span>
-          </a>
+          </button>
         </li>
       </ul>
     </div>
@@ -309,6 +308,7 @@
 </template>
 
 <script>
+import * as authService from '../services/auth.service.js'
 export default {
   name: "Sidebar",
   props: {
@@ -319,6 +319,14 @@ export default {
       // Emit a custom event to request the parent to close the menu
       this.$emit("close-menu-request");
     },
+    async logout(){
+      try {
+        await authService.finalizeSession()
+        this.$router.push('/app/signin')
+      } catch (error) {
+        return;
+      }
+    }
   },
 };
 </script>

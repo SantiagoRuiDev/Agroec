@@ -1,5 +1,5 @@
 <template>
-  <div class="grid mx-auto gap-3 my-3 w-11/12 overflow-y-scroll">
+  <div class="grid mx-auto gap-3 my-3 w-11/12">
     <h2 class="text-center text-xl font-bold text-gray-500 w-full mx-auto">
       Datos de la negociación
     </h2>
@@ -10,7 +10,7 @@
 
       <h3 class="text-gray-400 text-sm mt-3 col-span-2">
         Producto:
-        <span class="text-gray-600 font-bold">Maiz</span>
+        <span class="text-gray-600 font-bold">{{this.$route.params.name}}</span>
       </h3>
 
       <div class="grid gap-1 mt-3">
@@ -20,45 +20,19 @@
           id="entrega"
           disabled
           class="bg-transparent border-2 rounded-md h-10 w-full text-gray-600 text-sm p-1"
-          placeholder="$16.50 QQ"
+          :placeholder="'$' + delivery.precio + ' ' + delivery.precio_unidad"
         />
       </div>
 
-      <div class="grid gap-1 mx-auto mt-3">
+      <div class="grid gap-1 mt-3">
         <label for="entrega" class="text-gray-400 text-sm">Cantidad</label>
         <input
           type="text"
           id="entrega"
           disabled
           class="bg-transparent border-2 rounded-md h-10 w-full text-gray-600 text-sm p-1"
-          placeholder="600 QQ"
+          :placeholder="delivery.cantidad + ' ' + delivery.cantidad_unidad"
         />
-      </div>
-
-      <div class="grid gap-1 mx-auto mt-3">
-        <label for="entrega" class="text-gray-400 text-sm"
-          >Cantidad de entregas</label
-        >
-        <div class="grid mb-2" v-if="entregas.length > 0">
-          <p
-            class="text-gray-500 flex gap-3 items-center"
-            v-for="(item, index) in entregas"
-            :key="index"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="18"
-              fill="#a2afbe"
-              viewBox="0 -960 960 960"
-              width="18"
-            >
-              <path
-                d="m560-120-57-57 144-143H200v-480h80v400h367L503-544l56-57 241 241-240 240Z"
-              />
-            </svg>
-            {{ index + startIndex }}: {{ item.cantidad }} {{ item.unidad }}
-          </p>
-        </div>
       </div>
 
       <div class="grid gap-1 mx-auto mt-3 col-span-2 w-full">
@@ -69,7 +43,7 @@
           type="text"
           id="recepcion"
           disabled
-          placeholder="19/05/2024"
+          :placeholder="delivery.fecha_entrega"
           class="bg-transparent border-2 rounded-md h-10 w-full text-gray-400 text-sm p-1"
         />
       </div>
@@ -79,7 +53,7 @@
           type="text"
           id="hora"
           disabled
-          placeholder="10:30 AM"
+          :placeholder="delivery.hora_entrega"
           class="bg-transparent border-2 rounded-md h-10 w-full text-gray-400 text-sm p-1"
         />
       </div>
@@ -93,7 +67,7 @@
           id="entrega"
           disabled
           class="bg-transparent border-2 rounded-md h-10 w-full text-gray-600 text-sm p-1"
-          placeholder="Balvanera 32, Pedro Carbo"
+          :placeholder="delivery.ubicacion_google_maps"
         />
       </div>
 
@@ -104,9 +78,7 @@
         <input
           type="text"
           disabled
-          placeholder="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam vestibulum orci ligula. Proin eget lorem justo. Donec sodales urna vel imperdiet accumsan. Ut dignissim ipsum et condimentum placerat. Aenean porttitor tellus purus, a feugiat nibh faucibus et. Praesent quam tellus, rutrum at vehicula quis, condimentum nec tellus. Mauris quis aliquet orci. Nulla condimentum dapibus metus, vel faucibus mauris dignissim ut.
-
-Aliquam pretium libero in quam gravida, sed ornare eros efficitur. Nam vitae mattis est. Vivamus ornare metus eu neque auctor hendrerit. Sed tincidunt nisi et porta imperdiet. Donec sagittis turpis felis, et imperdiet neque viverra at. Duis nisl purus, congue sed lacus sit amet, pellentesque ullamcorper mauris. Quisque laoreet, odio eu pretium euismod, tortor nisi scelerisque orci, a malesuada augue diam in dolor. Cras nec sagittis sem, vel imperdiet tellus. Proin gravida quis nisi vitae fringilla. Cras feugiat sapien mi, vel mattis augue hendrerit non. Morbi efficitur at leo vel scelerisque. Duis turpis ligula, ultrices in mollis et, faucibus non neque. Nunc sed nisl in arcu vulputate vestibulum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed finibus eleifend laoreet. Donec aliquet placerat vulputate."
+          :placeholder="delivery.politicas_recepcion"
           id="recepcion"
           class="bg-transparent border p-2 rounded-md text-sm text-gray-600"
         />
@@ -184,7 +156,7 @@ import event from "@/libs/event";
 const startIndex = 1;
 
 defineProps({
-  entregas: Array,
+  delivery: Object,
 });
 
 const openPoliticas = () => {

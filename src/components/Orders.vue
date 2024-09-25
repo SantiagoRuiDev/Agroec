@@ -17,90 +17,38 @@
     </div>
     
     <div class="grid gap-1">
-      <RouterLink to="/status">
+      <RouterLink :to="'/order/' + order.id" v-for="order in orders" :key="order.id">
         <div class="order-card flex md:grid md:grid-cols-2 gap-3 shadow-md p-2">
           <div class="flex w-full gap-3">
             <div class="Order grid items-center text-center">
               <img
-                src="@/assets/Products/Corn.svg"
-                alt="Orden Icon"
+                :src="order.imagen"
+                :alt="order.producto + 'Order Icon Image'"
                 class="h-16 w-16 mx-auto"
               />
             </div>
 
             <div class="Order-Text text-left">
-              <h1 class="text-gray-600 text-sm font-bold">Orden #345</h1>
+              <h1 class="text-gray-600 text-sm font-bold">Orden #{{order.id.slice(0,8)}}</h1>
               <h1 class="text-gray-600 text-xs font-bold">
-                Maiz Duro Amarillo
+                {{ order.producto }}
               </h1>
-              <p class="text-gray-500 text-xs">Cant: 200qq</p>
-              <p class="text-gray-500 text-xs">24/12/2023</p>
+              <p class="text-gray-500 text-xs">Cant: {{order.cantidad}} {{ order.cantidad_unidad }}</p>
+              <p class="text-gray-500 text-xs">{{formatWalletDate(order.fecha_entrega).slice(0,10)}}</p>
             </div>
           </div>
 
           <div class="Order-Price text-right grid mt-2 justify-end">
-            <h1 class="text-yellow-400 text-md font-bold">$17.50</h1>
-            <h1 class="text-yellow-400 text-md font-bold">QQ</h1>
-            <p class="text-lime text-xs font-bold">Pagado</p>
+            <h1 class="text-yellow-400 text-md font-bold">${{order.precio}}</h1>
+            <h1 class="text-yellow-400 text-md font-bold">{{order.precio_unidad}}</h1>
+            <p class="text-red-600 text-xs font-bold" v-if="order.estado == 'Rechazado'">{{order.estado}}</p>
+            <p class="text-lime-600 text-xs font-bold w-16" v-else-if="order.estado == 'En camino'">{{order.estado}}</p>
+            <p class="text-orange-400 text-xs font-bold w-16" v-else-if="order.estado == 'En espera'">{{order.estado}}</p>
+            <p class="text-lime text-xs font-bold" v-else>{{order.estado}}</p>
           </div>
         </div>
       </RouterLink>
 
-      <RouterLink to="/status">
-        <div class="order-card flex md:grid md:grid-cols-2 gap-3 shadow-md p-2">
-          <div class="flex w-full gap-3">
-            <div class="Order grid items-center text-center">
-              <img
-                src="@/assets/Products/Cacao.svg"
-                alt="Orden Icon"
-                class="h-16 w-16 mx-auto"
-              />
-            </div>
-
-            <div class="Order-Text text-left">
-              <h1 class="text-gray-600 text-sm font-bold">Orden #346</h1>
-              <h1 class="text-gray-600 text-xs font-bold">Cacao</h1>
-              <p class="text-gray-500 text-xs">Cant: 200qq</p>
-              <p class="text-gray-500 text-xs">24/12/2023</p>
-            </div>
-          </div>
-
-          <div class="Order-Price text-right grid mt-2 justify-end">
-            <h1 class="text-yellow-400 text-md font-bold">$17.50</h1>
-            <h1 class="text-yellow-400 text-md font-bold">QQ</h1>
-            <p class="text-lime text-xs font-bold">Pagado</p>
-          </div>
-        </div>
-      </RouterLink>
-
-      <RouterLink to="/status">
-        <div class="order-card flex md:grid md:grid-cols-2 gap-3 shadow-md p-2">
-          <div class="flex w-full gap-3">
-            <div class="Order grid items-center text-center">
-              <img
-                src="@/assets/Products/Corn.svg"
-                alt="Orden Icon"
-                class="h-16 w-16 mx-auto"
-              />
-            </div>
-
-            <div class="Order-Text text-left">
-              <h1 class="text-gray-600 text-sm font-bold">Orden #347</h1>
-              <h1 class="text-gray-600 text-xs font-bold">
-                Maiz Duro Amarillo
-              </h1>
-              <p class="text-gray-500 text-xs">Cant: 200qq</p>
-              <p class="text-gray-500 text-xs">24/12/2023</p>
-            </div>
-          </div>
-
-          <div class="Order-Price text-right grid mt-2 justify-end">
-            <h1 class="text-yellow-400 text-md font-bold">$17.50</h1>
-            <h1 class="text-yellow-400 text-md font-bold">QQ</h1>
-            <p class="text-lime text-xs font-bold">Pagado</p>
-          </div>
-        </div>
-      </RouterLink>
     </div>
   </div>
 
@@ -108,3 +56,40 @@
     <img src="@/assets/Pdf.svg" alt="Plus Icon" />
   </RouterLink>
 </template>
+
+
+<script>
+import { emitAlert } from "@/libs/alert.js";
+import * as orderService from '../services/order.service.js';
+import { formatWalletDate } from "@/libs/date.js";
+export default {
+  data() {
+    return {
+      orders: []
+    };
+  },
+  created: async function () {
+    await this.getMyOrders();
+  },
+  watch: {
+    '$route.fullPath': async function() {
+      if(this.$route.fullPath == '/orders'){
+        await this.getMyOrders();  // Se ejecuta cada vez que el parámetro cambia
+        return;
+      }
+    }
+  },
+  methods: {
+    async getMyOrders() {
+      try {
+        this.orders = await orderService.getOrders();
+      } catch (error) {
+        return emitAlert(error, "error");
+      }
+    },
+    formatWalletDate(x){
+      return formatWalletDate(x)
+    }
+  },
+};
+</script>

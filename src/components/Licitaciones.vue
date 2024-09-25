@@ -3,87 +3,43 @@
     <div
       class="content-cards grid grid-cols-3 gap-2 items-center justify-center"
     >
-      <!--TOP GRID-->
-      <RouterLink to="/app/licitar/Maiz">
+      <RouterLink :to="'/app/licitar/' + product.id" v-for="product in products" :key="product.id">
         <div
           class="card p-1 w-full h-28 border rounded-md border-gray-300 grid text-center items-center"
         >
           <img
-            src="@/assets/Products/Corn.svg"
+            :src="product.imagen"
             alt="App Icon"
             class="w-12 h-12 mx-auto"
           />
-          <h1 class="text-gray-500 text-sm">Maiz</h1>
+          <h1 class="text-gray-500 text-sm">{{product.nombre}}</h1>
         </div>
       </RouterLink>
 
-      <RouterLink to="/app/licitar/Cacao">
-        <div
-          class="card p-1 w-full h-28 border rounded-md border-gray-300 grid text-center items-center"
-        >
-          <img
-            src="@/assets/Products/Cacao.svg"
-            alt="App Icon"
-            class="w-12 h-12 mx-auto"
-          />
-          <h1 class="text-gray-500 text-sm">Cacao</h1>
-        </div>
-      </RouterLink>
-
-      <RouterLink to="/app/licitar/Tomate">
-        <div
-          class="card p-1 w-full h-28 border rounded-md border-gray-300 grid text-center items-center"
-        >
-          <img
-            src="@/assets/Products/Tomato.svg"
-            alt="App Icon"
-            class="w-12 h-12 mx-auto"
-          />
-          <h1 class="text-gray-500 text-sm">Tomate</h1>
-        </div>
-      </RouterLink>
-      <!--TOP GRID-->
-
-      <!--MAIN GRID-->
-      <RouterLink to="/app/licitar/Maracuya">
-        <div
-          class="card p-1 w-full h-28 border rounded-md border-gray-300 grid text-center items-center"
-        >
-          <img
-            src="@/assets/Products/Maracuya.svg"
-            alt="App Icon"
-            class="w-12 h-12 mx-auto"
-          />
-          <h1 class="text-gray-500 text-sm">Maracuya</h1>
-        </div>
-      </RouterLink>
-
-      <RouterLink to="/app/licitar/Arroz">
-        <div
-          class="card p-1 w-full h-28 border rounded-md border-gray-300 grid text-center items-center"
-        >
-          <img
-            src="@/assets/Products/Rice.svg"
-            alt="App Icon"
-            class="w-12 h-12 mx-auto"
-          />
-          <h1 class="text-gray-500 text-sm">Arroz</h1>
-        </div>
-      </RouterLink>
-
-      <RouterLink to="/app/licitar/Polvillo de Arroz">
-        <div
-          class="card p-1 w-full h-28 border rounded-md border-gray-300 grid text-center items-center"
-        >
-          <img
-            src="@/assets/Products/Bag.svg"
-            alt="App Icon"
-            class="w-12 h-12 mx-auto"
-          />
-          <h1 class="text-gray-500 text-sm">Polvillo de Arroz</h1>
-        </div>
-      </RouterLink>
-      <!--MAIN GRID-->
     </div>
   </div>
 </template>
+
+<script allowJs>
+import { emitAlert } from "@/libs/alert.js";
+import * as productService from '../services/product.service.js';
+export default {
+  data() {
+    return {
+      products: [],
+    };
+  },
+  created: async function () {
+    await this.getMarketProducts();
+  },
+  methods: {
+    async getMarketProducts(){
+      try {
+        this.products = await productService.getMarketProducts();
+      } catch (error) {
+        return emitAlert(error.message, "error");
+      }
+    }
+  },
+};
+</script>

@@ -6,15 +6,15 @@
           <RouterLink to="#" v-if="backToDetails" @click="goBack">
             <img src="@/assets/Arrow.svg" alt="Back" class="w-4 h-4" />
           </RouterLink>
-          <RouterLink :to="'/licitacion/' + Producto">
+          <button @click="goBackPage">
             <img src="@/assets/Arrow.svg" alt="Back" class="w-4 h-4" v-if="!backToDetails"/>
-          </RouterLink>
+          </button>
           <h2 class="text-center mx-auto">Licitación {{ Producto }}</h2>
         </div>
       </ion-toolbar>
     </ion-header>
     <ion-content :fullscreen="true">
-      <ChatLicitacion :Item="Producto"  @back-to-details="changeDetailsState"/>
+      <ChatLicitacion :Item="Producto" />
     </ion-content>
   </ion-page>
 </template>
@@ -47,11 +47,22 @@ export default {
       backToDetails: false,
     };
   },
+  created(){
+    Event.on('open-details', () => {
+      if(!this.backToDetails){
+        this.changeDetailsState();
+      }
+    })
+  },
   methods: {
+    goBackPage() {
+      this.$router.go(-1)
+    },
     goBack() {
       // Emitir evento para volver atrás o cerrar detalles según sea necesario
       if (this.backToDetails) {
-        Event.emit('back-to-details');
+        Event.emit('close-details');
+        this.changeDetailsState()
       } 
     },
     changeDetailsState() {

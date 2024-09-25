@@ -3,9 +3,9 @@
     <ion-header>
       <ion-toolbar color="tertiary">
         <div class="flex items-center mx-auto w-11/12">
-          <a :href="'/' + from">
+          <button @click="goBack">
             <img src="@/assets/Arrow.svg" alt="Back" class="w-4 h-4" />
-          </a>
+          </button>
           <h2 class="text-center mx-auto">Agregar Productos de interés</h2>
         </div>
       </ion-toolbar>
@@ -41,6 +41,11 @@ export default {
     return {
       from: null,
     };
+  },
+  methods: {
+    goBack() {
+      this.$router.go(-1);
+    }
   },
   created: function() {
     this.from = this.$route.params.from;

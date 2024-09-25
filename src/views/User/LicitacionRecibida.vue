@@ -3,9 +3,9 @@
     <ion-header>
       <ion-toolbar color="tertiary">
         <div class="flex items-center mx-auto w-11/12 mt-3">
-          <RouterLink :to="'/app/licitaciones/' + Producto">
+          <button @click="goBack">
             <img src="@/assets/Arrow.svg" alt="Back" class="w-4 h-4" />
-          </RouterLink>
+          </button>
           <h2 class="text-center mx-auto">Licitaciones de {{ Producto }}</h2>
         </div>
         <div class="mx-auto w-full text-center gap-1 mt-1">
@@ -71,10 +71,13 @@ export default {
   data() {
     return {
       status: 1,
-      Producto: this.$route.params.name,
+      Producto: this.$route.params.product,
     };
   },
   methods: {
+    goBack(){
+      this.$router.go(-1);
+    },
     selectStatus(x){
       this.status = x;
     }
