@@ -45,13 +45,7 @@
             <RouterLink :to="'/app/vendedor/' + sale.id_usuario"
               class="Profile grid items-center text-center justify-center w-16">
               <ProfileIcon :profile="sale.tipo_perfil" :height="true" :weight="false"></ProfileIcon>
-              <div class="flex items-center justfiy-center">
-                <img src="@/assets/Star.svg" alt="Star Icon" class="w-3 h-3" />
-                <img src="@/assets/Star.svg" alt="Star Icon" class="w-3 h-3" />
-                <img src="@/assets/Star.svg" alt="Star Icon" class="w-3 h-3" />
-                <img src="@/assets/Star.svg" alt="Star Icon" class="w-3 h-3" />
-                <img src="@/assets/Star.svg" alt="Star Icon" class="w-3 h-3" />
-              </div>
+              <Qualification :average="sale.promedio_calificacion"></Qualification>
             </RouterLink>
 
             <RouterLink :to="'/sale/' + Item + '/' + sale.id" class="Profile-Text w-36 md:w-48">
@@ -102,6 +96,7 @@
 </template>
 
 <script allowJs>
+import Qualification from "./Qualification.vue";
 import Provincias from "../assets/JSON/Provincias.json";
 import Cantones from "../assets/JSON/Cantones.json";
 import * as saleService from '../services/sale.service.js';
@@ -111,7 +106,8 @@ export default {
   components: {
     CModal,
     CModalBody,
-    ProfileIcon
+    ProfileIcon,
+    Qualification
   },
   props: {
     Item: String,

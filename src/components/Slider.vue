@@ -1,8 +1,8 @@
 <template>
   <Splide
     :options="{ rewind: true, wheel: true, arrows: false, gap: '15px' }"
-    aria-label="Vue Splide Example"
-    class="my-3 inline-flex gap-2"
+    aria-label="Agroec Adversiting Banner"
+    class="my-3 gap-2"
   >
     <SplideSlide v-for="ad in advertising" :key="ad.id">
       <a

@@ -3,7 +3,7 @@
     <img src="@/assets/IconClean.svg" alt="App Icon" class="h-48 w-48 mx-auto" />
   </div>
   <div class="content w-11/12 mx-auto grid mb-5 mt-2 gap-2 md:w-3/4">
-    <Slider :advertising="advertising"/>
+    <Slider :advertising="advertising" />
 
     <div class="inline-flex my-1">
       <div class="content-message grid gap-2 text-left w-full items-center">
@@ -11,11 +11,12 @@
         <p class="text-md text-gray-400">Bienvenido a Agroec</p>
       </div>
 
-      <div class="w-11/12 mx-auto text-right grid gap-2">
+      <div class="w-11/12 mx-auto text-right justify-content-end grid gap-2">
         <h1 class="text-gray-600 font-bold text-md text-right">
           Saldo Total
         </h1>
-        <h1 class="text-green font-bold text-md text-right" v-if="stats">${{stats.wallet.saldo}}</h1>
+        <h1 class="text-green font-bold text-md text-right" v-if="stats">${{ stats.wallet.saldo }}</h1>
+        <Spinner v-else :small="true"></Spinner>
       </div>
     </div>
 
@@ -47,6 +48,7 @@
       <RouterLink to="/filtered/orders">
         <div class="card p-1 w-full h-28 border rounded-md border-gray-300 grid text-center items-center">
           <span class="text-green-new text-4xl font-bold" v-if="stats">{{ stats.unpaidOrders }}</span>
+          <Spinner v-else></Spinner>
           <h1 class="text-gray-500 text-xs font-bold">Órdenes por recibir</h1>
         </div>
       </RouterLink>
@@ -54,6 +56,7 @@
       <RouterLink to="/app/home">
         <div class="card p-1 w-full h-28 border rounded-md border-gray-300 grid text-center items-center">
           <span class="text-green-new text-4xl font-bold" v-if="stats">{{ stats.orders }}</span>
+          <Spinner v-else></Spinner>
           <h1 class="text-gray-500 text-xs font-bold">Órdenes Recibidas</h1>
         </div>
       </RouterLink>
@@ -61,6 +64,7 @@
       <RouterLink to="/app/propuestas/recibidas">
         <div class="card p-1 w-full h-28 border rounded-md border-gray-300 grid text-center items-center">
           <span class="text-green-new text-4xl font-bold" v-if="stats">{{ stats.proposals }}</span>
+          <Spinner v-else></Spinner>
           <h1 class="text-gray-500 text-xs font-bold">
             Propuestas de vendedores
           </h1>
@@ -69,20 +73,15 @@
       <!--MIDDLE GRID-->
 
       <!--BOTTOM GRID-->
-      <div class="card p-1 w-full h-28 border rounded-md border-gray-300 grid text-center items-center">
-        <div class="flex justify-center">
-          <img src="@/assets/Star.svg" alt="Calificacion" class="h-4 w-4" />
-          <img src="@/assets/Star.svg" alt="Calificacion" class="h-4 w-4" />
-          <img src="@/assets/Star.svg" alt="Calificacion" class="h-4 w-4" />
-          <img src="@/assets/Star.svg" alt="Calificacion" class="h-4 w-4" />
-          <img src="@/assets/Star.svg" alt="Calificacion" class="h-4 w-4" />
-        </div>
+      <div class="card p-1 w-full h-28 border rounded-md border-gray-300 grid text-center items-center" v-if="stats">
+        <Qualification :average="stats.qualifications.promedio_calificacion" :qualifications="[]"></Qualification>
         <h1 class="text-gray-500 text-xs font-bold">Tu Calificación</h1>
       </div>
 
       <RouterLink to="/app/propuestas/filter">
         <div class="card w-full h-28 border rounded-md border-gray-300 grid text-center items-center relative">
           <span class="text-green-new text-4xl font-bold" v-if="stats">{{ stats.buyProposals }}</span>
+          <Spinner v-else></Spinner>
           <p class="text-gray-500 text-xs font-bold">Negociaciones Abiertas</p>
           <span
             class="bg-red-600 rounded-full h-6 grid items-center w-6 text-center text-white text-xs absolute -top-1 -right-1">9</span>
@@ -92,6 +91,7 @@
       <RouterLink to="/app/home">
         <div class="card w-full h-28 border rounded-md border-gray-300 grid text-center items-center">
           <span class="text-green-new text-4xl font-bold" v-if="stats">{{ stats.licitations }}</span>
+          <Spinner v-else></Spinner>
           <h1 class="text-gray-500 text-xs font-bold">Licitaciones activas</h1>
         </div>
       </RouterLink>
@@ -121,10 +121,14 @@ import { emitAlert } from "@/libs/alert.js";
 import * as profileService from '../services/profile.service.js';
 import * as advertisingService from '../services/advertising.service.js';
 import Slider from "@/components/Slider.vue";
+import Qualification from "./Qualification.vue";
+import Spinner from "./Spinner.vue";
 export default {
   name: "Home",
   components: {
-    Slider
+    Slider,
+    Spinner,
+    Qualification
   },
   data() {
     return {
@@ -137,8 +141,8 @@ export default {
     await this.getAdvertising();
   },
   watch: {
-    '$route.fullPath': async function() {
-      if(this.$route.fullPath == '/app/home'){
+    '$route.fullPath': async function () {
+      if (this.$route.fullPath == '/app/home') {
         await this.getStats();  // Se ejecuta cada vez que el parámetro cambia
         await this.getAdvertising();  // Se ejecuta cada vez que el parámetro cambia
         return;
@@ -153,7 +157,7 @@ export default {
         emitAlert(error.error, "error");
       }
     },
-    async getAdvertising(){
+    async getAdvertising() {
       try {
         this.advertising = await advertisingService.getAdvertising();
       } catch (error) {

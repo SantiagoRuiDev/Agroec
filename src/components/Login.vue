@@ -25,10 +25,17 @@
             class="text-gray-400 w-5/6 mx-auto bg-transparent border-2 border-gray-300 px-3 py-3 rounded-md"
             placeholder="Contraseña"
           />
+          
+          <div class="text-red-400 font-bold mx-auto grid items-center gap-3 w-5/6 md:w-2/3" v-if="formAlert">
+            <p v-if="user.correo.trim() == ''">Porfavor, completa el campo correo.</p> 
+            <p v-if="user.clave.trim() == ''">Porfavor, completa el campo contraseña.</p> 
+          </div>
+
           <button @click="initUserSession" type="button" class="py-3 px-5 default-bar mx-auto mt-3 w-2/3 rounded text-center">
             Entrar
           </button>
-          
+        
+
           <RouterLink to="/app/password" class="mx-auto default-color font-bold mt-2 mb-6">Recuperar Clave</RouterLink>
         </form>
 
@@ -58,11 +65,17 @@ export default {
       user: {
         correo: "",
         clave: ""
-      }
+      },
+      formAlert: false
     }
   },
   methods: {
     async initUserSession(){
+      if(this.user.clave.trim() == "" || this.user.correo.trim() == ""){
+        this.formAlert = true;
+      } else {
+        this.formAlert = false;
+      }
       try {
         if(this.user.correo != "" && this.user.clave != ""){
           await initUserSession(this.user);

@@ -329,7 +329,7 @@
         </div>
         <Calify :value="value" v-if="value >= 1" @update:value="updateCalification"></Calify>
 
-        <button @click="setOrderRejectedStatus" class="mt-1 default-bar text-white font-bold shadow p-2 h-12 mx-auto w-3/5 rounded-md">
+        <button @click="sendQualification" class="mt-1 default-bar text-white font-bold shadow p-2 h-12 mx-auto w-3/5 rounded-md">
           Enviar
         </button>
       </div>
@@ -358,6 +358,7 @@ import Calify from "@/components/Calify.vue";
 import CondicionesOferta from './CondicionesOferta.vue';
 import { emitAlert } from "@/libs/alert.js";
 import * as orderService from '../services/order.service.js';
+import * as qualificationService from '../services/qualification.service.js';
 import { formatDateTime } from "@/libs/date.js";
 import Event from '@/libs/event';
 export default {
@@ -438,6 +439,16 @@ export default {
     fetchStatusArray(filter) {
       return this.statuses.filter(status => status.estado == filter)
     },
+    async sendQualification(){
+      try {
+        const { message } = await qualificationService.sendQualification(this.$route.params.identifier, {id_calificado: this.order.id_vendedor, puntaje: this.value});
+        if(message){
+          await this.setOrderRejectedStatus();
+        }
+      } catch (error) {
+        return emitAlert(error, 'error');
+      }
+    },
     async payFee() {
       try {
         const feeAmount = (this.order.precio * this.order.cantidad) * (1.5 / 100)
@@ -474,6 +485,7 @@ export default {
         const { message } = await orderService.setOrderRejectedStatus(this.order.id, this.rejectReason);
         emitAlert(message, 'success');
         await this.getOrderById();
+        return this.manageRejectRatingModal();
       } catch (error) {
         return emitAlert(error, 'error');
       }

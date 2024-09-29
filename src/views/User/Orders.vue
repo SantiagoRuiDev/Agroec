@@ -12,10 +12,10 @@
           <a v-if="status" class="text-sm text-gray-50 border-bottom-2 border-gray-50 p-3">
             Activas
           </a>
-          <a v-if="status" class="text-sm text-gray-50 p-3" @click="changeStatus">
+          <a v-if="status" class="text-sm text-gray-50 p-3" @click="selectStatus(false)">
             Historial
           </a>
-          <a v-if="!status" class="text-sm text-gray-50 p-3" @click="changeStatus">
+          <a v-if="!status" class="text-sm text-gray-50 p-3" @click="selectStatus(true)">
             Activas
           </a>
           <a v-if="!status" class="text-sm text-gray-50 border-bottom-2 border-gray-50 p-3">
@@ -27,22 +27,22 @@
           class="mx-auto w-full text-center mt-2 mr-3 inline-flex justify-center gap-1"
         >
           <ion-segment value="buttons" class="tabs">
-            <ion-segment-button value="maiz" class="buttonmaiz">
+            <ion-segment-button value="maiz" class="buttonmaiz" @click="selectProduct('Maiz')">
               <ion-label>Maiz</ion-label>
             </ion-segment-button>
-            <ion-segment-button value="cacao" class="button">
+            <ion-segment-button value="cacao" class="button" @click="selectProduct('Cacao')">
               <ion-label>Cacao</ion-label>
             </ion-segment-button>
-            <ion-segment-button value="tomate" class="button">
+            <ion-segment-button value="tomate" class="button" @click="selectProduct('Tomate')">
               <ion-label>Tomate</ion-label>
             </ion-segment-button>
-            <ion-segment-button value="maracuya" class="button">
+            <ion-segment-button value="maracuya" class="button" @click="selectProduct('Maracuya')">
               <ion-label>Maracuya</ion-label>
             </ion-segment-button>
-            <ion-segment-button value="arroz" class="button">
+            <ion-segment-button value="arroz" class="button" @click="selectProduct('Arroz')">
               <ion-label>Arroz</ion-label>
             </ion-segment-button>
-            <ion-segment-button value="polvillo" class="button">
+            <ion-segment-button value="polvillo" class="button" @click="selectProduct('Pólvillo')">
               <ion-label>Pólvillo</ion-label>
             </ion-segment-button>
           </ion-segment>
@@ -50,7 +50,7 @@
       </ion-toolbar>
     </ion-header>
     <ion-content :fullscreen="true">
-      <Orders />
+      <Orders :product_filter="product" :status_filter="status"/>
     </ion-content>
   </ion-page>
 </template>
@@ -84,12 +84,16 @@ export default {
   },
   data(){
     return{
-      status: true
+      status: true,
+      product: "Maiz"
     }
   },
   methods:{
-    changeStatus(){
-      this.status = !this.status
+    selectStatus(status){
+      this.status = status;
+    },
+    selectProduct(filter){
+      this.product = filter;
     }
   }
 };

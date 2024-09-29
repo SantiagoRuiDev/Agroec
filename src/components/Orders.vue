@@ -5,19 +5,20 @@
     >
       <input
         placeholder="Filtrar por ID"
+        v-model="filter"
         class="text-left text-sm md:text-md bg-transparent h-full p-2"
       />
-      <div class="absolute right-1 top-2.5">
+      <button @click="filterByIdentifier" class="absolute right-1 top-2.5">
         <img
           src="@/assets/Search.svg"
-          alt="Search by Comerciante"
+          alt="Search by Identifier"
           class="h-6 w-6"
         />
-      </div>
+      </button>
     </div>
     
     <div class="grid gap-1">
-      <RouterLink :to="'/order/' + order.id" v-for="order in orders" :key="order.id">
+      <RouterLink :to="'/order/' + order.id" v-for="order in filteredOrders" :key="order.id">
         <div class="order-card flex md:grid md:grid-cols-2 gap-3 shadow-md p-2">
           <div class="flex w-full gap-3">
             <div class="Order grid items-center text-center">
@@ -63,9 +64,21 @@ import { emitAlert } from "@/libs/alert.js";
 import * as orderService from '../services/order.service.js';
 import { formatWalletDate } from "@/libs/date.js";
 export default {
+  props: {
+    product_filter: {
+      type: String,
+      required: true
+    },
+    status_filter: {
+      type: Boolean,
+      required: true
+    }
+  },
   data() {
     return {
-      orders: []
+      orders: [],
+      filteredOrders: [],
+      filter: ""
     };
   },
   created: async function () {
@@ -77,12 +90,41 @@ export default {
         await this.getMyOrders();  // Se ejecuta cada vez que el parámetro cambia
         return;
       }
+    },
+    product_filter: function(newVal, oldVal) {
+      this.filterByProduct();
+    },
+    status_filter: function(newVal, oldVal) {
+      this.filterByIdentifier();
     }
   },
   methods: {
+    filterByIdentifier(){
+      if(this.filter.trim() == ""){
+        this.filteredOrders = this.orders;
+      }
+      this.filteredOrders = this.orders.filter(order => String(order.id).includes(this.filter) && String(order.producto).includes(this.product_filter))
+      this.filterByStatus();
+    },
+    filterByProduct(){
+      if(this.product_filter.trim() == ""){
+        this.filteredOrders = this.orders;
+      }
+      this.filteredOrders = this.orders.filter(order => String(order.producto).includes(this.product_filter))
+      this.filterByStatus();
+    },
+    filterByStatus(){
+      if(this.status_filter){
+        this.filteredOrders = this.filteredOrders.filter(order => order.estado != "Aceptado" && order.estado != "Rechazado");
+      } else {
+        this.filteredOrders = this.filteredOrders.filter(order => order.estado == "Aceptado" || order.estado == "Rechazado");
+      }
+    },
     async getMyOrders() {
       try {
         this.orders = await orderService.getOrders();
+        this.filterByIdentifier();
+        this.filterByProduct();
       } catch (error) {
         return emitAlert(error, "error");
       }
