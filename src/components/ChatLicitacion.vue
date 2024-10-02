@@ -93,10 +93,6 @@
         Bajo contrato está prohibido compartir información personal.
       </p>
     </div>
-
-    <button class="dark-bar h-14 mx-auto p-3 text-center text-white font-bold rounded-md" @click="manageEntregasModal">
-      Cantidad de entregas totales: 3
-    </button>
     <!--Navbar Inside chat-->
   </div>
 
@@ -145,106 +141,6 @@
       </div>
     </CModalBody>
   </CModal>
-
-  <CModal alignment="center" :visible="entregasModal" @close="manageEntregasModal">
-    <CModalBody>
-      <div class="grid w-full gap-3 pb-3">
-        <img src="@/assets/Nav/X.svg" alt="Close alert" @click="manageEntregasModal" class="justify-self-end" />
-        <h2 class="text-center text-xl font-bold text-gray-500 w-5/6 mx-auto">
-          Entregas totales
-        </h2>
-        <div class="mx-auto">
-          <ion-segment value="buttons">
-            <ion-segment-button value="true" @click="manageEntregasSelect"
-              class="tabs button border-gray-300 text-gray-600">
-              <ion-label>Cumplidas</ion-label>
-            </ion-segment-button>
-            <ion-segment-button value="false" @click="manageEntregasSelect"
-              class="tabs button border-gray-300 text-gray-600">
-              <ion-label>Falta Recibir</ion-label>
-            </ion-segment-button>
-          </ion-segment>
-        </div>
-        <div class="grid" v-if="entregasSelect">
-          <RouterLink to="/status">
-            <div class="order-card flex md:grid md:grid-cols-2 gap-3 p-2">
-              <div class="flex w-full gap-3">
-                <div class="Order grid items-center text-center">
-                  <img src="@/assets/Products/Corn.svg" alt="Orden Icon" class="h-16 w-16 mx-auto" />
-                </div>
-
-                <div class="Order-Text text-left">
-                  <h1 class="text-gray-600 text-sm font-bold">Orden #345</h1>
-                  <h1 class="text-gray-600 text-xs font-bold">
-                    Maiz Duro Amarillo
-                  </h1>
-                  <p class="text-gray-500 text-xs">Cant: 200qq</p>
-                  <p class="text-gray-500 text-xs">24/12/2023</p>
-                </div>
-              </div>
-
-              <div class="Order-Price text-right grid mt-2 justify-end">
-                <h1 class="text-yellow-400 text-md font-bold">$17.50</h1>
-                <h1 class="text-yellow-400 text-md font-bold">QQ</h1>
-                <p class="text-lime text-xs font-bold">Entregada</p>
-              </div>
-            </div>
-          </RouterLink>
-        </div>
-        <div class="grid" v-if="!entregasSelect">
-          <RouterLink to="/status">
-            <div class="order-card flex md:grid md:grid-cols-2 gap-3 p-2">
-              <div class="flex w-full gap-3">
-                <div class="Order grid items-center text-center">
-                  <img src="@/assets/Products/Corn.svg" alt="Orden Icon" class="h-16 w-16 mx-auto" />
-                </div>
-
-                <div class="Order-Text text-left">
-                  <h1 class="text-gray-600 text-sm font-bold">Orden #347</h1>
-                  <h1 class="text-gray-600 text-xs font-bold">
-                    Maiz Duro Amarillo
-                  </h1>
-                  <p class="text-gray-500 text-xs">Cant: 200qq</p>
-                  <p class="text-gray-500 text-xs">24/12/2023</p>
-                </div>
-              </div>
-
-              <div class="Order-Price text-right grid mt-2 justify-end">
-                <h1 class="text-yellow-400 text-md font-bold">$17.50</h1>
-                <h1 class="text-yellow-400 text-md font-bold">QQ</h1>
-                <p class="text-red-400 text-xs font-bold">Pendiente</p>
-              </div>
-            </div>
-          </RouterLink>
-          <RouterLink to="/status">
-            <div class="order-card flex md:grid md:grid-cols-2 gap-3 p-2">
-              <div class="flex w-full gap-3">
-                <div class="Order grid items-center text-center">
-                  <img src="@/assets/Products/Corn.svg" alt="Orden Icon" class="h-16 w-16 mx-auto" />
-                </div>
-
-                <div class="Order-Text text-left">
-                  <h1 class="text-gray-600 text-sm font-bold">Orden #346</h1>
-                  <h1 class="text-gray-600 text-xs font-bold">
-                    Maiz Duro Amarillo
-                  </h1>
-                  <p class="text-gray-500 text-xs">Cant: 200qq</p>
-                  <p class="text-gray-500 text-xs">24/12/2023</p>
-                </div>
-              </div>
-
-              <div class="Order-Price text-right grid mt-2 justify-end">
-                <h1 class="text-yellow-400 text-md font-bold">$17.50</h1>
-                <h1 class="text-yellow-400 text-md font-bold">QQ</h1>
-                <p class="text-red-400 text-xs font-bold">Pendiente</p>
-              </div>
-            </div>
-          </RouterLink>
-        </div>
-      </div>
-    </CModalBody>
-  </CModal>
-
 
 
   <CModal alignment="center" :visible="errorChat" @close="closeChatModal">

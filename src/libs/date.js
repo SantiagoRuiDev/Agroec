@@ -19,6 +19,7 @@ export function formatDateTime(dateString) {
     const month = months[date.getMonth()];
     const year = date.getFullYear();
     
+    const plainDate =  `${day}/${date.getMonth()}/${date.getFullYear()}`;
     // Formato de fecha: "10 de Septiembre de 2024"
     const formattedDate = `${day} de ${month} de ${year}`;
 
@@ -28,7 +29,7 @@ export function formatDateTime(dateString) {
     
     const hoursAndMinutes = `${hours}:${minutes}`;
     
-    return { time, formattedDate, dayAndMonth, hoursAndMinutes, orderDate };
+    return { time, formattedDate, dayAndMonth, hoursAndMinutes, orderDate, plainDate };
 }
 export function formatWalletDate(dateString) {
     const date = new Date(dateString);

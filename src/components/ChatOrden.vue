@@ -39,7 +39,7 @@
       <div class="grid">
         <div class="message-form self-center relative bg-gray-200 h-12 rounded-md">
           <input type="text" v-model="messageInput" class="w-11/12 h-12 outline-none bg-transparent p-3 text-gray-500"
-            placeholder="Responder"/>
+            placeholder="Responder" />
           <button class="absolute right-2 top-1/2 transform -translate-y-1/2" @click="sendMessage">
             <img src="@/assets/Send.svg" alt="Send Message" class="h-4 w-4 " />
           </button>
@@ -52,12 +52,12 @@
     </div>
 
     <button class="dark-bar h-14 mx-auto p-3 text-center text-white font-bold rounded-md" @click="manageEntregasModal">
-      Cantidad de entregas totales: {{deliveries.length}}
+      Cantidad de entregas totales: {{ deliveries.length }}
     </button>
     <!--Navbar Inside chat-->
   </div>
 
-  
+
   <CModal alignment="center" :visible="entregasModal" @close="manageEntregasModal">
     <CModalBody>
       <div class="grid w-full gap-3 pb-3">
@@ -78,7 +78,8 @@
           </ion-segment>
         </div>
         <div class="grid" v-if="entregasSelect">
-          <RouterLink to="/status" v-for="delivery in deliveries.filter(del => del.estado == 'Aceptado')" :key="delivery">
+          <RouterLink to="/status" v-for="delivery in deliveries.filter(del => del.estado == 'Aceptado')"
+            :key="delivery">
             <div class="order-card flex md:grid md:grid-cols-2 gap-3 p-2">
               <div class="flex w-full gap-3">
                 <div class="Order grid items-center text-center">
@@ -86,26 +87,27 @@
                 </div>
 
                 <div class="Order-Text text-left">
-                  <h1 class="text-gray-600 text-sm font-bold">Orden #{{delivery.id.slice(0,8)}}</h1>
+                  <h1 class="text-gray-600 text-sm font-bold">Orden #{{ delivery.id.slice(0, 8) }}</h1>
                   <h1 class="text-gray-600 text-xs font-bold">
-                    {{this.$route.params.name}}
+                    {{ this.$route.params.name }}
                   </h1>
-                  <p class="text-gray-500 text-xs">Cant: {{delivery.cantidad}} {{ delivery.cantidad_unidad }}</p>
-                  <p class="text-gray-500 text-xs">{{formatWalletDate(delivery.fecha_entrega).slice(0,10)}}</p>
+                  <p class="text-gray-500 text-xs">Cant: {{ delivery.cantidad }} {{ delivery.cantidad_unidad }}</p>
+                  <p class="text-gray-500 text-xs">{{ formatWalletDate(delivery.fecha_entrega).slice(0, 10) }}</p>
                 </div>
               </div>
 
               <div class="Order-Price text-right grid mt-2 justify-end">
                 <h1 class="text-yellow-400 text-md font-bold">${{ Number(conditions.precio).toFixed(2) }}</h1>
-                <h1 class="text-yellow-400 text-md font-bold">{{conditions.precio_unidad}}</h1>
+                <h1 class="text-yellow-400 text-md font-bold">{{ conditions.precio_unidad }}</h1>
                 <p class="text-lime text-xs font-bold">Entregada</p>
               </div>
             </div>
           </RouterLink>
-          
+
         </div>
         <div class="grid" v-if="!entregasSelect">
-          <RouterLink to="/status" v-for="delivery in deliveries.filter(del => del.estado != 'Aceptado')" :key="delivery">
+          <RouterLink to="/status" v-for="delivery in deliveries.filter(del => del.estado != 'Aceptado')"
+            :key="delivery">
             <div class="order-card flex md:grid md:grid-cols-2 gap-3 p-2">
               <div class="flex w-full gap-3">
                 <div class="Order grid items-center text-center">
@@ -113,19 +115,19 @@
                 </div>
 
                 <div class="Order-Text text-left">
-                  <h1 class="text-gray-600 text-sm font-bold">Orden #{{delivery.id.slice(0,8)}}</h1>
+                  <h1 class="text-gray-600 text-sm font-bold">Orden #{{ delivery.id.slice(0, 8) }}</h1>
                   <h1 class="text-gray-600 text-xs font-bold">
-                    {{this.$route.params.name}}
+                    {{ this.$route.params.name }}
                   </h1>
-                  <p class="text-gray-500 text-xs">Cant: {{delivery.cantidad}} {{ delivery.cantidad_unidad }}</p>
-                  <p class="text-gray-500 text-xs">{{formatWalletDate(delivery.fecha_entrega).slice(0,10)}}</p>
+                  <p class="text-gray-500 text-xs">Cant: {{ delivery.cantidad }} {{ delivery.cantidad_unidad }}</p>
+                  <p class="text-gray-500 text-xs">{{ formatWalletDate(delivery.fecha_entrega).slice(0, 10) }}</p>
                 </div>
               </div>
 
               <div class="Order-Price text-right grid mt-2 justify-end">
                 <h1 class="text-yellow-400 text-md font-bold">${{ Number(conditions.precio).toFixed(2) }}</h1>
-                <h1 class="text-yellow-400 text-md font-bold">{{conditions.precio_unidad}}</h1>
-                <p class="text-red-400 text-xs font-bold">{{delivery.estado}}</p>
+                <h1 class="text-yellow-400 text-md font-bold">{{ conditions.precio_unidad }}</h1>
+                <p class="text-red-400 text-xs font-bold">{{ delivery.estado }}</p>
               </div>
             </div>
           </RouterLink>
@@ -265,11 +267,13 @@ export default {
       }
     },
     async getChatConditions() {
-      const {condition, deliveries, quality_params} = await chatService.getChatConditions(this.$route.params.identifier);
+      const { condition, deliveries, quality_params } = await chatService.getChatConditions(this.$route.params.identifier);
       this.deliveries = deliveries;
       this.conditions = condition;
       this.quality_params = quality_params;
       this.conditions.precio_puesto_domicilio = (this.conditions.precio_puesto_domicilio == 1) ? true : false;
+
+      Event.emit('proposal-id', condition.id_propuesta);
     },
     draggedMessageEnd(e) {
       this.repliedMessage = e.target.textContent;

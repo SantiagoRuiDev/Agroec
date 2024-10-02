@@ -63,7 +63,7 @@ const routes: Array<RouteRecordRaw> = [
     meta: { requiresAuth: true },
   },
   {
-    path: "/review/:name",
+    path: "/review/:name/:identifier",
     component: () => import("@/views/User/ReviewOferta.vue"),
     meta: { requiresAuth: true },
   },
@@ -98,13 +98,18 @@ const routes: Array<RouteRecordRaw> = [
     meta: { requiresAuth: true },
   },
   {
-    path: "/app/insumos",
+    path: "/app/insumos/filter",
     component: () => import("@/views/User/Insumos.vue"),
     meta: { requiresAuth: true },
   },
   {
     path: "/app/insumos/:id",
     component: () => import("@/views/User/InsumosInfo.vue"),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/app/insumos/details/:id",
+    component: () => import("@/views/User/InsumosDetalles.vue"),
     meta: { requiresAuth: true },
   },
   {

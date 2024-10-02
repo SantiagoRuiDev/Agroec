@@ -14,10 +14,11 @@
           />
           <h1 class="text-gray-500 text-sm">{{product.nombre}}</h1>
           
+          
           <span
-            v-if="proposals.filter(proposal => proposal.lastMessage != null).length"
+            v-if="proposals.filter(proposal => proposal.lastMessage != null && proposal.lastMessage != proposal.id_comprador && proposal.id_producto == product.id).length"
             class="h-6 w-6 bg-red-600 rounded-full p-0.5 absolute grid items-center justify-center top-0 right-0 text-white"
-            >{{ proposals.filter(proposal => proposal.lastMessage.id_remitente != proposal.id_comprador).length }}</span
+            >{{ proposals.filter(proposal => proposal.lastMessage != null && proposal.lastMessage != proposal.id_comprador  && proposal.id_producto == product.id).length }}</span
           >
         </div>
       </RouterLink>

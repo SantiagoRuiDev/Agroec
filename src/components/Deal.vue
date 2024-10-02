@@ -40,9 +40,7 @@
     <div class="descripcionpad my -2 w-5/6 mx-auto text-left text-gray-700 text-sm md:w-1/2">
       <h1 class="font-bold text-xl mb-2 text-center">Parámetros de Calidad</h1>
       <ul class="grid gap-1">
-        <li class="text-base">Humedad: min 14% max 17%</li>
-        <li class="text-base">Impureza: min 0% max 5%</li>
-        <li class="text-base">Aflaxtoxinas: min 0% max 3 %</li>
+        <li class="text-base" v-for="param in sale.quality_params">{{param.nombre}}: min {{param.min_calidad}}% max {{param.max_calidad}}%</li>
       </ul>
     </div>
 

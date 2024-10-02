@@ -16,3 +16,11 @@ export const getByCategory = async (category_id) => {
         throw new Error(error.response.data.error)
     }
 }
+export const getById = async (input_id) => {
+    try {
+        const {data} = await instance.get('/input/details/' + input_id, {withCredentials: true})
+        return data;
+    } catch (error) {
+        throw new Error(error.response.data.error)
+    }
+}

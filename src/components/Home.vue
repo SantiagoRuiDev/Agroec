@@ -2,7 +2,7 @@
   <div class="portait">
     <img src="@/assets/IconClean.svg" alt="App Icon" class="h-48 w-48 mx-auto" />
   </div>
-  <div class="content w-11/12 mx-auto grid mb-5 mt-2 gap-2 md:w-3/4">
+  <div class="content w-11/12 mx-auto grid mb-5 mt-2 gap-2 md:w-3/4 relative">
     <Slider :advertising="advertising" />
 
     <div class="inline-flex my-1">
@@ -36,7 +36,7 @@
         </div>
       </RouterLink>
 
-      <RouterLink to="/app/insumos">
+      <RouterLink to="/app/insumos/filter">
         <div class="card p-1 w-full h-28 border rounded-md border-gray-300 grid text-center items-center">
           <img src="@/assets/Insumos.svg" alt="App Icon" class="w-12 h-12 mx-auto" />
           <h1 class="text-gray-500 text-sm font-bold">Insumos</h1>
@@ -79,12 +79,17 @@
       </div>
 
       <RouterLink to="/app/propuestas/filter">
-        <div class="card w-full h-28 border rounded-md border-gray-300 grid text-center items-center relative">
-          <span class="text-green-new text-4xl font-bold" v-if="stats">{{ stats.buyProposals }}</span>
+        <div class="card w-full h-28 border rounded-md border-gray-300 grid text-center items-center relative"
+          v-if="stats">
+          <span class="text-green-new text-4xl font-bold" v-if="stats">{{ stats.buyProposals.length }}</span>
           <Spinner v-else></Spinner>
           <p class="text-gray-500 text-xs font-bold">Negociaciones Abiertas</p>
           <span
-            class="bg-red-600 rounded-full h-6 grid items-center w-6 text-center text-white text-xs absolute -top-1 -right-1">9</span>
+            v-if="stats.buyProposals.filter(proposal => proposal.lastMessage != null && proposal.lastMessage != stats.profile.id_perfil_usuario).length > 0"
+            class="bg-red-600 rounded-full h-6 grid items-center w-6 text-center text-white text-xs absolute -top-1 -right-1">
+            {{ stats.buyProposals.filter(proposal => proposal.lastMessage != null && proposal.lastMessage !=
+              stats.profile.id_perfil_usuario).length }}
+          </span>
         </div>
       </RouterLink>
 
@@ -123,6 +128,7 @@ import * as advertisingService from '../services/advertising.service.js';
 import Slider from "@/components/Slider.vue";
 import Qualification from "./Qualification.vue";
 import Spinner from "./Spinner.vue";
+import event from "@/libs/event.js";
 export default {
   name: "Home",
   components: {
@@ -153,6 +159,7 @@ export default {
     async getStats() {
       try {
         this.stats = await profileService.getStats();
+        event.emit('unreaded-notifications', this.stats.notifications);
       } catch (error) {
         emitAlert(error.error, "error");
       }

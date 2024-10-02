@@ -7,7 +7,7 @@
             <img src="@/assets/Arrow.svg" alt="Back" class="w-4 h-4" />
           </RouterLink>
           <h2 class="text-center mx-auto">Orden {{ Producto }}</h2>
-          <RouterLink :to="'/review/' + Producto">
+          <RouterLink v-if="proposal_id != null" :to="'/review/' + Producto + '/' + proposal_id">
             <img src="@/assets/Statistics/Informative.svg" alt="Back" class="w-4 h-4" v-on:click="showModal" />
           </RouterLink>
         </div>
@@ -20,6 +20,7 @@
 </template>
 
 <script allowJs>
+import Event from "../../libs/event.js";
 import ChatOrden from "@/components/ChatOrden.vue";
 import {
   IonPage,
@@ -43,7 +44,13 @@ export default {
   data() {
     return {
       Producto: this.$route.params.name,
+      proposal_id: null
     };
+  },
+  created(){
+    Event.on('proposal-id', (value) => {
+      this.proposal_id = value;
+    })
   },
   methods: {
     goBack() {

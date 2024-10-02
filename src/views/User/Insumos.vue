@@ -19,7 +19,7 @@
 
 <script allowJs>
 import BottomBar from '@/components/Bottom.vue';
-import Insumos from "@/components/Insumos.vue";
+import Insumos from "@/components/InsumosCategorias.vue";
 import {
   IonPage,
   IonHeader,

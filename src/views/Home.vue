@@ -10,16 +10,17 @@
           </div>
 
           <RouterLink to="/app/notifications" class="justify-self-end text-end">
-          <span class="h-4 w-4 bg-red-600 rounded-full p-0.5 absolute grid items-center justify-center ml-4">3</span>
-          <img src="@/assets/Notifications.svg" alt="Notifications" class="h-8 w-8">
+            <span class="h-4 w-4 bg-red-600 rounded-full p-0.5 absolute grid items-center justify-center ml-4"
+              v-if="notifications > 0">{{ notifications }}</span>
+            <img src="@/assets/Notifications.svg" alt="Notifications" class="h-8 w-8">
           </RouterLink>
         </div>
       </ion-toolbar>
     </ion-header>
     <ion-content :fullscreen="true">
-      <Home/>
+      <Home />
     </ion-content>
-    <BottomBar/>
+    <BottomBar />
   </ion-page>
 </template>
 
@@ -28,6 +29,7 @@ import Home from '@/components/Home.vue';
 import BottomBar from '@/components/Bottom.vue';
 import Sidebar from '@/components/Sidebar.vue'
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonIcon } from '@ionic/vue';
+import event from '@/libs/event';
 
 export default {
   components: {
@@ -43,8 +45,14 @@ export default {
   },
   data() {
     return {
-      menuOpen: false
+      menuOpen: false,
+      notifications: 0
     };
+  },
+  created() {
+    event.on('unreaded-notifications', (value) => {
+      this.notifications = value;
+    });
   },
   methods: {
     toggleMenu() {
