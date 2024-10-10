@@ -12,25 +12,25 @@
           class="mx-auto w-full text-center mt-3 mr-3 inline-flex justify-center gap-1"
         >
           <ion-segment value="buttons" class="tabs">
-            <ion-segment-button value="all" class="buttonmain">
+            <ion-segment-button value="all" class="buttonmain"  @click="selectProduct('')">
               <ion-label>Todos</ion-label>
             </ion-segment-button>
-            <ion-segment-button value="maiz" class="button">
+            <ion-segment-button value="maiz" class="button" @click="selectProduct('Maiz')">
               <ion-label>Maiz</ion-label>
             </ion-segment-button>
-            <ion-segment-button value="cacao" class="button">
+            <ion-segment-button value="cacao" class="button" @click="selectProduct('Cacao')">
               <ion-label>Cacao</ion-label>
             </ion-segment-button>
-            <ion-segment-button value="tomate" class="button">
+            <ion-segment-button value="tomate" class="button" @click="selectProduct('Tomate')">
               <ion-label>Tomate</ion-label>
             </ion-segment-button>
-            <ion-segment-button value="maracuya" class="button">
+            <ion-segment-button value="maracuya" class="button" @click="selectProduct('Maracuya')">
               <ion-label>Maracuya</ion-label>
             </ion-segment-button>
-            <ion-segment-button value="arroz" class="button">
+            <ion-segment-button value="arroz" class="button" @click="selectProduct('Arroz')">
               <ion-label>Arroz</ion-label>
             </ion-segment-button>
-            <ion-segment-button value="polvillo" class="button">
+            <ion-segment-button value="polvillo" class="button" @click="selectProduct('Pólvillo')">
               <ion-label>Pólvillo</ion-label>
             </ion-segment-button>
           </ion-segment>
@@ -38,7 +38,7 @@
       </ion-toolbar>
     </ion-header>
     <ion-content :fullscreen="true">
-      <Notifications />
+      <Notifications  :product_filter="product"/>
     </ion-content>
   </ion-page>
 </template>
@@ -70,6 +70,16 @@ export default {
     IonContent,
     IonIcon,
   },
+  data(){
+    return{
+      product: ""
+    }
+  },
+  methods:{
+    selectProduct(filter){
+      this.product = filter;
+    }
+  }
 };
 </script>
 

@@ -34,6 +34,9 @@ const app = createApp(App)
     notifyButton: {
       enable: true,
     },
+    welcomeNotification: {
+      enable: false
+    },
     allowLocalhostAsSecureOrigin: true,
   })
   .use(IonicVue)

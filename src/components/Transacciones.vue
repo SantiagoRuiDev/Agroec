@@ -6,7 +6,7 @@
       </h1>
       <h1 class="text-green font-bold text-md text-right">${{wallet.saldo}}</h1>
     </div>
-    <div class="grid gap-1 max-h-96 overflow-y-scroll">
+    <div class="grid gap-1 max-h-96 overflow-y-scroll" v-if="!permissionError.enabled">
       <div class="order-card w-11/12 mx-auto rounded flex md:grid gap-3 shadow-sm p-2"  v-for="transaction in transactions" :key="transaction.id">
         <div class="flex w-full gap-3">
           <div class="Order-Text grid gap-2 w-full" v-if="transaction.tipo == 'Fee'">
@@ -51,11 +51,17 @@
           </div>
         </div>
       </div>
-
-    
+    </div>
+    <div class="grid gap-1 max-h-96 overflow-y-scroll" v-else>
+      <div class="mx-auto w-full grid gap-5 text-black justify-items-center">
+        <h1 class="font-bold text-2xl opacity-65 text-center">{{permissionError.message}}</h1>
+        <RouterLink to="/app/home" class="default-bar text-center text-white rounded-md p-2">
+          Volver al inicio
+        </RouterLink>
+      </div>
     </div>
 
-    <div class="grid grid-cols-2 gap-2 mx-auto w-11/12">
+    <div class="grid grid-cols-2 gap-2 mx-auto w-11/12" v-if="!permissionError.enabled">
       <RouterLink to="/app/recargar" class="default-bar text-white text-center h-12 rounded p-2 mt-5 items-center grid">
         Recargar
       </RouterLink>
@@ -82,7 +88,11 @@ export default {
       recharges: [],
       fees: [],
       chargebacks: [],
-      transactions: []
+      transactions: [],
+      permissionError: {
+        enabled: false,
+        message: false,
+      }
     }
   },
   watch: {
@@ -106,6 +116,8 @@ export default {
         this.chargebacks = stats.chargeback;
         this.formatTransactions();
       } catch (error) {
+        this.permissionError.enabled = true;
+        this.permissionError.message = error;
         return emitAlert(error, 'error');
       }
     },

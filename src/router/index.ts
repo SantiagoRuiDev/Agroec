@@ -164,7 +164,7 @@ const routes: Array<RouteRecordRaw> = [
     meta: { requiresAuth: true },
   },
   {
-    path: "/app/multiusuarios/editar",
+    path: "/app/multiusuarios/editar/:identifier",
     component: () => import("@/views/User/Multieditar.vue"),
     meta: { requiresAuth: true },
   },

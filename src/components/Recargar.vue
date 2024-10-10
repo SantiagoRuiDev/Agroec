@@ -57,7 +57,7 @@
     </div>
 
     <button
-      @click="showModal"
+      @click="showModal" v-if="paymentMethod != 'TRANSFERENCIA'"
       class="default-bar md:w-1/4 text-white text-center h-12 rounded p-2 mx-auto w-5/6 mt-3"
     >
       Pagar

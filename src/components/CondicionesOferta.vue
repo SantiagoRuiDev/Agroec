@@ -91,31 +91,33 @@
         <input
           type="text"
           disabled
-          placeholder="Modo Garantía"
+          :placeholder="delivery.modo_pago"
           id="modopago"
           class="bg-transparent border p-2 rounded-md text-sm text-gray-600"
         />
       </div>
-      <div class="grid gap-1 mx-auto col-span-2 w-full mt-3">
+      <div class="grid gap-1 mx-auto col-span-2 w-full mt-3"
+          v-if="delivery.modo_pago == 'Modo Garantía'">
         <label for="pctajeinicial" class="text-gray-400 text-sm"
           >Porcentaje Inicial</label
         >
         <input
           type="text"
           disabled
-          placeholder="30%"
+          :placeholder="delivery.porcentaje_inicial"
           id="pctajeinicial"
           class="bg-transparent border p-2 rounded-md text-sm text-gray-600"
         />
       </div>
-      <div class="grid gap-1 mx-auto col-span-2 w-full mt-3">
+      <div class="grid gap-1 mx-auto col-span-2 w-full mt-3"
+          v-if="delivery.modo_pago == 'Modo Garantía'">
         <label for="pctajefinall" class="text-gray-400 text-sm"
           >Porcentaje Final</label
         >
         <input
           type="text"
           disabled
-          placeholder="70%"
+          :placeholder="delivery.porcentaje_final"
           id="pctajefinall"
           class="bg-transparent border p-2 rounded-md text-sm text-gray-600"
         />
@@ -127,7 +129,7 @@
           type="text"
           rows="3"
           disabled
-          placeholder="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Null vestibulum orci ligula. Proin eget lorem justo. Donec sodales urna vel imperdiet accumsan. "
+          :placeholder="delivery.notas"
           id="notas"
           class="bg-transparent border p-2 rounded-md text-sm text-gray-600"
         ></textarea>
@@ -137,7 +139,8 @@
         <label for="domicilio" class="text-gray-400 text-sm"
           >Precio es puesto en domicilio del cliente</label
         >
-        <input type="checkbox" id="domicilio" disabled />
+        <input type="checkbox" class="accent-[#a3e635]" v-if="delivery.precio_puesto_domicilio" :checked="true" disabled />
+        <input type="checkbox" class="accent-[#a3e635]" v-if="!delivery.precio_puesto_domicilio" :checked="false" disabled />
       </div>
     </div>
 
@@ -153,11 +156,13 @@
 <script setup>
 import event from "@/libs/event";
 
-const startIndex = 1;
 
 defineProps({
-  delivery: Object,
-});
+  delivery: {
+    type: Object,
+    required: true
+  }
+})
 
 const openPoliticas = () => {
   event.emit("openPoliticas");

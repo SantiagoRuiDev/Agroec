@@ -1,5 +1,6 @@
 <template>
-  <ion-footer class="shadow rounded-t-xl">
+  <ion-footer class="shadow rounded-t-xl relative">
+    <!--<NotificationButton></NotificationButton>-->
     <ion-toolbar class="shadow rounded-t-xl z-0">
       <div class="flex justify-evenly w-full h-12 items-center">
         <RouterLink to="/app/home">
@@ -49,10 +50,12 @@
 
 <script allowjs>
 import { IonFooter, IonToolbar } from "@ionic/vue"
+import NotificationButton from "./NotificationButton.vue";
 export default {
   components: {
     IonFooter,
     IonToolbar,
+    NotificationButton
   },
   methods: {
     showMenu() {

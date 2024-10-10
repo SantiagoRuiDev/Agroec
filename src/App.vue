@@ -8,6 +8,7 @@
 import { IonApp, IonRouterOutlet } from '@ionic/vue';
 import { emitAlert } from '@/libs/alert.js';
 import * as notificationService from './services/notification.service.js';
+import { getLatestNotificationToken, setLatestNotificationToken } from './libs/notification.js';
 export default {
   components: {
     IonApp,
@@ -30,7 +31,12 @@ export default {
   methods: {
     userIsSubscribed(){
       if(this.subscription_identifier != null && this.subscription_identifier != undefined){
-        return true;
+        if(getLatestNotificationToken() != this.subscription_identifier){
+          setLatestNotificationToken(this.subscription_identifier);
+          return true;
+        } else {
+          return false;
+        }
       }else {
         return false;
       }
