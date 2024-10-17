@@ -32,7 +32,7 @@
           </RouterLink>
 
           <div class="Order-Price text-right mt-2 justify-end flex items-center gap-1 grid-cols-2">
-            <RouterLink class="default-bar rounded-md p-2 h-8 w-8 grid items-center" :to="'/app/licitacion/editar/' + licitation.id_producto">
+            <RouterLink class="default-bar rounded-md p-2 h-8 w-8 grid items-center" :to="'/app/licitacion/editar/' + licitation.id_producto + '/' + licitation.id">
               <img src="@/assets/Licitaciones/Lapiz.svg" class="mx-auto" alt="Edit" />
             </RouterLink>
             <button class="bg-red-500 rounded-md p-2 h-8 w-8 grid items-center" @click="manageDeleteModal(licitation.id)">
@@ -71,7 +71,7 @@
           </RouterLink>
 
           <div class="Order-Price text-right mt-2 justify-end flex items-center gap-1 grid-cols-2">
-            <RouterLink class="default-bar rounded-md p-2 h-8 w-8 grid items-center" :to="'/app/licitacion/editar/' + licitation.id_producto">
+            <RouterLink class="default-bar rounded-md p-2 h-8 w-8 grid items-center" :to="'/app/licitacion/editar/' + licitation.id_producto  + '/' + licitation.id">
               <img src="@/assets/Licitaciones/Lapiz.svg" class="mx-auto" alt="Edit" />
             </RouterLink>
             <button class="bg-red-500 rounded-md p-2 h-8 w-8 grid items-center" @click="manageDeleteModal(licitation.id)">
@@ -110,7 +110,7 @@
           </RouterLink>
 
           <div class="Order-Price text-right mt-2 justify-end flex items-center gap-1 grid-cols-2">
-            <RouterLink class="default-bar rounded-md p-2 h-8 w-8 grid items-center" :to="'/app/licitacion/editar/' + licitation.id_producto">
+            <RouterLink class="default-bar rounded-md p-2 h-8 w-8 grid items-center" :to="'/app/licitacion/editar/' + licitation.id_producto  + '/' + licitation.id">
               <img src="@/assets/Licitaciones/Lapiz.svg" class="mx-auto" alt="Edit" />
             </RouterLink>
             <button class="bg-red-500 rounded-md p-2 h-8 w-8 grid items-center" @click="manageDeleteModal(licitation.id)">
@@ -152,7 +152,7 @@
           </RouterLink>
 
           <div class="Order-Price text-right mt-2 justify-end flex items-center gap-1 grid-cols-2">
-            <RouterLink class="default-bar rounded-md p-2 h-8 w-8 grid items-center" :to="'/app/licitacion/editar/' + licitation.id_producto">
+            <RouterLink class="default-bar rounded-md p-2 h-8 w-8 grid items-center" :to="'/app/licitacion/editar/' + licitation.id_producto  + '/' + licitation.id">
               <img src="@/assets/Licitaciones/Lapiz.svg" class="mx-auto" alt="Edit" />
             </RouterLink>
             <button class="bg-red-700 rounded-md p-2 h-8 w-8 grid items-center" @click="manageCloseModal(licitation.id)">

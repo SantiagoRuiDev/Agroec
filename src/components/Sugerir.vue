@@ -32,9 +32,9 @@
             class="text-gray-600"
             v-for="product in filteredList()"
             :key="product"
-            @click="setProduct(product)"
+            @click="setProduct(product.id)"
           >
-            {{ product }}
+            {{ product.nombre }}
           </p>
           <p class="text-gray-600" v-if="param && !filteredList().length">
             No hay resultados!
@@ -45,10 +45,11 @@
       <div class="grid relative w-5/6 mx-auto">
         <label for="listado" class="text-gray-500 font-bold w-full mx-auto">Cantidad a comprar</label>
         <input type="number" placeholder="Cantidad"
+          v-model="cantidad"
           class="w-full mx-auto bg-transparent border-2 border-gray-300 px-3 py-3 rounded-md text-gray-600">
       </div>
 
-      <button @click="showModal" type="button" class="py-3 px-5 default-bar mx-auto mt-3 w-2/3 rounded text-center">
+      <button @click="sendSuggestion" type="button" class="py-3 px-5 default-bar mx-auto mt-3 w-2/3 rounded text-center">
         Enviar
       </button>
     </form>
@@ -73,6 +74,8 @@
 
 <script allowJs>
 import { CModal, CModalBody } from "@coreui/vue";
+import * as suggestionService from '../services/suggestion.service.js';
+import { emitAlert } from "@/libs/alert.js";
 export default {
   components: {
     CModal,
@@ -85,10 +88,29 @@ export default {
       isActive: true,
       borders: true,
       paramSelected: false,
-      fruits: ["Aguacate", "Maiz", "Tomate", "Cacao", "Papa", "Arroz"],
+      cantidad: 0,
+      fruits: [],
     };
   },
+  async created() {
+    await this.getProducts();
+  },
   methods: {
+    async getProducts(){
+      try {
+        this.fruits = await suggestionService.getProducts();
+      } catch (error) {
+        emitAlert(error, 'error');
+      }
+    }, 
+    async sendSuggestion(){
+      try {
+        await suggestionService.sendSuggestion({producto: this.param, cantidad: this.cantidad});
+        this.showModal();
+      } catch (error) {
+        emitAlert(error, 'error');
+      }
+    },
     setProduct(product) {
       this.param = product;
       this.paramSelected = false;
@@ -96,7 +118,7 @@ export default {
     },
     filteredList() {
       return this.fruits.filter((fruit) =>
-        fruit.toLowerCase().includes(this.param.toLowerCase())
+        fruit.id.toLowerCase().includes(this.param.toLowerCase())
       );
     },
     checkParam() {

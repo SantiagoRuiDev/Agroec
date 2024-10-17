@@ -175,15 +175,14 @@ export default {
       this.licitation.presentacion_entrega = this.entrega + " de " + this.sacos;
 
       try {
-        const newLicitation = await licitacionService.createLicitation(this.$route.params.name, {
+        await licitacionService.createLicitation(this.$route.params.name, {
           licitation: this.licitation,
           quality_params: this.newParametros
         });
 
         this.visible = true
       } catch (error) {
-
-        emitAlert(error.error, "error");
+        emitAlert(error, "error");
       }
     },
     closeModal() {

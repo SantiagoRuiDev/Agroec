@@ -199,7 +199,7 @@ const routes: Array<RouteRecordRaw> = [
     meta: { requiresAuth: true },
   },
   {
-    path: "/app/licitacion/editar/:name",
+    path: "/app/licitacion/editar/:name/:id",
     component: () => import("@/views/User/LicitacionEditar.vue"),
     meta: { requiresAuth: true },
   },

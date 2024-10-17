@@ -57,27 +57,27 @@
     </div>
 
     <ion-segment value="buttons" class="tabs">
-      <ion-segment-button value="maiz" class="buttonmaiz">
+      <ion-segment-button value="maiz" class="buttonmaiz" @click="applySaleFilter('Maiz')">
         <ion-label class="text-gray-800">Maiz</ion-label>
       </ion-segment-button>
-      <ion-segment-button value="cacao" class="button">
+      <ion-segment-button value="cacao" class="button" @click="applySaleFilter('Cacao')">
         <ion-label class="text-gray-800">Cacao</ion-label>
       </ion-segment-button>
-      <ion-segment-button value="tomate" class="button">
+      <ion-segment-button value="tomate" class="button"  @click="applySaleFilter('Tomate')">
         <ion-label class="text-gray-800">Tomate</ion-label>
       </ion-segment-button>
-      <ion-segment-button value="maracuya" class="button">
+      <ion-segment-button value="maracuya" class="button"  @click="applySaleFilter('Maracuya')">
         <ion-label class="text-gray-800">Maracuya</ion-label>
       </ion-segment-button>
-      <ion-segment-button value="arroz" class="button">
+      <ion-segment-button value="arroz" class="button"  @click="applySaleFilter('Arroz')">
         <ion-label class="text-gray-800">Arroz</ion-label>
       </ion-segment-button>
-      <ion-segment-button value="polvillo" class="button">
+      <ion-segment-button value="polvillo" class="button"  @click="applySaleFilter('Pólvillo')">
         <ion-label class="text-gray-800">Pólvillo</ion-label>
       </ion-segment-button>
     </ion-segment>
     <div class="content-cards grid grid-cols-2 md:grid-cols-4 gap-2 items-center" v-if="user">
-      <div class="flex gap-1" v-for="sale in user.sales" :key="sale">
+      <div class="flex gap-1" v-for="sale in filteredSales" :key="sale">
         <img :src="sale.producto_imagen" alt="Incoming Message Profile Icon" class="h-24 w-24 p-1 rounded-lg" />
 
         <div class="grid items-center justify-start py-2">
@@ -124,12 +124,17 @@ export default {
   },
   data() {
     return {
-      user: null
+      user: null,
+      filteredSales: []
     }
   },
   methods: {
     async getProfile() {
       this.user = await profileService.getProfileByIdentifier(this.$route.params.identifier);
+      this.filteredSales = this.user.sales;
+    },
+    applySaleFilter(filter){
+      this.filteredSales = Array(...this.user.sales).filter(sale => sale.id_producto == filter);
     }
   },
   created: async function () {

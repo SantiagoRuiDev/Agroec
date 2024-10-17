@@ -6,8 +6,9 @@
         <div class="relative">
           <label for="provincia" class="text-gray-500 font-bold w-full mx-auto">Provincia</label>
           <select id="provincia" v-model="ProvinciaSelected" @change="handleCantones"
+
             class="w-full mx-auto bg-transparent border-2 input-container p-2 rounded-md text-gray-600">
-            <option :value="Provincia.id" v-for="Provincia in Provincias" :key="Provincia.id">{{ Provincia.nombre }}
+            <option :value="Provincia" v-for="Provincia in Provincias" :key="Provincia.id">{{ Provincia.nombre }}
             </option>
           </select>
         </div>
@@ -16,8 +17,9 @@
         <div class="relative">
           <label for="canton" class="text-gray-500 font-bold w-full mx-auto">Cantón</label>
           <select id="canton" v-model="CantonSelected"
+            @change="applyFilterProvinciaCanton"
             class="w-full mx-auto bg-transparent border-2 input-container p-2 rounded-md text-gray-600">
-            <option :value="Canton.ID" v-for="Canton in Cantones" :key="Canton.ID">{{ Canton.Nombre }}</option>
+            <option :value="Canton" v-for="Canton in Cantones" :key="Canton.ID">{{ Canton.Nombre }}</option>
           </select>
         </div>
       </div>
@@ -38,14 +40,14 @@
       </div>
     </div>
 
-    <div class="grid gap-1" v-if="sales.length > 0">
-      <div class="tutorial-card w-full shadow-md p-2" v-for="sale in sales">
+    <div class="grid gap-1" v-if="filteredSales.length > 0">
+      <div class="tutorial-card w-full shadow-md p-2" v-for="sale in filteredSales">
         <div class="w-11/12 mx-auto flex gap-3 justify-between">
           <div class="inline-flex gap-4">
             <RouterLink :to="'/app/vendedor/' + sale.id_usuario"
               class="Profile grid items-center text-center justify-center w-16">
               <ProfileIcon :profile="sale.tipo_perfil" :height="true" :weight="false"></ProfileIcon>
-              <Qualification :average="sale.promedio_calificacion"></Qualification>
+              <Qualification :average="Number(sale.promedio_calificacion)"></Qualification>
             </RouterLink>
 
             <RouterLink :to="'/sale/' + Item + '/' + sale.id" class="Profile-Text w-36 md:w-48">
@@ -58,7 +60,7 @@
 
           <RouterLink :to="'/sale/' + Item + '/' + sale.id" class="Profile-Text text-right w-full">
             <h1 class="text-yellow-400 text-md font-bold">${{ sale.precio }}</h1>
-            <p class="text-yellow-400 text-md font-bold">Humedad 14-17%</p>
+            <p class="text-yellow-400 text-md font-bold">{{sale.nombre_parametro_calidad}} {{sale.min_parametro_calidad}}-{{sale.max_parametro_calidad}}%</p>
           </RouterLink>
         </div>
       </div>
@@ -83,7 +85,7 @@
             <div class="grid grid-cols-2 items-center mb-2 w-full text-sm" v-for="option in options"
               :key="option.value">
               <input type="checkbox" :id="option.name" class="checkbox" v-model="comercianteType"
-                :value="option.value" />
+                :value="option.value" @change="applyFilterTipoComerciante"/>
               <label :for="option.name" class="text-gray-600">{{
                 option.name
               }}</label>
@@ -126,7 +128,7 @@ export default {
         { name: "Comerciante", value: "Comerciante" },
         { name: "Asociación de Agricultor", value: "Asociación de Agricultor" },
       ],
-
+      filteredSales: [],
       sales: []
     };
   },
@@ -139,11 +141,26 @@ export default {
     },
     handleCantones() {
       this.Cantones = Cantones.filter(
-        (canton) => canton.Provincia_ID == this.ProvinciaSelected
+        (canton) => canton.Provincia_ID == this.ProvinciaSelected.id
       );
+      this.applyFilterProvincia();
+    },
+    applyFilterProvincia(){
+      this.filteredSales = this.sales.filter(sale => sale.provincia == this.ProvinciaSelected.nombre);
+    },
+    applyFilterProvinciaCanton(){
+      this.filteredSales = this.sales.filter(sale => sale.provincia == this.ProvinciaSelected.nombre && sale.canton == this.CantonSelected.Nombre);
+    },
+    applyFilterTipoComerciante(){
+      if(this.comercianteType.length == 0){
+        this.filteredSales = this.sales;
+        return;
+      }
+      this.filteredSales = this.sales.filter(sale => this.comercianteType.includes(sale.tipo_perfil));
     },
     async getSales() {
       this.sales = await saleService.getSalesByProduct(this.$route.params.name);
+      this.filteredSales = this.sales;
     }
   },
   created: async function () {

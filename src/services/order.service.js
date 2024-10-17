@@ -1,5 +1,25 @@
 import instance from "../libs/axios.js";
 
+export const generateOrderPdf = async (id) => {
+  try {
+    const { data } = await instance.get("/orders/pdf/" + id, {
+      withCredentials: true,
+      responseType: 'blob'  // Esto es importante para recibir el PDF como blob
+    });
+
+     // Crear un objeto blob con los datos recibidos
+     const pdfBlob = new Blob([data], { type: 'application/pdf' });
+
+     // Crear un enlace temporal para descargar el archivo
+     const link = document.createElement('a');
+     link.href = window.URL.createObjectURL(pdfBlob);
+     link.download = `order_${id}.pdf`;  // Nombre del archivo descargado
+     link.click();  // Forzar clic para iniciar la descarga
+    return data;
+  } catch (error) {
+    throw new Error(error.response.data.error);
+  }
+};
 export const getOrders = async () => {
   try {
     const { data } = await instance.get("/orders/me", {

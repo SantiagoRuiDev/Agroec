@@ -18,6 +18,14 @@ export const getLicitations = async () => {
     }
 }
 
+export const getLicitationById = async (id) => {
+    try {
+        const {data} = await instance.get('/licitation/' + id, { withCredentials: true })
+        return data;
+    } catch (error) {
+        throw new Error(error.response.data.error)
+    }
+}
 
 export const getLicitationsByUserAndProduct = async (product_id) => {
     try {
