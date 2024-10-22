@@ -52,12 +52,17 @@
         </div>
       </div>
     </div>
-    <div class="grid gap-1 max-h-96 overflow-y-scroll" v-else>
+    <div class="grid gap-1 max-h-96 overflow-y-scroll" v-if="permissionError.enabled">
       <div class="mx-auto w-full grid gap-5 text-black justify-items-center">
         <h1 class="font-bold text-2xl opacity-65 text-center">{{permissionError.message}}</h1>
         <RouterLink to="/app/home" class="default-bar text-center text-white rounded-md p-2">
           Volver al inicio
         </RouterLink>
+      </div>
+    </div>
+    <div class="grid gap-1 max-h-96 overflow-y-scroll p-4" v-if="!permissionError.enabled && transactions.length == 0">
+      <div class="mx-auto w-full grid gap-5 text-black justify-items-center">
+        <h1 class="font-bold text-2xl opacity-65 text-center">No encontramos movimientos en tu billetera</h1>
       </div>
     </div>
 

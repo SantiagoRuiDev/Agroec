@@ -65,7 +65,7 @@
         </div>
       </div>
     </div>
-    <div class="grid gap-1 items-center min-h-64" v-if="sales.length == 0">
+    <div class="grid gap-1 items-center min-h-64" v-if="filteredSales.length == 0">
       <div class="mx-auto w-full grid gap-5 text-black justify-items-center">
         <h1 class="font-bold text-2xl opacity-65 text-center">No tenemos propuestas disponibles de {{ Item }}</h1>
         <RouterLink to="/app/market" class="default-bar text-center text-white rounded-md p-2">

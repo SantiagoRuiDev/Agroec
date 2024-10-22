@@ -29,7 +29,7 @@
         <select name="unidadCantidad" v-model="schema.cantidad_unidad"
           class="w-full mx-auto bg-gray-50 border p-2 rounded-md text-gray-600">
           <option value="QQ" selected class="text-gray-600">QQ</option>
-          <option value="QQ" class="text-gray-600">KG</option>
+          <option value="KG" class="text-gray-600">KG</option>
         </select>
       </div>
       <div class="form-input grid gap-1">
