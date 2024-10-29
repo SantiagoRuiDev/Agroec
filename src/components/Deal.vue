@@ -31,7 +31,7 @@
         <p>{{sale.cantidad}} {{sale.cantidad_unidad}}</p>
         <p>{{ sale.provincia }}, {{ sale.canton }}</p>
         <p>{{sale.presentacion_entrega}}</p>
-        <p>{{sale.fecha_entrega.slice(0,10)}}</p>
+        <p>{{formatDateTime(sale.fecha_entrega).plainDate}}</p>
       </div>
     </div>
 
@@ -60,6 +60,7 @@
 <script>
 import Slider from '@/components/SliderImage.vue';
 import * as saleService from '../services/sale.service.js';
+import { formatDateTime } from '@/libs/date.js';
 export default {
   name: 'Home',
   components: {
@@ -74,6 +75,9 @@ export default {
   methods: {
     async getSale(){
       this.sale = await saleService.getSaleByIdentifier(this.$route.params.identifier, this.$route.params.name);
+    },
+    formatDateTime(x){
+      return formatDateTime(x)
     }
   },
   created: async function () {

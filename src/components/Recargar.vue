@@ -48,7 +48,7 @@
             <li class="text-gray-700">
               Contacta con área financiera vía WhatsApp
               <a href="wa.link/10nq8r" class="font-bold" target="_blank"
-                >+593 28839234</a
+                >+593 96 319 5377</a
               >
             </li>
           </div>

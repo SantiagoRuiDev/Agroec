@@ -17,7 +17,7 @@
       </button>
     </div>
     
-    <div class="grid gap-1">
+    <div class="grid gap-1" v-if="filteredOrders.length > 0">
       <RouterLink :to="'/order/' + order.id" v-for="order in filteredOrders" :key="order.id">
         <div class="order-card flex md:grid md:grid-cols-2 gap-3 shadow-md p-2">
           <div class="flex w-full gap-3">
@@ -49,7 +49,13 @@
           </div>
         </div>
       </RouterLink>
-
+    </div>
+    
+    <div v-if="filteredOrders.length==0 && !contentLoading" class="grid p-3">
+      <h1 class="font-bold text-xl opacity-65 text-center text-zinc-900">No encontramos ordenes {{ (status_filter) ? 'activas' : 'en historial' }} de {{ product_filter }}</h1>
+    </div>
+    <div class="p-3" v-if="contentLoading && filteredOrders.length == 0">
+      <Spinner></Spinner>
     </div>
   </div>
 
@@ -63,6 +69,7 @@
 import { emitAlert } from "@/libs/alert.js";
 import * as orderService from '../services/order.service.js';
 import { formatWalletDate } from "@/libs/date.js";
+import Spinner from './Spinner.vue';
 export default {
   props: {
     product_filter: {
@@ -74,11 +81,15 @@ export default {
       required: true
     }
   },
+  components: {
+    Spinner,
+  },
   data() {
     return {
       orders: [],
       filteredOrders: [],
-      filter: ""
+      filter: "",
+      contentLoading: false
     };
   },
   created: async function () {
@@ -122,9 +133,11 @@ export default {
     },
     async getMyOrders() {
       try {
+        this.contentLoading = true;
         this.orders = await orderService.getOrders();
         this.filterByIdentifier();
         this.filterByProduct();
+        this.contentLoading = false;
       } catch (error) {
         return emitAlert(error, "error");
       }

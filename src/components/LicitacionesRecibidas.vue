@@ -2,9 +2,10 @@
   <div class="content w-full mx-auto grid my-2 gap-2">
     <div class="grid gap-1">
 
-      <div class="tutorial-card w-full p-2 gap-2 grid" v-if="proposals.length > 0">
-        <div class="w-11/12 mx-auto flex gap-3 justify-between" v-for="proposal in proposals" :key="proposal">
-          <RouterLink class="message-incoming flex gap-2 w-full" :to="'/chat/licitacion/' + proposal.id_producto + '/' + proposal.chat_id">
+      <div class="tutorial-card w-full p-2 gap-2 grid" v-if="filteredProposals.length > 0">
+        <div class="w-11/12 mx-auto flex gap-3 justify-between" v-for="proposal in filteredProposals" :key="proposal">
+          <RouterLink class="message-incoming flex gap-2 w-full"
+            :to="'/chat/licitacion/' + proposal.id_producto + '/' + proposal.chat_id">
             <div class="grid gap-2 justify-center items-end text-center text-gray-700 text-sm max-w-16">
               <ProfileIcon :profile="proposal.tipo_perfil" :height="true" :weight="true"></ProfileIcon>
             </div>
@@ -18,7 +19,8 @@
                 <p class="text-sm text-gray-800 font-bold">
                   {{ proposal.lastMessage.texto }}
                 </p>
-                <span class="text-gray-700 text-xs justify-self-end hour-text">Hoy
+                <span class="text-gray-700 text-xs justify-self-end hour-text">{{
+                  formatDateTime(proposal.lastMessage.fecha).whenMessageSent }}
                   {{ formatDateTime(proposal.lastMessage.fecha).time }}</span>
               </div>
               <div class="message-content incoming-chat rounded-md p-2 w-full grid"
@@ -26,7 +28,8 @@
                 <p class="text-sm text-gray-800">
                   {{ proposal.lastMessage.texto }}
                 </p>
-                <span class="text-gray-700 text-xs justify-self-end hour-text">Hoy
+                <span class="text-gray-700 text-xs justify-self-end hour-text">{{
+                  formatDateTime(proposal.lastMessage.fecha).whenMessageSent }}
                   {{ formatDateTime(proposal.lastMessage.fecha).time }}</span>
               </div>
               <div class="message-content incoming-chat rounded-md p-2 w-full grid" v-if="!proposal.lastMessage">
@@ -66,11 +69,13 @@ export default {
   data() {
     return {
       products: [],
-      proposals: []
+      proposals: [],
+      filteredProposals: []
     };
   },
   props: {
-    Item: String
+    Item: String,
+    status_filter: String
   },
   components: {
     ProfileIcon
@@ -84,12 +89,26 @@ export default {
         return;
       }
       await this.getSaleProposals();  // Se ejecuta cada vez que el parámetro cambia
+    },
+    status_filter: function (newVal, oldVal) {
+      this.filterByStatus();
     }
   },
   methods: {
+    filterByStatus() {
+      if(this.status_filter == 'Recibida'){
+        this.filteredProposals = this.proposals.filter((proposal) => proposal.estado_comprador == this.status_filter)
+      } else if (this.status_filter == 'Aceptada') {
+        this.filteredProposals = this.proposals.filter((proposal) => proposal.estado_comprador == this.status_filter)
+      } else {
+        this.filteredProposals = this.proposals.filter((proposal) => proposal.estado_comprador == 'Aceptada' && proposal.estado_vendedor == 'Aceptada');
+      }
+    },
     async getSaleProposals() {
       try {
         this.proposals = await proposalService.getSaleProposalsByUserAndProduct(this.$route.params.product);
+        this.filteredProposals = this.proposals;
+        this.filterByStatus();
       } catch (error) {
         return emitAlert(error.message, "error");
       }

@@ -1,42 +1,84 @@
 <template>
   <div v-if="!details" class="content w-11/12 mx-auto grid mb-5 gap-4 min-h-full">
-    <div class="mt-2 mx-auto message-wrap md:w-full overflow-y-scroll max-h-[28rem]">
-      <div class="messages grid gap-3 p-2 md:w-5/6 mx-auto" v-if="messages.length > 0">
-        <div class="w-2/3 sm:w-1/2 mx-auto grid items-center text-center bg-gray-100 rounded-lg md:w-1/3">
-          <span class="p-2 text-sm text-gray-500 font-bold">12 de diciembre de 2024</span>
-        </div>
-        <div class="" v-for="message in messages" :key="message">
-          <div class="flex gap-2 items-center" :class="{
-            'message-incoming': chat.user_logged != message.id_remitente,
-            'message-outgoing': chat.user_logged == message.id_remitente
-          }">
-            <ProfileIcon :profile="chat.tipo_perfil" :height="true" :weight="false"
-              v-if="chat.user_logged != message.id_remitente"></ProfileIcon>
-            <div class="w-full">
-              <div class="message-content rounded-md p-2 w-full grid" :class="{
-                'incoming-chat': chat.user_logged != message.id_remitente,
-                'outgoing-chat': chat.user_logged == message.id_remitente
-              }">
-                <p class="text-sm text-gray-800 w-11/12">
-                  {{ message.texto }}
-                </p>
+    <div class="mt-2 mx-auto message-wrap md:w-full overflow-auto max-h-[28rem]" ref="messagesContainer">
 
-                <span class="text-gray-700 text-sm justify-self-end hour-text">{{
-                  formatDateTime(message.fecha).time }}</span>
-              </div>
-            </div>
-            <img src="@/assets/People/Aso.svg" alt="Outgoing Message Profile Icon" class="h-16 w-16"
-              v-if="chat.user_logged == message.id_remitente" />
-          </div>
+      <div class="grid gap-2 p-2 md:w-5/6 rounded-md bg-lime-100 text-lime-900" v-if="conditions && !(conditions.estado_vendedor == 'Aceptada' && conditions.estado_comprador == 'Aceptada')">
+        <h1 class="font-bold">Nueva Propuesta</h1>
+        <div class="inline-flex gap-2 items-center">
+          <img :src="conditions.imagen" alt="Producto Imagen" class="h-6 w-6">
+          <h2 class="">{{ conditions.cantidad_propuesta }} {{ conditions.cantidad_unidad_propuesta }} de {{
+            conditions.id_producto }} por ${{ conditions.precio_propuesta }}/{{ conditions.precio_unidad_propuesta }}
+          </h2>
+        </div>
+        <div class="inline-flex gap-2 items-center">
+          <img src="../assets/Event.svg" alt="Calendario Imagen" class="h-6 w-6">
+          <p>Fecha limite/entrega: {{ formatDateTime(conditions.fecha_limite).plainDate }}</p>
+        </div>
+        <div class="inline-flex gap-2 items-center">
+          <img src="../assets/Sack.svg" alt="Saco Imagen" class="h-6 w-6">
+          <p>Presentación: {{ conditions.presentacion_propuesta }}</p>
+        </div>
+        <div class="inline-flex gap-2 items-center">
+          <img src="../assets/Pago.svg" alt="Metodo pago Imagen" class="h-6 w-6">
+          <h2 class="uppercase font-bold">TOTAL NEGOCIADO</h2>
+          <p>${{ conditions.cantidad_propuesta * conditions.precio_propuesta }}</p>
         </div>
       </div>
-      <div v-else class="grid items-center h-[16rem]">
-        <h1 class="text-gray-800 opacity-70 text-center font-bold text-2xl">No hay mensajes recientes</h1>
+      <div class="grid gap-2 p-2 md:w-5/6 rounded-md bg-lime-100 text-lime-900" v-else>
+        <h1 class="font-bold">Condiciones Negociadas</h1>
+        <div class="inline-flex gap-2 items-center">
+          <img :src="conditions.imagen" alt="Producto Imagen" class="h-6 w-6">
+          <h2 class="">{{ conditions.cantidad }} {{ conditions.cantidad_unidad }} de {{
+            conditions.id_producto }} por ${{ conditions.precio }}/{{ conditions.precio_unidad }}
+          </h2>
+        </div>
+        <div class="inline-flex gap-2 items-center">
+          <img src="../assets/Event.svg" alt="Calendario Imagen" class="h-6 w-6">
+          <p>Fecha limite/entrega: {{ formatDateTime(conditions.fecha_limite).plainDate }}</p>
+        </div>
+        <div class="inline-flex gap-2 items-center">
+          <img src="../assets/Sack.svg" alt="Saco Imagen" class="h-6 w-6">
+          <p>Presentación: {{ conditions.presentacion_propuesta }}</p>
+        </div>
+        <div class="inline-flex gap-2 items-center">
+          <img src="../assets/Pago.svg" alt="Metodo pago Imagen" class="h-6 w-6">
+          <h2 class="uppercase font-bold">TOTAL NEGOCIADO</h2>
+          <p>${{ conditions.cantidad * conditions.precio }}</p>
+        </div>
+      </div>
+      <div class="messages grid gap-3 p-2 md:w-5/6 mx-auto" v-for="(message, index) in messages" :key="message.id">
+        <!-- Resto del contenido del chat -->
+        <div v-if="shouldShowDateDivider(index)"
+          class="w-2/3 sm:w-1/2 mx-auto grid items-center text-center bg-gray-100 rounded-lg md:w-1/3">
+          <span class="p-2 text-sm text-gray-500 font-bold">{{ formatDate(message.fecha) }}</span>
+        </div>
+        <div class="flex gap-2 items-center" :class="{
+          'message-incoming': chat.user_logged != message.id_remitente,
+          'message-outgoing': chat.user_logged == message.id_remitente
+        }">
+          <ProfileIcon :profile="chat.tipo_perfil" :height="true" :weight="false"
+            v-if="chat.user_logged != message.id_remitente"></ProfileIcon>
+          <div class="w-full">
+            <div class="message-content rounded-md p-2 w-full grid" :class="{
+              'incoming-chat': chat.user_logged != message.id_remitente,
+              'outgoing-chat': chat.user_logged == message.id_remitente
+            }">
+              <p class="text-sm text-gray-800 w-11/12">
+                {{ message.texto }}
+              </p>
+
+              <span class="text-gray-700 text-sm justify-self-end hour-text">{{
+                formatDateTime(message.fecha).time }}</span>
+            </div>
+          </div>
+          <img src="@/assets/People/Aso.svg" alt="Outgoing Message Profile Icon" class="h-16 w-16"
+            v-if="chat.user_logged == message.id_remitente" />
+        </div>
       </div>
     </div>
 
-    <div class="grid gap-3 items-center md:w-3/4 mx-auto">
-      <div class="flex justify-between mx-auto w-full gap-3 h-full items-end">
+    <div class="grid gap-3 md:w-3/4 mx-auto">
+      <div class="flex justify-between mx-auto w-full gap-3 h-full items-end" v-if="conditions.estado_comprador != 'Aceptada' && conditions.estado_vendedor != 'Aceptada'">
         <button class="bg-red-400 px-2 py-1 w-1/2 h-8 rounded-md shadow-md color-white text-xs"
           @click="manageRechazoModal">
           Rechazar
@@ -82,7 +124,7 @@
       <div class="grid" v-else>
         <div class="message-form self-center relative bg-gray-200 h-12 rounded-md">
           <input type="text" v-model="messageInput" class="w-11/12 h-12 outline-none bg-transparent p-3 text-gray-500"
-            placeholder="Responder"/>
+            placeholder="Responder" />
           <button class="absolute right-2 top-1/2 transform -translate-y-1/2" @click="sendMessage">
             <img src="@/assets/Send.svg" alt="Send Message" class="h-4 w-4 " />
           </button>
@@ -97,7 +139,8 @@
   </div>
 
   <div v-if="details" class="content w-min-screen mx-auto grid my-3 gap-3">
-    <ConditionOverview :conditions="conditions" :condition_quality_params="quality_params" :condition_deliveries="deliveries"></ConditionOverview>
+    <ConditionOverview :conditions="conditions" :condition_quality_params="quality_params"
+      :condition_deliveries="deliveries"></ConditionOverview>
   </div>
 
   <CModal alignment="center" :visible="visible" @close="closeModal">
@@ -164,7 +207,7 @@
 import Event from "../libs/event.js";
 import { CModal, CModalBody } from "@coreui/vue";
 import { formatDateTime } from '../libs/date.js'
-import { socket } from '../socket/socket.js'
+import { initializeSocket, socket } from '../socket/socket.js'
 import * as chatService from '../services/chat.service.js';
 import * as proposalService from '../services/proposal.service.js';
 import { IonIcon, IonSegment, IonLabel, IonSegmentButton } from "@ionic/vue";
@@ -204,6 +247,7 @@ export default {
 
       quality_params: [],
 
+      lastDate: null,
       conditions: {
         id: "",
         precio: "",
@@ -234,6 +278,8 @@ export default {
     };
   },
   async created() {
+    await initializeSocket();
+    this.scrollToBottom(); // Para asegurar que inicia en la parte inferior
     Event.on("close-details", () => {
       this.closeDetails();
     });
@@ -255,7 +301,30 @@ export default {
       emitAlert(data, 'error');
     })
   },
+  watch: {
+    messages() {
+      this.scrollToBottom();
+    }
+  },
   methods: {
+    shouldShowDateDivider(index) {
+      const messageDate = this.formatDate(this.messages[index].fecha);
+      if (index === 0 || this.formatDate(this.messages[index - 1].fecha) !== messageDate) {
+        this.lastDate = messageDate;
+        return true;
+      }
+      return false;
+    },
+    formatDate(dateString) {
+      const options = { day: 'numeric', month: 'long', year: 'numeric' };
+      return new Date(dateString).toLocaleDateString('es-ES', options);
+    },
+    scrollToBottom() {
+      this.$nextTick(() => {
+        const container = this.$refs.messagesContainer;
+        container.scrollTop = container.scrollHeight;
+      });
+    },
     formatDateTime(x) {
       return formatDateTime(x)
     },
@@ -268,7 +337,7 @@ export default {
       }
     },
     async getChatConditions() {
-      const {condition, deliveries, quality_params} = await chatService.getChatConditions(this.$route.params.identifier);
+      const { condition, deliveries, quality_params } = await chatService.getChatConditions(this.$route.params.identifier);
       this.deliveries = deliveries;
       this.conditions = condition;
       this.quality_params = quality_params;

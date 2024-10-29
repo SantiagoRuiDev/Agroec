@@ -43,14 +43,14 @@
     <div class="grid gap-1" v-if="filteredSales.length > 0">
       <div class="tutorial-card w-full shadow-md p-2" v-for="sale in filteredSales">
         <div class="w-11/12 mx-auto flex gap-3 justify-between">
-          <div class="inline-flex gap-4">
+          <div class="inline-flex gap-4 justify-between">
             <RouterLink :to="'/app/vendedor/' + sale.id_usuario"
               class="Profile grid items-center text-center justify-center w-16">
               <ProfileIcon :profile="sale.tipo_perfil" :height="true" :weight="false"></ProfileIcon>
               <Qualification :average="Number(sale.promedio_calificacion)"></Qualification>
             </RouterLink>
 
-            <RouterLink :to="'/sale/' + Item + '/' + sale.id" class="Profile-Text w-36 md:w-48">
+            <RouterLink :to="'/sale/' + Item + '/' + sale.id" class="Profile-Text">
               <h1 class="text-gray-600 text-sm font-bold">{{sale.tipo_perfil}}</h1>
               <p class="text-gray-500 text-xs">{{ sale.provincia }} / {{ sale.canton }}</p>
               <p class="text-gray-500 text-xs">Cant: {{ sale.cantidad }}{{ sale.cantidad_unidad }}</p>
@@ -58,7 +58,7 @@
             </RouterLink>
           </div>
 
-          <RouterLink :to="'/sale/' + Item + '/' + sale.id" class="Profile-Text text-right w-full">
+          <RouterLink :to="'/sale/' + Item + '/' + sale.id" class="Profile-Text text-right  w-1/4">
             <h1 class="text-yellow-400 text-md font-bold">${{ sale.precio }}</h1>
             <p class="text-yellow-400 text-md font-bold">{{sale.nombre_parametro_calidad}} {{sale.min_parametro_calidad}}-{{sale.max_parametro_calidad}}%</p>
           </RouterLink>

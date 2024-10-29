@@ -17,7 +17,7 @@
                 <p class="text-sm text-gray-800 font-bold">
                   {{ proposal.lastMessage.texto }}
                 </p>
-                <span class="text-gray-700 text-xs justify-self-end hour-text">Hoy
+                <span class="text-gray-700 text-xs justify-self-end hour-text">{{ formatDateTime(proposal.lastMessage.fecha).whenMessageSent }}
                   {{ formatDateTime(proposal.lastMessage.fecha).time }}</span>
               </div>
               <div class="message-content incoming-chat rounded-md p-2 w-full grid"
@@ -25,7 +25,7 @@
                 <p class="text-sm text-gray-800">
                   {{ proposal.lastMessage.texto }}
                 </p>
-                <span class="text-gray-700 text-xs justify-self-end hour-text">Hoy
+                <span class="text-gray-700 text-xs justify-self-end hour-text">{{ formatDateTime(proposal.lastMessage.fecha).whenMessageSent }}
                   {{ formatDateTime(proposal.lastMessage.fecha).time }}</span>
               </div>
               <div class="message-content incoming-chat rounded-md p-2 w-full grid" v-if="!proposal.lastMessage">

@@ -1,37 +1,33 @@
 <template>
   <div v-if="!details" class="content w-11/12 mx-auto grid mb-5 gap-4 min-h-full">
-    <div class="mt-2 mx-auto message-wrap md:w-full max-h-[28rem]">
-      <div class="messages grid gap-3 p-2 md:w-5/6 mx-auto" v-if="messages.length > 0">
-        <div class="w-2/3 sm:w-1/2 mx-auto grid items-center text-center bg-gray-100 rounded-lg md:w-1/3">
-          <span class="p-2 text-sm text-gray-500 font-bold">12 de diciembre de 2024</span>
+    <div class="mt-2 mx-auto message-wrap md:w-full overflow-auto max-h-[28rem]" ref="messagesContainer">
+      <div class="messages grid gap-3 p-2 md:w-5/6 mx-auto" v-for="(message, index) in messages" :key="message.id">
+        <div v-if="shouldShowDateDivider(index)"
+          class="w-2/3 sm:w-1/2 mx-auto grid items-center text-center bg-gray-100 rounded-lg md:w-1/3">
+          <span class="p-2 text-sm text-gray-500 font-bold">{{ formatDate(message.fecha) }}</span>
         </div>
-        <div class="" v-for="message in messages" :key="message">
-          <div class="flex gap-2 items-center" :class="{
-            'message-incoming': chat.user_logged != message.id_remitente,
-            'message-outgoing': chat.user_logged == message.id_remitente
-          }">
-            <ProfileIcon :profile="chat.tipo_perfil" :height="true" :weight="false"
-              v-if="chat.user_logged != message.id_remitente"></ProfileIcon>
-            <div class="w-full">
-              <div class="message-content rounded-md p-2 w-full grid" :class="{
-                'incoming-chat': chat.user_logged != message.id_remitente,
-                'outgoing-chat': chat.user_logged == message.id_remitente
-              }">
-                <p class="text-sm text-gray-800 w-11/12">
-                  {{ message.texto }}
-                </p>
+        <div class="flex gap-2 items-center" :class="{
+          'message-incoming': chat.user_logged != message.id_remitente,
+          'message-outgoing': chat.user_logged == message.id_remitente
+        }">
+          <ProfileIcon :profile="chat.tipo_perfil" :height="true" :weight="false"
+            v-if="chat.user_logged != message.id_remitente"></ProfileIcon>
+          <div class="w-full">
+            <div class="message-content rounded-md p-2 w-full grid" :class="{
+              'incoming-chat': chat.user_logged != message.id_remitente,
+              'outgoing-chat': chat.user_logged == message.id_remitente
+            }">
+              <p class="text-sm text-gray-800 w-11/12">
+                {{ message.texto }}
+              </p>
 
-                <span class="text-gray-700 text-sm justify-self-end hour-text">{{
-                  formatDateTime(message.fecha).time }}</span>
-              </div>
+              <span class="text-gray-700 text-sm justify-self-end hour-text">{{
+                formatDateTime(message.fecha).time }}</span>
             </div>
-            <img src="@/assets/People/Aso.svg" alt="Outgoing Message Profile Icon" class="h-16 w-16"
-              v-if="chat.user_logged == message.id_remitente" />
           </div>
+          <img src="@/assets/People/Aso.svg" alt="Outgoing Message Profile Icon" class="h-16 w-16"
+            v-if="chat.user_logged == message.id_remitente" />
         </div>
-      </div>
-      <div v-else class="grid items-center h-[16rem]">
-        <h1 class="text-gray-800 opacity-70 text-center font-bold text-2xl">No hay mensajes recientes</h1>
       </div>
     </div>
 
@@ -78,7 +74,7 @@
           </ion-segment>
         </div>
         <div class="grid" v-if="entregasSelect">
-          <RouterLink to="/status" v-for="delivery in deliveries.filter(del => del.estado == 'Aceptado')"
+          <RouterLink :to="'/order/' + delivery.id_orden" v-for="delivery in deliveries.filter(del => del.estado == 'Aceptado')"
             :key="delivery">
             <div class="order-card flex md:grid md:grid-cols-2 gap-3 p-2">
               <div class="flex w-full gap-3">
@@ -106,7 +102,7 @@
 
         </div>
         <div class="grid" v-if="!entregasSelect">
-          <RouterLink to="/status" v-for="delivery in deliveries.filter(del => del.estado != 'Aceptado')"
+          <RouterLink :to="'/order/' + delivery.id_orden" v-for="delivery in deliveries.filter(del => del.estado != 'Aceptado')"
             :key="delivery">
             <div class="order-card flex md:grid md:grid-cols-2 gap-3 p-2">
               <div class="flex w-full gap-3">
@@ -159,7 +155,7 @@
 import Event from "../libs/event.js";
 import { CModal, CModalBody } from "@coreui/vue";
 import { formatDateTime, formatWalletDate } from '../libs/date.js'
-import { socket } from '../socket/socket.js'
+import { initializeSocket, socket } from '../socket/socket.js'
 import * as chatService from '../services/chat.service.js';
 import * as proposalService from '../services/proposal.service.js';
 import { IonIcon, IonSegment, IonLabel, IonSegmentButton } from "@ionic/vue";
@@ -215,6 +211,7 @@ export default {
         precio_puesto_domicilio: 0
       },
 
+      lastDate: null,
       deliveries: [],
 
       chat: {
@@ -230,6 +227,8 @@ export default {
     };
   },
   async created() {
+    await initializeSocket();
+    this.scrollToBottom(); // Para asegurar que inicia en la parte inferior
     Event.on("close-details", () => {
       this.closeDetails();
     });
@@ -251,7 +250,30 @@ export default {
       emitAlert(data, 'error');
     })
   },
+  watch: {
+    messages() {
+      this.scrollToBottom();
+    }
+  },
   methods: {
+    shouldShowDateDivider(index) {
+      const messageDate = this.formatDate(this.messages[index].fecha);
+      if (index === 0 || this.formatDate(this.messages[index - 1].fecha) !== messageDate) {
+        this.lastDate = messageDate;
+        return true;
+      }
+      return false;
+    },
+    formatDate(dateString) {
+      const options = { day: 'numeric', month: 'long', year: 'numeric' };
+      return new Date(dateString).toLocaleDateString('es-ES', options);
+    },
+    scrollToBottom() {
+      this.$nextTick(() => {
+        const container = this.$refs.messagesContainer;
+        container.scrollTop = container.scrollHeight;
+      });
+    },
     formatDateTime(x) {
       return formatDateTime(x)
     },

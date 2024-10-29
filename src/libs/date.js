@@ -30,7 +30,9 @@ export function formatDateTime(dateString) {
     
     const hoursAndMinutes = `${hours}:${minutes}`;
     
-    return { time, formattedDate, dayAndMonth, hoursAndMinutes, orderDate, plainDate, yearMonthDay };
+    const whenMessageSent = (new Date().getDate() == date.getDate()) ? "Hoy" : plainDate;
+    
+    return { time, formattedDate, whenMessageSent, dayAndMonth, hoursAndMinutes, orderDate, plainDate, yearMonthDay };
 }
 export function formatWalletDate(dateString) {
     const date = new Date(dateString);

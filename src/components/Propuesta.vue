@@ -142,6 +142,7 @@ import * as saleService from '../services/sale.service.js';
 import * as proposalService from '../services/proposal.service.js';
 import ProfileIcon from "./ProfileIcon.vue";
 import { emitAlert } from "@/libs/alert.js";
+import router from "@/router/index.js";
 export default {
   components: {
     CModal,
@@ -197,8 +198,8 @@ export default {
     },
     async sendProposal() {
       try {
-        const data = await proposalService.createLicitationProposal(this.$route.params.identifier, this.schema);
-        return emitAlert(data.message, 'success');
+        const {chat} = await proposalService.createLicitationProposal(this.$route.params.identifier, this.schema);
+        router.push('/chat/licitacion/' + this.$route.params.name + '/' + chat);
       } catch (error) {
         return emitAlert(error, 'error')
       }

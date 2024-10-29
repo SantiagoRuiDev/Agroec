@@ -39,7 +39,8 @@
           <div class="col-span-2">
             <label for="comp" class="text-gray-600 font-bold w-5/6 mx-auto"
               v-if="profile.razon_social != '' || profile.razon_social == '' || !showErrors">Razon Social</label>
-            <label for="comp" class="text-red-400 font-bold w-5/6 mx-auto" v-if="profile.razon_social == '' && showErrors">Ingresa una
+            <label for="comp" class="text-red-400 font-bold w-5/6 mx-auto"
+              v-if="profile.razon_social == '' && showErrors">Ingresa una
               Razon Social</label>
             <input type="text" id="comp" v-model="profile.razon_social"
               class="text-gray-400 w-full mx-auto bg-transparent border-2 border-gray-300 px-3 py-3 rounded-md"
@@ -75,7 +76,8 @@
           <div class="">
             <label for="correo" class="text-gray-600 font-bold w-5/6 mx-auto"
               v-if="user.correo != '' || user.correo == '' || !showErrors">Correo</label>
-            <label for="correo" class="text-red-400 font-bold w-5/6 mx-auto" v-if="user.correo == '' && showErrors">Debes
+            <label for="correo" class="text-red-400 font-bold w-5/6 mx-auto"
+              v-if="user.correo == '' && showErrors">Debes
               ingresar un Correo</label>
             <input type="email" id="correo" v-model="user.correo"
               class="text-gray-400 w-full mx-auto bg-transparent border-2 border-gray-300 px-3 py-3 rounded-md"
@@ -110,7 +112,8 @@
                 v-if="user.provincia == '' && showErrors">Debes seleccionar una Provincia</label>
               <select id="provincia" v-model="user.provincia" @change="loadCantonesByProvincia"
                 class="w-full mx-auto bg-transparent border-2 border-gray-300 px-3 py-3 rounded-md text-gray-600">
-                <option v-for="provincia in Provincias" :key="provincia.id" :value="provincia.id">{{provincia.nombre}}</option>
+                <option v-for="provincia in Provincias" :key="provincia.id" :value="provincia.id">{{ provincia.nombre }}
+                </option>
               </select>
             </div>
           </div>
@@ -119,11 +122,12 @@
             <div class="relative">
               <label for="canton" class="text-gray-600 font-bold w-5/6 mx-auto"
                 v-if="user.canton != '' || user.canton == '' || !showErrors">Cantón</label>
-              <label for="canton" class="text-red-400 font-bold w-5/6 mx-auto" v-if="user.canton == '' && showErrors">Debes
+              <label for="canton" class="text-red-400 font-bold w-5/6 mx-auto"
+                v-if="user.canton == '' && showErrors">Debes
                 seleccionar un Cantón</label>
               <select id="canton" v-model="user.canton"
                 class="w-full mx-auto bg-transparent border-2 border-gray-300 px-3 py-3 rounded-md text-gray-600">
-                <option v-for="canton in Cantones" :key="canton.ID" :value="canton.Nombre">{{canton.Nombre}}</option>
+                <option v-for="canton in Cantones" :key="canton.ID" :value="canton.Nombre">{{ canton.Nombre }}</option>
               </select>
             </div>
           </div>
@@ -178,7 +182,7 @@
                 <path d="m560-120-57-57 144-143H200v-480h80v400h367L503-544l56-57 241 241-240 240Z" />
               </svg>
               <p class="">
-                {{ item.nombre }}, {{ item.ubicacion }}, {{ item.direccion }}
+                {{ item.nombre }}, {{ item.ubicacion_google_maps }}, {{ item.direccion }}
               </p>
 
               <button type="button" v-on:click="deletePunto(item)">
@@ -190,17 +194,27 @@
             </div>
           </div>
 
-          <div class="col-span-2">
-            <label for="telf" class="text-gray-600 font-bold w-5/6 mx-auto"
+          <div class="grid col-span-2">
+            <label for="telf" class="text-gray-600 font-bold"
               v-if="user.telefono != '' || user.telefono == '' || !showErrors">Teléfono</label>
-            <label for="telf" class="text-red-400 font-bold w-5/6 mx-auto" v-if="user.telefono == '' && showErrors">Debes
+            <label for="telf" class="text-red-400 font-bold" v-if="user.telefono == '' && showErrors">Debes
               ingresar un numero de Teléfono</label>
-            <input type="text" id="telf" v-model="user.telefono"
-              class="text-gray-400 w-full mx-auto bg-transparent border-2 border-gray-300 px-3 py-3 rounded-md"
-              placeholder="Teléfono" />
+            <div class="col-span-2 grid grid-cols-4 gap-2">
+              <div class="col-span">
+                <select id="telf-code" v-model="code_selected"
+                  class="w-full mx-auto bg-transparent border-2 border-gray-300 px-3 py-3 rounded-md text-gray-600">
+                  <option v-for="code in country_codes" :key="code" :value="code">{{ code }}</option>
+                </select>+
+              </div>
+              <div class="col-span-3">
+                <input type="text" id="telf" v-model="user.telefono"
+                  class="text-gray-400 w-full mx-auto bg-transparent border-2 border-gray-300 px-3 py-3 rounded-md"
+                  placeholder="Teléfono" />
+              </div>
+            </div>
           </div>
 
-          <Contact/>
+          <Contact />
 
           <div class="col-span-2">
             <label for="eco" class="text-gray-600 font-bold w-5/6 mx-auto" v-if="
@@ -209,7 +223,8 @@
               !showErrors
             ">Actividad Económica</label>
             <label for="eco" class="text-red-400 font-bold w-5/6 mx-auto"
-              v-if="profile.actividad_economica == '' && showErrors">Debes ingresar un tipo de Actividad Económica</label>
+              v-if="profile.actividad_economica == '' && showErrors">Debes ingresar un tipo de Actividad
+              Económica</label>
             <input type="text" id="eco" v-model="profile.actividad_economica"
               class="text-gray-400 w-full mx-auto bg-transparent border-2 border-gray-300 px-3 py-3 rounded-md"
               placeholder="Actividad Económica" />
@@ -264,7 +279,8 @@
           <div class="col-span-2">
             <label for="ctm" class="text-gray-600 font-bold w-5/6 mx-auto"
               v-if="profile.consumo_mes_tm != '' || profile.consumo_mes_tm == '' || !showErrors">Consumo Mes TM</label>
-            <label for="ctm" class="text-red-400 font-bold w-5/6 mx-auto" v-if="profile.consumo_mes_tm == '' && showErrors">Debes
+            <label for="ctm" class="text-red-400 font-bold w-5/6 mx-auto"
+              v-if="profile.consumo_mes_tm == '' && showErrors">Debes
               ingresar un consumo por mes</label>
             <input type="number" name="ctm" placeholder="Consumo Mes TM" v-model="profile.consumo_mes_tm"
               class="text-gray-400 w-full mx-auto bg-transparent border-2 border-gray-300 px-3 py-3 rounded-md" />
@@ -273,7 +289,8 @@
           <div class="col-span-2">
             <label for="ca" class="text-gray-600 font-bold w-5/6 mx-auto"
               v-if="profile.consumo_anual != '' || profile.consumo_anual == '' || !showErrors">Consumo Anual</label>
-            <label for="ca" class="text-red-400 font-bold w-5/6 mx-auto" v-if="profile.consumo_anual == '' && showErrors">Debes
+            <label for="ca" class="text-red-400 font-bold w-5/6 mx-auto"
+              v-if="profile.consumo_anual == '' && showErrors">Debes
               ingresar un consumo anual</label>
             <input type="number" name="ca" placeholder="Consumo Anual" v-model="profile.consumo_anual"
               class="text-gray-400 w-full mx-auto bg-transparent border-2 border-gray-300 px-3 py-3 rounded-md" />
@@ -296,13 +313,14 @@
             " class="text-gray-600 font-bold w-5/6 mx-auto">Politicas de recepción</label>
             <label for="profile.politicas_recepcion" v-if="profile.politicas_recepcion == '' && showErrors"
               class="text-red-400 font-bold w-5/6 mx-auto">Debes ingresar tus politicas de recepción</label>
-            <textarea type="text" id="profile.politicas_recepcion" name="profile.politicas_recepcion" placeholder="Politicas de recepción"
-              v-model="profile.politicas_recepcion" cols="20" rows="10"
+            <textarea type="text" id="profile.politicas_recepcion" name="profile.politicas_recepcion"
+              placeholder="Politicas de recepción" v-model="profile.politicas_recepcion" cols="20" rows="10"
               class="text-gray-400 w-full mx-auto bg-transparent border-2 border-gray-300 px-3 py-3 rounded-md"></textarea>
           </div>
 
           <div class="col-span-2 inline-flex gap-2">
-            <p class="text-gray-600 font-bold" v-if="user.acepto_terminos == true || (user.acepto_terminos == false && !showErrors)">
+            <p class="text-gray-600 font-bold"
+              v-if="user.acepto_terminos == true || (user.acepto_terminos == false && !showErrors)">
               Acepto los Términos y Condiciones
             </p>
             <p class="text-red-400 font-bold" v-if="user.acepto_terminos == false && showErrors">
@@ -352,7 +370,7 @@ import Cantones from "../assets/JSON/Cantones.json";
 import { mapGetters, mapActions } from "vuex";
 import { CModal, CModalBody } from "@coreui/vue";
 import { IonPage, IonContent, IonToolbar, IonHeader } from "@ionic/vue";
-import {emitAlert} from '../libs/alert.js'
+import { emitAlert } from '../libs/alert.js'
 import * as authService from '../services/auth.service.js'
 export default {
   components: {
@@ -370,6 +388,26 @@ export default {
   },
   data() {
     return {
+      country_codes: [
+        "+54", // Argentina
+        "+591", // Bolivia
+        "+55", // Brasil
+        "+56", // Chile
+        "+57", // Colombia
+        "+506", // Costa Rica
+        "+53", // Cuba
+        "+593", // Ecuador
+        "+503", // El Salvador
+        "+502", // Guatemala
+        "+504", // Honduras
+        "+52", // México
+        "+507", // Panamá
+        "+595", // Paraguay
+        "+51", // Perú
+        "+1", // República Dominicana
+        "+598", // Uruguay
+        "+58"  // Venezuela
+      ],
       visible: false,
       visiblePassword: true,
       codigoNumerico: "",
@@ -379,6 +417,7 @@ export default {
       puntosRecepcion: [],
       showErrors: false,
       smsVerification: false,
+      code_selected: "+593",
       user: {
         tipo_identificacion: "",
         numero_identificacion: "",
@@ -418,7 +457,7 @@ export default {
       ) {
         this.puntosRecepcion.push({
           nombre: this.nombrePunto,
-          ubicacion: this.direccionPunto,
+          ubicacion_google_maps: this.direccionPunto,
           direccion: this.ubicacionPunto,
         });
         return;
@@ -430,19 +469,20 @@ export default {
     closeModal() {
       // Close the menu by setting menuOpen to false
       this.visible = false;
+      this.smsVerification = false;
       this.$router.push('/app/signin');
     },
     changeVisibility() {
       this.visiblePassword = !this.visiblePassword;
     },
-    loadCantonesByProvincia(){
+    loadCantonesByProvincia() {
       this.Cantones = Cantones.filter(canton => canton.Provincia_ID == this.user.provincia);
     },
     async confirmVerification() {
       if (this.codigoNumerico != "") {
         this.showErrors = false;
         try {
-          await authService.finisUserAccount({codigo: this.codigoNumerico});
+          await authService.finisUserAccount({ codigo: this.codigoNumerico });
         } catch (error) {
           return emitAlert(error.message, "error");
         }
@@ -457,7 +497,7 @@ export default {
           this.showErrors = false;
           // Aca llamar registro.
           try {
-            await authService.createUserAccount({user: this.user, profile: this.profile});
+            await authService.createUserAccount({ user: this.user, profile: this.profile, points: this.puntosRecepcion });
           } catch (error) {
             return emitAlert(error.message, "error");
           }
@@ -471,6 +511,8 @@ export default {
       }
     },
     validarCampos() {
+      this.user.provincia = Provincias.filter((prov) => prov.id == this.user.provincia)[0].nombre;
+      this.user.telefono = this.code_selected + this.user.telefono;
       if (
         this.profile.razon_social.trim() == "" ||
         this.user.tipo_identificacion.trim() == "" ||

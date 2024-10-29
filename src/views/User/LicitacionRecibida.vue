@@ -13,21 +13,21 @@
             <ion-segment-button
               value="1"
               class="button"
-              @click="selectStatus(1)"
+              @click="selectStatus('Recibida')"
             >
               <ion-label>Pendiente aceptar</ion-label>
             </ion-segment-button>
             <ion-segment-button
               value="2"
               class="button"
-              @click="selectStatus(2)"
+              @click="selectStatus('Aceptada')"
             >
               <ion-label>Acordadas</ion-label>
             </ion-segment-button>
             <ion-segment-button
               value="3"
               class="button"
-              @click="selectStatus(3)"
+              @click="selectStatus('Finalizada')"
             >
               <ion-label>Finalizadas</ion-label>
             </ion-segment-button>
@@ -36,7 +36,7 @@
       </ion-toolbar>
     </ion-header>
     <ion-content :fullscreen="true">
-      <LicitacionesRecibidas :Item="Producto" :Status="status"/>
+      <LicitacionesRecibidas :Item="Producto" :status_filter="status"/>
     </ion-content>
   </ion-page>
 </template>
@@ -70,7 +70,7 @@ export default {
   },
   data() {
     return {
-      status: 1,
+      status: "Recibida",
       Producto: this.$route.params.product,
     };
   },

@@ -1,49 +1,63 @@
 import instance from "../libs/axios.js";
-import { getCookie } from "../libs/cookie.js";
+import { getToken, getMultiuserToken, removeToken, removeMultiuserToken } from "../libs/storage.js";
 
 export const createUserAccount = async (schema) => {
-    try {
-        const {data} = await instance.post('/auth', schema)
-        return data;
-    } catch (error) {
-        throw new Error(error.response.data.error)
-    }
-}
+  try {
+    const { data } = await instance.post("/auth", schema);
+    return data;
+  } catch (error) {
+    throw new Error(error.response.data.error);
+  }
+};
 
 export const finisUserAccount = async (schema) => {
-    try {
-        const {data} = await instance.post('/auth/finish', schema)
-        return data;
-    } catch (error) {
-        throw new Error(error.response.data.error)
-    }
-}
-
+  try {
+    const { data } = await instance.post("/auth/finish", schema);
+    return data;
+  } catch (error) {
+    throw new Error(error.response.data.error);
+  }
+};
 
 export const initUserSession = async (schema) => {
-    try {
-        const {data} = await instance.post('/auth/session', schema, { withCredentials: true })
-        return data;
-    } catch (error) {
-        throw new Error(error.response.data.error)
-    }
-}
-
+  try {
+    const { data } = await instance.post("/auth/session", schema);
+    return data;
+  } catch (error) {
+    throw new Error(error.response.data.error);
+  }
+};
 
 export const isAuthentified = async () => {
-    try {
-        const {data} = await instance.get('/auth/check', {withCredentials: true})
-        return data;
-    } catch (error) {
-        throw new Error(error.response.data.message)
-    }
-}
+  try {
+    const { data } = await instance.get("/auth/check", {
+      headers: {
+        Authorization: `Bearer ${await getToken()}`,
+        "x-multiuser-token": await getMultiuserToken(),
+      },
+    });
+    return data;
+  } catch (error) {
+    await removeToken();
+    await removeMultiuserToken();
+    throw new Error(error.response.data.message);
+  }
+};
 
 export const finalizeSession = async () => {
-    try {
-        const {data} = await instance.post('/auth/logout', {}, {withCredentials: true})
-        return data;
-    } catch (error) {
-        throw new Error(error.response.data.message)
-    }
-}
+  try {
+    const { data } = await instance.post(
+      "/auth/logout",
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${await getToken()}`,
+          'x-multiuser-token': await getMultiuserToken()
+        },
+      }
+    );
+    return data;
+  } catch (error) {
+    throw new Error(error.response.data.message);
+  }
+};

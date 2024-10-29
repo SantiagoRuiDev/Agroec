@@ -53,6 +53,7 @@
 import { initUserSession } from "@/services/auth.service";
 import { IonPage, IonContent, IonToolbar, IonHeader } from "@ionic/vue";
 import {emitAlert} from '../libs/alert.js'
+import { storeMultiuserToken, storeToken } from "@/libs/storage.js";
 export default {
   components: {
     IonPage,
@@ -78,8 +79,15 @@ export default {
       }
       try {
         if(this.user.correo != "" && this.user.clave != ""){
-          await initUserSession(this.user);
-          this.$router.push('/app/home')
+          const {token, multi_token} = await initUserSession(this.user);
+
+          if(multi_token){
+            await storeMultiuserToken(multi_token);
+          }
+
+          await storeToken(token).then(() => {
+            window.location.href="/app/home";
+          })
         }
       } catch (error) {
         return emitAlert(error.message, "error");

@@ -70,9 +70,9 @@
       <RouterLink to="/app/recargar" class="default-bar text-white text-center h-12 rounded p-2 mt-5 items-center grid">
         Recargar
       </RouterLink>
-      <button class="default-bar text-white text-center h-12 rounded p-2 mt-5 items-center grid">
+      <a href="https://wa.me/593963195377" target="_blank" class="default-bar text-white text-center h-12 rounded p-2 mt-5 items-center grid">
         Solicitar Retiro
-      </button>
+      </a>
     </div>
   </div>
 </template>

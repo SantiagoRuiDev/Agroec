@@ -1,7 +1,7 @@
 <template>
   <div class="content w-full mx-auto grid my-2 gap-2">
     <div class="grid gap-2 w-11/12 mx-auto mt-2">
-      <p class="text-gray-500 font-bold text-md">Si deseas comercializar insumos contactarse al 0987778886</p>
+      <p class="text-gray-500 font-bold text-md">Si deseas comercializar insumos contactarse al +593 96 319 5377</p>
       <button class="default-bar h-12 rounded-md p-2 text-center text-white font-bold">Contactar</button>
     </div>
 

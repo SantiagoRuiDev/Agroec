@@ -308,6 +308,7 @@
 </template>
 
 <script>
+import { getMultiuserToken, removeMultiuserToken, removeToken } from '@/libs/storage.js';
 import * as authService from '../services/auth.service.js'
 export default {
   name: "Sidebar",
@@ -322,7 +323,12 @@ export default {
     async logout(){
       try {
         await authService.finalizeSession()
-        this.$router.push('/app/signin')
+        await removeToken().then(async () => {
+          if(await getMultiuserToken()){
+            await removeMultiuserToken();
+          }
+          window.location.href="/app/signin"
+        }) 
       } catch (error) {
         return;
       }

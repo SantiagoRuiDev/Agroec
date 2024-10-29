@@ -1,28 +1,20 @@
 <template>
-  <Splide
-    :options="{ rewind: true, wheel: true, arrows: false }"
-    aria-label="Vue Splide Example"
-    class="h-64 md:w-1/2 mx-auto mb-3 max-h-64"
-  >
-    <SplideSlide class="h-64" v-for="image in images">
-      <img
-        :src="image.url_imagen"
-        alt="Producto"
-        class="h-full w-full"
-      />
-    </SplideSlide>
-  </Splide>
+  <Carousel v-if="images.length > 0">
+    <Slide v-for="image in images" :key="image.id">
+      <img :src="image.url_imagen" alt="Producto Imagen" class="h-64 md:h-64 md:w-1/2 w-full object-cover">
+    </Slide>
+    <template #addons>
+      <Pagination />
+    </template>
+  </Carousel>
 </template>
 
-<script>
-import { Splide, SplideSlide } from "@splidejs/vue-splide";
-import { defineComponent } from "vue";
-import "@splidejs/vue-splide/css";
+<script setup>
+import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel'
+import { defineProps } from "vue";
+import 'vue3-carousel/dist/carousel.css'
 
-export default defineComponent({
-  components: { Splide, SplideSlide },
-  props: {
-    images: Array
-  }
-});
+const props = defineProps({
+  images: Array
+})
 </script>

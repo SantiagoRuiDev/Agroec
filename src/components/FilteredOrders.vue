@@ -1,6 +1,6 @@
 <template>
   <div class="content w-full mx-auto grid my-3 gap-4">
-    <div class="grid gap-1">
+    <div class="grid gap-1" v-if="orders.length > 0">
       <RouterLink :to="'/order/' + order.id" v-for="order in orders" :key="order.id">
         <div class="order-card flex md:grid md:grid-cols-2 gap-3 shadow-md p-2">
           <div class="flex w-full gap-3">
@@ -30,6 +30,14 @@
         </div>
       </RouterLink>
     </div>
+      <div v-else class="min-h-64 grid items-center">
+        <div class="mx-auto w-full grid gap-5 text-black justify-items-center">
+          <h1 class="font-bold text-2xl opacity-65 text-center">No hay ordenes pendientes de pago</h1>
+          <RouterLink to="/orders" class="default-bar text-center text-white rounded-md p-2">
+            Revisar ordenes
+          </RouterLink>
+        </div>
+      </div>
   </div>
 </template>
 
