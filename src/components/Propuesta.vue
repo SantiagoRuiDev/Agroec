@@ -1,7 +1,7 @@
 <template>
   <div class="grid gap-3 bg-gray-200 min-h-screen">
     <div v-if="sale"
-      class="profilepad inline-flex w-5/6 mx-auto gap-3 items-center my-4 rounded-md bg-gray-50 h-24 p-2 md:w-1/2">
+      class="profilepad inline-flex w-11/12 mx-auto gap-3 items-center my-4 rounded-md bg-gray-50 h-24 p-2 md:w-1/2">
       <ProfileIcon :profile="sale.type"></ProfileIcon>
       <div class="grid gap-1 items-center">
         <h2 class="text-xl font-bold text-gray-500">{{ sale.type }}</h2>
@@ -9,7 +9,7 @@
       </div>
     </div>
 
-    <form class="detailspad grid w-5/6 mx-auto gap-6 md:w-1/2">
+    <form class="detailspad grid w-11/12 mx-auto gap-6 md:w-1/2">
       <h3 class="text-gray-700 font-bold">Propuesta de compra al vendedor</h3>
 
       <div class="form-input grid gap-1">
@@ -67,8 +67,8 @@
           class="bg-gray-50 border p-2 rounded-md text-gray-600" />
       </div>
       <div class="form-input grid gap-1">
-        <label for="delivery" class="text-gray-700">Válida hasta</label>
-        <input type="date" id="delivery" v-model="schema.valida_hasta"
+        <label for="delivery" class="text-gray-700">Fecha de entrega</label>
+        <input type="date" id="delivery" v-model="schema.valida_hasta" :min="today"
           class="bg-gray-50 border p-2 rounded-md text-gray-600" />
       </div>
       <div class="form-input grid gap-1">
@@ -142,7 +142,7 @@ import * as saleService from '../services/sale.service.js';
 import * as proposalService from '../services/proposal.service.js';
 import ProfileIcon from "./ProfileIcon.vue";
 import { emitAlert } from "@/libs/alert.js";
-import router from "@/router/index.js";
+import router from "../router/index";
 export default {
   components: {
     CModal,
@@ -154,6 +154,7 @@ export default {
   },
   data() {
     return {
+      today: new Date().toISOString().split('T')[0],
       sale: null,
       details: false,
       offerSaw: false,

@@ -111,7 +111,7 @@
       <div class="grid mt-3 gap-2">
         <label for="Validez" class="text-gray-500 font-bold text-sm">Valida hasta:</label>
         <input type="date" name="Validez"
-          v-model="schema.valida_hasta"
+          v-model="schema.valida_hasta"  :min="today"
           class="w-full text-gray-500 mx-auto bg-transparent border-2 border-gray-300 px-3 py-3 rounded-md" />
       </div>
 
@@ -122,7 +122,7 @@
           class="w-full text-gray-500 mx-auto bg-transparent border-2 border-gray-300 px-3 py-3 rounded-md" />
       </div>
 
-      <button @click="showModal" type="button"
+      <button @click="updateLicitation" type="button"
         class="py-3 px-5 default-bar mx-auto mt-3 w-2/3 rounded font-bold grid items-center mb-3">
         Actualizar
       </button>
@@ -186,7 +186,7 @@
 import { CModal, CModalBody } from "@coreui/vue";
 import { emitAlert } from "@/libs/alert.js";
 import * as licitacionService from '../services/licitation.service.js';
-import { formatDateTime } from "@/libs/date.js";
+import event from "@/libs/event.js";
 export default {
   components: {
     CModal,
@@ -199,6 +199,7 @@ export default {
     return {
       visible: false,
       parametros: false,
+      today: new Date().toISOString().split('T')[0],
       entrega: "",
       sacos: "",
       producto: "",
@@ -231,6 +232,19 @@ export default {
     await this.getLicitationById();
   },
   methods: {
+    async updateLicitation(){
+      try {
+        this.schema.presentacion_entrega = this.entrega + " de " + this.sacos;
+        await licitacionService.updateLicitation(this.$route.params.id, {licitation: this.schema, quality_params: this.quality_params});
+        await this.getLicitationById();
+        this.showSuccessModal();
+      } catch (error) {
+        emitAlert(error, 'error');
+      }
+    },
+    showSuccessModal(){
+      this.visible = true;
+    },
     manageEditParamModal() {
       this.editParam = !this.editParam;
     },
@@ -252,9 +266,9 @@ export default {
       }
 
       try {
-        const { message } = await proposalService.updateQualityParam(newObject.id, newObject);
+        const { message } = await licitacionService.updateQualityParam(newObject.id, newObject);
         this.manageEditParamModal();
-        Event.emit('fetch-conditions');
+        this.getLicitationById();
         return emitAlert(message, 'success');
       } catch (error) {
         return emitAlert(error, 'error');
@@ -297,14 +311,13 @@ export default {
         this.schema.valida_hasta = String(data.valida_hasta).slice(0,10);
         this.schema.informacion_adicional = data.informacion_adicional;
         this.schema.presentacion_entrega = data.presentacion_entrega;
+        this.entrega = String(data.presentacion_entrega).match(/^[^\d]+/)[0].replace(/\sde\s/, '').trim();
+        this.sacos =  String(data.presentacion_entrega).match(/\d+\s\w+/)[0];
         this.licitation_quality_params = data.quality_params;
         this.mapParams();
       } catch (error) {
         emitAlert(error, 'error');
       }
-    },
-    showModal() {
-      this.visible = true;
     },
     closeModal() {
       // Close the menu by setting menuOpen to false
@@ -317,6 +330,7 @@ export default {
         this.maxParametro != ""
       ) {
         this.newParametros.push({
+          id: "",
           nombre: this.nombreParametro,
           min: this.minParametro,
           max: this.maxParametro,

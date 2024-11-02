@@ -49,6 +49,22 @@ export const getLicitationProposalByUserAndProduct = async (product_id) => {
     throw new Error(error.response.data.error);
   }
 };
+export const getProposalInformation = async (proposal_id) => {
+  try {
+    const { data } = await instance.get(
+      "/proposal/" + proposal_id,
+      {
+        headers: {
+          Authorization: `Bearer ${await getToken()}`,
+          "x-multiuser-token": await getMultiuserToken(),
+        },
+      }
+    );
+    return data;
+  } catch (error) {
+    throw new Error(error.response.data.error);
+  }
+};
 export const getSaleProposalsByUserAndProduct = async (product_id) => {
   try {
     const { data } = await instance.get(

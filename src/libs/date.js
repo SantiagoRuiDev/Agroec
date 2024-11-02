@@ -20,7 +20,7 @@ export function formatDateTime(dateString) {
     const year = date.getFullYear();
     
     const yearMonthDay =  `${date.getFullYear()}/${date.getMonth()}/${day}`;
-    const plainDate =  `${day}/${date.getMonth()}/${date.getFullYear()}`;
+    const plainDate =  `${day}/${date.getMonth()+1}/${date.getFullYear()}`;
     // Formato de fecha: "10 de Septiembre de 2024"
     const formattedDate = `${day} de ${month} de ${year}`;
 

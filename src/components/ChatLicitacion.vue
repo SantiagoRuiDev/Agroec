@@ -1,8 +1,9 @@
 <template>
   <div v-if="!details" class="content w-11/12 mx-auto grid mb-5 gap-4 min-h-full">
-    <div class="mt-2 mx-auto message-wrap md:w-full overflow-auto max-h-[28rem]" ref="messagesContainer">
+    <div class="mt-2 md:mx-auto message-wrap md:w-full overflow-auto max-h-[28rem]" ref="messagesContainer">
 
-      <div class="grid gap-2 p-2 md:w-5/6 rounded-md bg-lime-100 text-lime-900" v-if="conditions && !(conditions.estado_vendedor == 'Aceptada' && conditions.estado_comprador == 'Aceptada')">
+      <div class="grid gap-2 p-2 md:w-5/6 rounded-md bg-lime-100 text-lime-900"
+        v-if="conditions && !(conditions.estado_vendedor == 'Aceptada' && conditions.estado_comprador == 'Aceptada')">
         <h1 class="font-bold">Nueva Propuesta</h1>
         <div class="inline-flex gap-2 items-center">
           <img :src="conditions.imagen" alt="Producto Imagen" class="h-6 w-6">
@@ -12,11 +13,22 @@
         </div>
         <div class="inline-flex gap-2 items-center">
           <img src="../assets/Event.svg" alt="Calendario Imagen" class="h-6 w-6">
-          <p>Fecha limite/entrega: {{ formatDateTime(conditions.fecha_limite).plainDate }}</p>
+          <div class="grid gap-1">
+            <p>Fecha limite/entrega: {{ formatDateTime(conditions.fecha_limite).plainDate }}</p>
+            <p v-if="conditions.horarios">Horarios: {{ conditions.horarios }}</p>
+          </div>
+        </div>
+        <div class="inline-flex gap-2 items-center" v-if="conditions.ubicacion">
+          <img src="../assets/Status/LocationChat.svg" alt="Location Imagen" class="h-6 w-6">
+          <p>{{ conditions.ubicacion }}</p>
         </div>
         <div class="inline-flex gap-2 items-center">
           <img src="../assets/Sack.svg" alt="Saco Imagen" class="h-6 w-6">
           <p>Presentación: {{ conditions.presentacion_propuesta }}</p>
+        </div>
+        <div class="inline-flex gap-2 items-center">
+          <img src="../assets/Informative.svg" alt="Info Imagen" class="h-6 w-6">
+          <p>Información: {{ conditions.informacion_adicional }}</p>
         </div>
         <div class="inline-flex gap-2 items-center">
           <img src="../assets/Pago.svg" alt="Metodo pago Imagen" class="h-6 w-6">
@@ -34,11 +46,22 @@
         </div>
         <div class="inline-flex gap-2 items-center">
           <img src="../assets/Event.svg" alt="Calendario Imagen" class="h-6 w-6">
-          <p>Fecha limite/entrega: {{ formatDateTime(conditions.fecha_limite).plainDate }}</p>
+          <div class="grid gap-1">
+            <p>Fecha limite/entrega: {{ formatDateTime(conditions.fecha_limite).plainDate }}</p>
+            <p v-if="conditions.horarios">Horarios: {{ conditions.horarios }}</p>
+          </div>
+        </div>
+        <div class="inline-flex gap-2 items-center" v-if="conditions.ubicacion">
+          <img src="../assets/Status/LocationChat.svg" alt="Location Imagen" class="h-6 w-6">
+          <p>{{ conditions.ubicacion }}</p>
         </div>
         <div class="inline-flex gap-2 items-center">
           <img src="../assets/Sack.svg" alt="Saco Imagen" class="h-6 w-6">
           <p>Presentación: {{ conditions.presentacion_propuesta }}</p>
+        </div>
+        <div class="inline-flex gap-2 items-center">
+          <img src="../assets/Informative.svg" alt="Info Imagen" class="h-6 w-6">
+          <p>Información: {{ conditions.informacion_adicional }}</p>
         </div>
         <div class="inline-flex gap-2 items-center">
           <img src="../assets/Pago.svg" alt="Metodo pago Imagen" class="h-6 w-6">
@@ -78,7 +101,8 @@
     </div>
 
     <div class="grid gap-3 md:w-3/4 mx-auto">
-      <div class="flex justify-between mx-auto w-full gap-3 h-full items-end" v-if="conditions.estado_comprador != 'Aceptada' && conditions.estado_vendedor != 'Aceptada'">
+      <div class="flex justify-between mx-auto w-full gap-3 h-full items-end"
+        v-if="!(conditions.estado_comprador == 'Aceptada' && conditions.estado_vendedor == 'Aceptada')">
         <button class="bg-red-400 px-2 py-1 w-1/2 h-8 rounded-md shadow-md color-white text-xs"
           @click="manageRechazoModal">
           Rechazar

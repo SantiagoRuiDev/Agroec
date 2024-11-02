@@ -10,7 +10,7 @@
 
       <h3 class="text-gray-400 text-sm mt-3 col-span-2">
         Producto:
-        <span class="text-gray-600 font-bold">{{this.$route.params.name}}</span>
+        <span class="text-gray-600 font-bold">{{delivery.producto}}</span>
       </h3>
 
       <div class="grid gap-1 mt-3">
@@ -43,7 +43,7 @@
           type="text"
           id="recepcion"
           disabled
-          :placeholder="delivery.fecha_entrega"
+          :placeholder="formatDate(delivery.fecha_entrega).plainDate"
           class="bg-transparent border-2 rounded-md h-10 w-full text-gray-400 text-sm p-1"
         />
       </div>
@@ -109,6 +109,16 @@
           class="bg-transparent border p-2 rounded-md text-sm text-gray-600"
         />
       </div>
+      <div class="grid gap-1 mx-auto col-span-2 w-full mt-3" v-if="delivery.modo_pago == 'Modo Garantía'">
+        <label for="modopago" class="text-gray-400 text-sm">Modo de pago final</label>
+        <input
+          type="text"
+          disabled
+          :placeholder="delivery.modo_pago_final"
+          id="modopago"
+          class="bg-transparent border p-2 rounded-md text-sm text-gray-600"
+        />
+      </div>
       <div class="grid gap-1 mx-auto col-span-2 w-full mt-3"
           v-if="delivery.modo_pago == 'Modo Garantía'">
         <label for="pctajefinall" class="text-gray-400 text-sm"
@@ -154,6 +164,7 @@
 </template>
 
 <script setup>
+import { formatDateTime } from "@/libs/date";
 import event from "@/libs/event";
 
 
@@ -163,6 +174,10 @@ defineProps({
     required: true
   }
 })
+
+const formatDate = (x) => {
+  return formatDateTime(x);
+}
 
 const openPoliticas = () => {
   event.emit("openPoliticas");

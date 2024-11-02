@@ -35,7 +35,7 @@
                 {{ order.producto }}
               </h1>
               <p class="text-gray-500 text-xs">Cant: {{order.cantidad}} {{ order.cantidad_unidad }}</p>
-              <p class="text-gray-500 text-xs">{{formatWalletDate(order.fecha_entrega).slice(0,10)}}</p>
+              <p class="text-gray-500 text-xs">{{formatWalletDate(order.creado).slice(0,10)}}</p>
             </div>
           </div>
 
@@ -59,7 +59,7 @@
     </div>
   </div>
 
-  <RouterLink to="/print" class="rounded-full p-3 h-14 w-14 dark-bar grid justify-items-center align-items-center absolute right-2 bottom-2">
+  <RouterLink to="/print" class="rounded-full p-3 h-14 w-14 dark-bar grid justify-items-center align-items-center fixed right-2 bottom-2">
     <img src="@/assets/Pdf.svg" alt="Plus Icon" />
   </RouterLink>
 </template>

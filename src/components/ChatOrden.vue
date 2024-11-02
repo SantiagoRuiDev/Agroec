@@ -1,6 +1,6 @@
 <template>
   <div v-if="!details" class="content w-11/12 mx-auto grid mb-5 gap-4 min-h-full">
-    <div class="mt-2 mx-auto message-wrap md:w-full overflow-auto max-h-[28rem]" ref="messagesContainer">
+    <div class="mt-2 md:mx-auto message-wrap md:w-full overflow-auto max-h-[28rem]" ref="messagesContainer">
       <div class="messages grid gap-3 p-2 md:w-5/6 mx-auto" v-for="(message, index) in messages" :key="message.id">
         <div v-if="shouldShowDateDivider(index)"
           class="w-2/3 sm:w-1/2 mx-auto grid items-center text-center bg-gray-100 rounded-lg md:w-1/3">

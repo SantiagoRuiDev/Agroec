@@ -16,6 +16,35 @@ export const createLicitation = async (product_id, schema) => {
   }
 };
 
+export const updateLicitation = async (licitacion_id, schema) => {
+  try {
+    const { data } = await instance.put("/licitation/" + licitacion_id, schema, {
+      headers: {
+        Authorization: `Bearer ${await getToken()}`,
+        "x-multiuser-token": await getMultiuserToken(),
+      },
+    });
+    return data;
+  } catch (error) {
+    throw new Error(error.response.data.error);
+  }
+};
+
+export const updateQualityParam = async (param_id, schema) => {
+  try {
+    const { data } = await instance.put("/licitation/param/" + param_id, schema, {
+      headers: {
+        Authorization: `Bearer ${await getToken()}`,
+        "x-multiuser-token": await getMultiuserToken(),
+      },
+    });
+    return data;
+  } catch (error) {
+    throw new Error(error.response.data.error);
+  }
+};
+
+
 export const getLicitations = async () => {
   try {
     const { data } = await instance.get("/licitation/me", {

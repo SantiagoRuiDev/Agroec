@@ -99,7 +99,7 @@ export default {
       if(this.status_filter == 'Recibida'){
         this.filteredProposals = this.proposals.filter((proposal) => proposal.estado_comprador == this.status_filter)
       } else if (this.status_filter == 'Aceptada') {
-        this.filteredProposals = this.proposals.filter((proposal) => proposal.estado_comprador == this.status_filter)
+        this.filteredProposals = this.proposals.filter((proposal) => proposal.estado_comprador == this.status_filter && proposal.estado_vendedor != this.status_filter)
       } else {
         this.filteredProposals = this.proposals.filter((proposal) => proposal.estado_comprador == 'Aceptada' && proposal.estado_vendedor == 'Aceptada');
       }

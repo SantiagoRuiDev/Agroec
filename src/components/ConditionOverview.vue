@@ -57,7 +57,7 @@
             <path d="m560-120-57-57 144-143H200v-480h80v400h367L503-544l56-57 241 241-240 240Z" />
           </svg>
           <span class="grid gap-1">
-            {{ index + startIndex }}: {{ item.cantidad }}
+            {{ index + startIndex }}: {{ Number(item.cantidad).toFixed(0) }}
             {{ item.cantidad_unidad }}, {{ formatDateTime(item.fecha_entrega).formattedDate }} -
             {{ item.hora_entrega }} -
             {{ item.punto.direccion }}, {{ item.punto.ubicacion_google_maps }}
@@ -273,10 +273,10 @@ Aliquam pretium libero in quam gravida, sed ornare eros efficitur. Nam vitae mat
                 <option class="text-gray-600" option="KG">KG</option>
               </select>
             </div>
-            <div class="grid gap-1 w-full items-center">
+            <div class="grid gap-1 items-center">
               <label for="entregaFecha" class="text-gray-700 w-full">Fecha Entrega</label>
-              <input v-model="delivery.fecha_entrega" id="entregaFecha" type="date"
-                class="w-full mx-auto bg-transparent border-2 border-gray-300 xs:px-1 px-2 py-3 rounded-md text-gray-600" />
+              <input v-model="delivery.fecha_entrega" id="entregaFecha" type="date" :min="today"
+                class="bg-transparent border-2 border-gray-300 xs:px-1 px-2 py-3 rounded-md text-gray-600" />
             </div>
             <div class="grid gap-1 w-full items-center">
               <label for="horaEntrega" class="text-gray-700 w-full">Hora Entrega</label>
@@ -351,6 +351,7 @@ export default {
   },
   data() {
     return {
+      today: new Date().toISOString().split('T')[0],
       startIndex: 1,
       visible: false,
       parametros: false,
@@ -446,7 +447,13 @@ export default {
     },
     async saveEntregaParam() {
       let delivery = { ...this.delivery };
-      if(delivery.id.trim() == ""){
+      if(delivery.cantidad > this.conditions.cantidad){
+        return emitAlert('La cantidad de una entrega debe ser menor que la de la negociación', 'info');
+      }
+      if(delivery.cantidad > Number(this.conditions.cantidad) / (Number(this.cantidadEntrega) + this.condition_deliveries.length)){
+        return emitAlert('La cantidad de una entrega no debe ser superior al limite', 'info');
+      }
+      if (delivery.id.trim() == "") {
         this.manageEditEntregaModal();
         return this.deliveries[this.inEditionEntregaSlot] = delivery;
       }
@@ -527,7 +534,7 @@ export default {
       }
     },
     deleteLocalDelivery(y) {
-      this.deliveries = this.deliveries.filter(x => x != y);
+      this.deliveries = this.deliveries.filter(x => x == y);
     },
     deleteLocalParam(x) {
       return (this.quality_params = this.quality_params.filter((y) => y != x));
@@ -546,7 +553,10 @@ export default {
       if (this.cantidadEntrega) {
         let i = this.cantidadEntrega;
         while (i > 0) {
-          this.deliveries.push({ ...this.delivery });
+          const deliverySchema = {...this.delivery}
+          deliverySchema.cantidad = this.conditions.cantidad / (this.cantidadEntrega);
+          deliverySchema.cantidad_unidad = this.conditions.cantidad_unidad;
+          this.deliveries.push(deliverySchema);
           i--;
         }
       }
@@ -593,9 +603,23 @@ export default {
         }
       }
 
+      const {
+        id, id_producto, precio, precio_unidad, cantidad, cantidad_unidad,
+        modo_pago, porcentaje_inicial, modo_pago_final, porcentaje_final,
+        notas, precio_puesto_domicilio, politicas_recepcion, imagen,
+        id_propuesta
+      } = this.conditions;
+
+      const conditionCopy = {
+        id, id_producto, precio, precio_unidad, cantidad, cantidad_unidad,
+        modo_pago, porcentaje_inicial, modo_pago_final, porcentaje_final,
+        notas, precio_puesto_domicilio, politicas_recepcion, imagen,
+        id_propuesta
+      }
+
       try {
         const { message } = await proposalService.updateProposalConditions(this.conditions.id, {
-          condition: this.conditions,
+          condition: conditionCopy,
           delivery: this.deliveries,
           quality_params: this.quality_params
         });

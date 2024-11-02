@@ -7,7 +7,7 @@
 
       <div class="ficha md:w-1/3 grid gap-2 w-11/12 p-2 mx-auto rounded-md-2 border-gray-100 text-center">
         <h2 class="text-gray-500 text-sm font-bold">Ficha del Producto</h2>
-        <p class="text-gray-400 text-xs">Maíz duro amarillo</p>
+        <p class="text-gray-400 text-xs">{{Licitacion}}</p>
       </div>
     </div>
 
@@ -100,7 +100,7 @@
 
       <div class="grid mt-3 gap-2">
         <label for="Validez" class="text-gray-500 font-bold text-sm">Valida hasta:</label>
-        <input type="date" name="Validez" v-model="licitation.valida_hasta"
+        <input type="date" name="Validez" v-model="licitation.valida_hasta" :min="today"
           class="w-full text-gray-500 mx-auto bg-transparent border-2 border-gray-300 px-3 py-3 rounded-md" />
       </div>
 
@@ -150,6 +150,7 @@ export default {
   },
   data() {
     return {
+      today: new Date().toISOString().split('T')[0],
       visible: false,
       parametros: false,
       nombreParametro: "",

@@ -18,7 +18,7 @@
                 {{ order.id_producto }}
               </h1>
               <p class="text-gray-500 text-xs">Cant: {{order.cantidad}} {{ order.cantidad_unidad }}</p>
-              <p class="text-gray-500 text-xs">{{formatWalletDate(order.fecha_entrega).slice(0,10)}}</p>
+              <p class="text-gray-500 text-xs">{{formatWalletDate(order.creado).slice(0,10)}}</p>
             </div>
           </div>
 
