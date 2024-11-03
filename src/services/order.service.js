@@ -64,11 +64,11 @@ export const getOrderById = async (uuid) => {
     throw new Error(error.response.data.error);
   }
 };
-export const payWarranty = async (uuid, order_uuid, paymentMethod) => {
+export const payWarranty = async (uuid, order_uuid, paymentMethod, identifier, document) => {
   try {
     const { data } = await instance.post(
       "/warranty/" + uuid,
-      { metodo_pago: paymentMethod, orden: order_uuid },
+      { metodo_pago: paymentMethod, orden: order_uuid, identificador: identifier, documento: document },
       {
         headers: {
           Authorization: `Bearer ${await getToken()}`,

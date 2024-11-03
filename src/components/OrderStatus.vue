@@ -111,17 +111,17 @@
     </div>
 
     <div class="buttons inline-flex mx-auto w-full gap-3 justify-between md:w-3/4">
-      <button v-if="fetchStatusArray('Aceptado').length > 0 && !fee"
-        @click="manageFeesModal" class="default-bar p-2 text-center w-full text-white font-bold rounded-lg">
+      <button v-if="fetchStatusArray('Aceptado').length > 0 && !fee" @click="manageFeesModal"
+        class="default-bar p-2 text-center w-full text-white font-bold rounded-lg">
         Aceptado por calidad
       </button>
       <button v-if="fetchStatusArray('Aceptado').length > 0 && !fee"
-        class="bg-red-400 p-2 text-center w-full text-white font-bold rounded-lg"  @click="manageRejectRatingModal('Rechazado por calidad')">
+        class="bg-red-400 p-2 text-center w-full text-white font-bold rounded-lg"
+        @click="manageRejectRatingModal('Rechazado por calidad')">
         Rechazado por calidad
       </button>
       <button v-if="fetchStatusArray('Aceptado').length == 0 && fetchStatusArray('Rechazado').length == 0"
-        @click="showModal"
-        class="default-bar p-2 text-center w-full text-white font-bold rounded-lg">
+        @click="showModal" class="default-bar p-2 text-center w-full text-white font-bold rounded-lg">
         Recibir
       </button>
       <button v-if="fetchStatusArray('Aceptado').length == 0 && fetchStatusArray('Rechazado').length == 0"
@@ -129,7 +129,8 @@
         Esperar
       </button>
       <button v-if="fetchStatusArray('Aceptado').length == 0 && fetchStatusArray('Rechazado').length == 0"
-        class="bg-red-400 p-2 text-center w-full text-white font-bold rounded-lg"  @click="manageRejectRatingModal('Nunca llegó')">
+        class="bg-red-400 p-2 text-center w-full text-white font-bold rounded-lg"
+        @click="manageRejectRatingModal('Nunca llegó')">
         No llegó
       </button>
     </div>
@@ -227,8 +228,15 @@
             Se efectuará el cobro del 1.5%
           </p>
         </div>
-        <button @click="payFee" class="mt-1 default-bar text-white font-bold shadow p-2 h-12 mx-auto w-3/5 rounded-md">
+
+        <button @click="payFee" v-if="!paymentWaiting"
+          class="mt-1 default-bar text-white font-bold shadow p-2 h-12 mx-auto w-3/5 rounded-md">
           Pagar
+        </button>
+        <button v-if="paymentWaiting"
+          class="mt-1 default-bar text-white font-bold shadow p-2 h-12 mx-auto w-3/5 rounded-md">
+          <div style="border-top-color:transparent"
+            class="w-8 h-8 mx-auto border-4 border-white-400 border-solid rounded-full animate-spin"></div>
         </button>
       </div>
     </CModalBody>
@@ -250,15 +258,35 @@
               (order.porcentaje_inicial / 100) }}
           </h1>
           <select name="paymentMethod" id="paymentMethod" v-model="warrantyPaymentMethod"
-            class="bg-transparent p-2 h-12 border-2 rounded-md w-auto text-gray-700 mx-auto">
-            <option value="" selected disabled>Método de pago</option>
+            class="bg-transparent p-2 h-12 border-2 rounded-md w-auto text-gray-700">
             <option value="TRANSFERENCIA">Transferencia Bancaria</option>
             <option value="TD/TC">TD/TC</option>
           </select>
+
+          <div class="form-input grid gap-1 mt-2" v-if="warrantyPaymentMethod == 'TD/TC'">
+            <label for="tarjeta" class="text-gray-600 font-bold w-5/6">Elige una tarjeta</label>
+            <select name="tarjeta" v-model="identificador" id="tarjeta"
+              class="bg-transparent p-2 h-12 border-2 rounded-md w-auto text-gray-700">
+              <option v-for="card in cards" :key="card.identifier" :value="card.identifier">{{
+                String(card.card_brand).toUpperCase() }} - {{ card.number.slice(0, 4) }} {{ card.number.slice(4, 8) }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-input grid gap-1" v-if="warrantyPaymentMethod == 'TD/TC'">
+            <label for="documento" class="text-gray-600 font-bold w-5/6">Confirma el numero de documento</label>
+            <input type="number" id="documento" v-model="documento" placeholder="El mismo que el de la tarjeta"
+              class="bg-transparent p-2 h-12 border-2 rounded-md w-auto text-gray-700" />
+          </div>
         </div>
-        <button @click="payWarranty"
+        <button @click="payWarranty" v-if="!paymentWaiting"
           class="mt-1 default-bar text-white font-bold shadow p-2 h-12 mx-auto w-1/2 rounded-md">
           Pagar
+        </button>
+        <button v-if="paymentWaiting"
+          class="mt-1 default-bar text-white font-bold shadow p-2 h-12 mx-auto w-1/2 rounded-md">
+          <div style="border-top-color:transparent"
+            class="w-8 h-8 mx-auto border-4 border-white-400 border-solid rounded-full animate-spin"></div>
         </button>
       </div>
     </CModalBody>
@@ -329,7 +357,8 @@
         </div>
         <Calify :value="value" v-if="value >= 1" @update:value="updateCalification"></Calify>
 
-        <button @click="sendQualification" class="mt-1 default-bar text-white font-bold shadow p-2 h-12 mx-auto w-3/5 rounded-md">
+        <button @click="sendQualification"
+          class="mt-1 default-bar text-white font-bold shadow p-2 h-12 mx-auto w-3/5 rounded-md">
           Enviar
         </button>
       </div>
@@ -358,6 +387,7 @@ import Calify from "@/components/Calify.vue";
 import CondicionesOferta from './CondicionesOferta.vue';
 import { emitAlert } from "@/libs/alert.js";
 import * as orderService from '../services/order.service.js';
+import * as walletService from '../services/wallet.service.js'
 import * as qualificationService from '../services/qualification.service.js';
 import { formatDateTime } from "@/libs/date.js";
 import Event from '@/libs/event';
@@ -390,7 +420,11 @@ export default {
       waiting: false,
       rejectModal: false,
       rejectReason: "",
-      warrantyPaymentMethod: ""
+      paymentWaiting: false,
+      warrantyPaymentMethod: "TD/TC",
+      cards: [],
+      identificador: "",
+      documento: 0
     };
   },
 
@@ -401,7 +435,7 @@ export default {
     this.setThreeDaysLimit();
   },
   watch: {
-    '$route.params.identifier': async function() {
+    '$route.params.identifier': async function () {
       if (this.$route.params.identifier == undefined || this.$route.params.name != undefined) {
         return;
       }
@@ -412,11 +446,24 @@ export default {
     }
   },
   methods: {
+    async getWalletCards() {
+      try {
+        const { cardsInfo } = await walletService.getWalletCards();
+        this.cards = cardsInfo;
+      } catch (error) {
+        this.permissionError.enabled = true;
+        this.permissionError = error;
+        return emitAlert(error, 'error');
+      }
+    },
     async getOrderById() {
       try {
         const { order, statuses, warranty, fee } = await orderService.getOrderById(this.$route.params.identifier);
         this.order = order;
         this.warranty = warranty;
+        if (!warranty) {
+          await this.getWalletCards();
+        }
         this.statuses = statuses;
         this.fee = fee;
         Event.emit('chat-id', { chat: this.order.id_chat, product: this.order.producto });
@@ -439,10 +486,10 @@ export default {
     fetchStatusArray(filter) {
       return this.statuses.filter(status => status.estado == filter)
     },
-    async sendQualification(){
+    async sendQualification() {
       try {
-        const { message } = await qualificationService.sendQualification(this.$route.params.identifier, {id_calificado: this.order.id_vendedor, puntaje: this.value});
-        if(message){
+        const { message } = await qualificationService.sendQualification(this.$route.params.identifier, { id_calificado: this.order.id_vendedor, puntaje: this.value });
+        if (message) {
           await this.setOrderRejectedStatus();
         }
       } catch (error) {
@@ -462,12 +509,14 @@ export default {
     },
     async payWarranty() {
       try {
-        const { message } = await orderService.payWarranty(this.order.id_negociacion, this.order.id, this.warrantyPaymentMethod);
+        this.paymentWaiting = true;
+        const { message } = await orderService.payWarranty(this.order.id_negociacion, this.order.id, this.warrantyPaymentMethod, this.identificador, this.documento);
         emitAlert(message, 'success');
         await this.getOrderById();
         this.manageWarrantyModal();
+        this.paymentWaiting = false;
       } catch (error) {
-        return emitAlert(error, 'error');
+        console.log('API ERROR: Error al realizar el pago.')
       }
     },
     async setOrderReceivedStatus() {
@@ -505,7 +554,7 @@ export default {
     manageCalificacionModal() {
       this.calificar = !this.calificar;
     },
-    manageRejectRatingModal(state){
+    manageRejectRatingModal(state) {
       this.rejectReason = state;
       this.rejectModal = !this.rejectModal;
     },

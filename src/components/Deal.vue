@@ -39,8 +39,11 @@
 
     <div class="descripcionpad my -2 w-5/6 mx-auto text-left text-gray-700 text-sm md:w-1/2">
       <h1 class="font-bold text-xl mb-2 text-center">Parámetros de Calidad</h1>
-      <ul class="grid gap-1">
+      <ul class="grid gap-1" v-if="sale.quality_params.length > 0">
         <li class="text-base" v-for="param in sale.quality_params">{{param.nombre}}: min {{param.min_calidad}}% max {{param.max_calidad}}%</li>
+      </ul>
+      <ul class="grid gap-1" v-else>
+        <li class="text-base">No se registraron parámetros</li>
       </ul>
     </div>
 

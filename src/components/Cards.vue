@@ -89,7 +89,7 @@ export default {
     }
   },
   async created() {
-    this.getWalletCards();
+    await this.getWalletCards();
   },
   methods: {
     async getWalletCards() {

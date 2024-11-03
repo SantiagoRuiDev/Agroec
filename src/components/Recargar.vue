@@ -23,6 +23,33 @@
             </select>
           </div>
 
+          <div class="form-input grid gap-1" v-if="paymentMethod == 'TC/TD'">
+            <label for="tarjeta" class="text-gray-600 font-bold w-5/6"
+              >Elige una tarjeta</label
+            >
+            <select
+              name="tarjeta"
+              v-model="identificador"
+              id="tarjeta"
+              class="text-gray-400 w-full mx-auto bg-transparent border-2 border-gray-300 px-3 py-3 rounded-md"
+            >
+              <option v-for="card in cards" :key="card.identifier" :value="card.identifier">{{ String(card.card_brand).toUpperCase() }} - {{ card.number.slice(0,4) }} {{ card.number.slice(4, 8) }}</option>
+            </select>
+          </div>
+
+          <div class="form-input grid gap-1" v-if="paymentMethod == 'TC/TD'">
+            <label for="documento" class="text-gray-600 font-bold w-5/6"
+              >Confirma el numero de documento</label
+            >
+            <input
+              type="number"
+              id="documento"
+              v-model="documento"
+              placeholder="El mismo que el de la tarjeta"
+              class="text-gray-400 w-full mx-auto bg-transparent border-2 border-gray-300 px-3 py-3 rounded-md"
+            />
+          </div>
+
           <div class="form-input grid gap-1" v-if="paymentMethod != 'TRANSFERENCIA'">
             <label for="monto" class="text-gray-600 font-bold w-5/6"
               >Monto de recarga</label
@@ -152,8 +179,14 @@ export default {
       paid: false,
       cancelled: false,
       paymentMethod: "TC/TD",
-      monto_recarga: 0
+      monto_recarga: 0,
+      cards: [],
+      identificador: "",
+      documento: 0
     };
+  },
+  async created() {
+    await this.getWalletCards();
   },
   methods: {
     showModal() {
@@ -165,10 +198,20 @@ export default {
       this.paid = false;
       this.cancelled = false;
     },
+    async getWalletCards() {
+      try {
+        const { cardsInfo } = await walletService.getWalletCards();
+        this.cards = cardsInfo;
+      } catch (error) {
+        this.permissionError.enabled = true;
+        this.permissionError = error;
+        return emitAlert(error, 'error');
+      }
+    },
     async pay() {
       this.closeModal();
       try {
-        await walletService.rechargeWallet(this.monto_recarga, this.paymentMethod);
+        await walletService.rechargeWallet(this.monto_recarga, this.paymentMethod, this.identificador, this.documento);
         this.paid = true;
       } catch (error) {
         emitAlert(error, 'error');
