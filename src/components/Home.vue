@@ -85,9 +85,9 @@
           <Spinner v-else></Spinner>
           <p class="text-gray-500 text-xs font-bold">Negociaciones Abiertas</p>
           <span
-            v-if="stats.buyProposals.filter(proposal => proposal.lastMessage != null && proposal.lastMessage != stats.profile.id_perfil_usuario).length > 0"
+            v-if="stats.buyProposals.filter(proposal => proposal.lastMessage != null && proposal.leido == 0 && proposal.lastMessage != stats.profile.id_perfil_usuario).length > 0"
             class="bg-red-600 rounded-full h-6 grid items-center w-6 text-center text-white text-xs absolute -top-1 -right-1">
-            {{ stats.buyProposals.filter(proposal => proposal.lastMessage != null && proposal.lastMessage !=
+            {{ stats.buyProposals.filter(proposal => proposal.lastMessage != null && proposal.leido == 0 && proposal.lastMessage !=
               stats.profile.id_perfil_usuario).length }}
           </span>
         </div>

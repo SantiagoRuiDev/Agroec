@@ -102,7 +102,7 @@
 
     <div class="grid gap-3 md:w-3/4 mx-auto">
       <div class="flex justify-between mx-auto w-full gap-3 h-full items-end"
-        v-if="!(conditions.estado_comprador == 'Aceptada' && conditions.estado_vendedor == 'Aceptada')">
+        v-if="!(conditions.estado_comprador == 'Aceptada' && conditions.estado_vendedor == 'Aceptada') && !(conditions.estado_comprador == 'Rechazada')">
         <button class="bg-red-400 px-2 py-1 w-1/2 h-8 rounded-md shadow-md color-white text-xs"
           @click="manageRechazoModal">
           Rechazar
@@ -202,7 +202,7 @@
           </p>
         </div>
 
-        <button class="h-12 w-2/3 bg-red-400 rounded-md text-white text-center mx-auto" @click="manageRechazoModal">
+        <button class="h-12 w-2/3 bg-red-400 rounded-md text-white text-center mx-auto" @click="rejectProposal">
           Confirmar
         </button>
       </div>
@@ -331,6 +331,15 @@ export default {
     }
   },
   methods: {
+    async rejectProposal () {
+      try {
+        await proposalService.rejectProposal(this.chat.id_condiciones);
+        await this.getChatConditions();
+        this.manageRechazoModal();
+      } catch (error) {
+        emitAlert(error, 'error');
+      }
+    },
     shouldShowDateDivider(index) {
       const messageDate = this.formatDate(this.messages[index].fecha);
       if (index === 0 || this.formatDate(this.messages[index - 1].fecha) !== messageDate) {
@@ -355,6 +364,7 @@ export default {
     async acceptProposal() {
       try {
         await proposalService.acceptProposal(this.chat.id_condiciones);
+        await this.getChatConditions();
         this.showModal();
       } catch (error) {
         emitAlert(error, 'error');

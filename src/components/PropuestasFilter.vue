@@ -16,9 +16,9 @@
           
           
           <span
-            v-if="proposals.filter(proposal => proposal.lastMessage != null && proposal.lastMessage != proposal.id_comprador && proposal.id_producto == product.id).length"
+            v-if="proposals.filter(proposal => proposal.lastMessage != null && proposal.leido == 0 && proposal.lastMessage != proposal.id_comprador && proposal.id_producto == product.id).length"
             class="h-6 w-6 bg-red-600 rounded-full p-0.5 absolute grid items-center justify-center top-0 right-0 text-white"
-            >{{ proposals.filter(proposal => proposal.lastMessage != null && proposal.lastMessage != proposal.id_comprador  && proposal.id_producto == product.id).length }}</span
+            >{{ proposals.filter(proposal => proposal.lastMessage != null && proposal.leido == 0 && proposal.lastMessage != proposal.id_comprador  && proposal.id_producto == product.id).length }}</span
           >
         </div>
       </RouterLink>
@@ -49,6 +49,15 @@ export default {
     event.on("change-deleteProduct", this.changeDeleteProduct);
     await this.getMarketProducts();
     await this.getLicitationsProposal();
+  },
+  watch: {
+    '$route.fullPath': async function () {
+      if (this.$route.fullPath == '/app/propuestas/filter') {
+        await this.getLicitationsProposal();  // Se ejecuta cada vez que el parámetro cambia
+        await this.getMarketProducts();  // Se ejecuta cada vez que el parámetro cambia
+        return;
+      }
+    }
   },
   methods: {
     changeDeleteProduct() {

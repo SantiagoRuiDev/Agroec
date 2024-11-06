@@ -81,6 +81,23 @@ export const getSaleProposalsByUserAndProduct = async (product_id) => {
     throw new Error(error.response.data.error);
   }
 };
+export const rejectProposal = async (proposal_id) => {
+  try {
+    const { data } = await instance.post(
+      "/proposal/reject/" + proposal_id,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${await getToken()}`,
+          "x-multiuser-token": await getMultiuserToken(),
+        },
+      }
+    );
+    return data;
+  } catch (error) {
+    throw new Error(error.response.data.error);
+  }
+};
 export const acceptProposal = async (proposal_id) => {
   try {
     const { data } = await instance.post(

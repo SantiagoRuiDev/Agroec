@@ -132,3 +132,20 @@ export const setOrderRejectedStatus = async (order_uuid, rejectReason) => {
     throw new Error(error.response.data.error);
   }
 };
+export const setDeliveryRevisionTime = async (order_uuid, selectedDate) => {
+  try {
+    const { data } = await instance.put(
+      "/orders/set-date-delivery/" + order_uuid,
+      { fecha: selectedDate },
+      {
+        headers: {
+          Authorization: `Bearer ${await getToken()}`,
+          "x-multiuser-token": await getMultiuserToken(),
+        },
+      }
+    );
+    return data;
+  } catch (error) {
+    throw new Error(error.response.data.error);
+  }
+};

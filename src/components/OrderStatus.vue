@@ -96,7 +96,7 @@
             }}</p>
         </div>
         <div class="bg-green-200 text-left px-4 py-3 rounded-md grid gap-1"
-          v-if="fetchStatusArray('Aceptado').length == 0 && fetchStatusArray('Rechazado').length == 0">
+        v-if="fetchStatusArray('Aceptado').length == 0 && fetchStatusArray('Rechazado').length == 0 && fetchStatusArray('Entregada').length == 0">
           <h2 class="text-md text-gray-700">En espera</h2>
           <p class="text-sm text-gray-600" v-if="fetchStatusArray('En espera').length > 0">{{
             formatDateTime(statuses.filter(status => status.estado == 'En espera')[0].fecha).orderDate
@@ -105,6 +105,18 @@
             }}</p>
           <p v-else class="text-sm text-gray-600">
             Aun no has recibido la orden.
+          </p>
+        </div>
+        <div class="bg-green-200 text-left px-4 py-3 rounded-md grid gap-1"
+          v-if="fetchStatusArray('Aceptado').length == 0 && fetchStatusArray('Rechazado').length == 0 && fetchStatusArray('Entregada').length > 0">
+          <h2 class="text-md text-gray-700">Entregada</h2>
+          <p class="text-sm text-gray-600" v-if="fetchStatusArray('Entregada').length > 0">{{
+            formatDateTime(statuses.filter(status => status.estado == 'Entregada')[0].fecha).orderDate
+          }} {{
+              formatDateTime(statuses.filter(status => status.estado == 'Entregada')[0].fecha).time
+            }}</p>
+          <p v-else class="text-sm text-gray-600">
+            Aun no has entregado la orden
           </p>
         </div>
       </div>
@@ -302,10 +314,10 @@
         </h2>
         <div class="grid gap-3 w-11/12 mx-auto">
           <p class="text-center text-gray-700">Tienes un maximo de tres dias</p>
-          <input type="date" id="datePicker" v-model="selectedDate" :max="maxDate"
+          <input type="date" id="datePicker" v-model="selectedDate" :max="maxDate" :min="order.fecha_entrega"
             class="h-12 p-2 w-full rounded-md border-2 border-gray-300 text-gray-600 bg-transparent" />>
         </div>
-        <button @click="manageWaitingModal"
+        <button @click="setDeliveryRevisionTime"
           class="mt-1 default-bar text-white font-bold shadow p-2 h-12 mx-auto w-3/5 rounded-md">
           Actualizar
         </button>
@@ -431,8 +443,7 @@ export default {
   async created() {
     Event.on('openPoliticas', this.managePoliticas)
     Event.on('closeDatos', this.manageCondicionesPage);
-    this.getOrderById();
-    this.setThreeDaysLimit();
+    await this.getOrderById();
   },
   watch: {
     '$route.params.identifier': async function () {
@@ -442,7 +453,6 @@ export default {
       Event.on('openPoliticas', this.managePoliticas);
       Event.on('closeDatos', this.manageCondicionesPage);
       await this.getOrderById();
-      this.setThreeDaysLimit();
     }
   },
   methods: {
@@ -466,6 +476,10 @@ export default {
         }
         this.statuses = statuses;
         this.fee = fee;
+        if(fee){
+          this.feesPaid = true;
+        }
+        this.setThreeDaysLimit();
         Event.emit('chat-id', { chat: this.order.id_chat, product: this.order.producto });
       } catch (error) {
         return emitAlert(error, "error");
@@ -500,6 +514,7 @@ export default {
       try {
         const feeAmount = (this.order.precio * this.order.cantidad) * (1.5 / 100)
         const { message } = await orderService.payFee(this.order.id_entrega, feeAmount);
+        this.feesPaid;
         emitAlert(message, 'success');
         await this.getOrderById();
         return this.manageFeesModal();
@@ -535,6 +550,16 @@ export default {
         emitAlert(message, 'success');
         await this.getOrderById();
         return this.manageRejectRatingModal();
+      } catch (error) {
+        return emitAlert(error, 'error');
+      }
+    },
+    async setDeliveryRevisionTime() {
+      try {
+        const { message } = await orderService.setDeliveryRevisionTime(this.order.id, this.selectedDate);
+        emitAlert(message, 'success');
+        await this.getOrderById();
+        return this.manageWaitingModal();
       } catch (error) {
         return emitAlert(error, 'error');
       }
@@ -584,10 +609,14 @@ export default {
     },
     setThreeDaysLimit() {
       // Calcular la fecha límite (3 días desde la fecha actual)
-      const maxDate = new Date();
+      if(!this.order){
+        return;
+      } 
+      const maxDate = new Date(this.order.fecha_entrega);
       maxDate.setDate(maxDate.getDate() + 3);
 
-      // Formatear la fecha límite como "YYYY-MM-DD"
+      // Formatear la fecha límite y minima como "YYYY-MM-DD"
+      this.order.fecha_entrega = new Date(this.order.fecha_entrega).toISOString().split("T")[0];
       const maxDateString = maxDate.toISOString().split("T")[0];
 
       // Establecer la fecha límite como la máxima permitida para el input de fecha

@@ -19,14 +19,16 @@ export function formatDateTime(dateString) {
     const month = months[date.getMonth()];
     const year = date.getFullYear();
     
-    const yearMonthDay =  `${date.getFullYear()}/${date.getMonth()}/${day}`;
-    const plainDate =  `${day}/${date.getMonth()+1}/${date.getFullYear()}`;
+    // Corrección del mes en plainDate
+    const yearMonthDay = `${year}/${date.getMonth() + 1}/${day}`;
+    const plainDate = `${day}/${date.getMonth() + 1}/${year}`;
+    
     // Formato de fecha: "10 de Septiembre de 2024"
     const formattedDate = `${day} de ${month} de ${year}`;
 
     const orderDate = `${month} ${day}, ${year}`;
 
-    const dayAndMonth = `${month} ${date.getDate()}, ${year}`;
+    const dayAndMonth = `${month} ${day}, ${year}`;
     
     const hoursAndMinutes = `${hours}:${minutes}`;
     

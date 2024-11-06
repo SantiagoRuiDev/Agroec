@@ -12,9 +12,10 @@
                 <p class="text-sm"><span class="font-bold text-base">{{ proposal.tipo_perfil }}</span>
                   {{ proposal.provincia }}, {{ proposal.canton }}</p>
               </div>
-              <div class="message-content outgoing-chat rounded-md p-2 w-full"
+              <div class="message-content rounded-md p-2 w-full grid"
+                  :class="{'outgoing-chat': proposal.lastMessage.leido == 0, 'incoming-chat': proposal.lastMessage.leido == 1}"
                 v-if="proposal.lastMessage && proposal.lastMessage.id_remitente == proposal.id_vendedor">
-                <p class="text-sm text-gray-800 font-bold">
+                <p class="text-sm text-gray-800" :class="{'font-bold': proposal.lastMessage.leido == 0}">
                   {{ proposal.lastMessage.texto }}
                 </p>
                 <span class="text-gray-700 text-xs justify-self-end hour-text">{{ formatDateTime(proposal.lastMessage.fecha).whenMessageSent }}
