@@ -4,7 +4,7 @@
       v-if="order.modo_pago == 'Modo Garantía' && !warranty" @click="manageWarrantyModal">
       Pagar garantía
     </button>
-    <button v-if="fetchStatusArray('Aceptado').length > 0 && !fee"
+    <button v-if="fetchStatusArray('Recibido').length > 0 && !fee"
       class="default-bar rounded-md h-12 p-2 text-white text-center" @click="manageFeesModal">
       Pagar Agroec
     </button>
@@ -35,8 +35,8 @@
 
       <div class="deliver-cards grid gap-3 w-full">
         <div class="bg-yellow-100 text-left px-4 py-3 rounded-md grid gap-1" v-if="order.modo_pago == 'Modo Garantía'">
-          <h2 class="text-md text-gray-700">Pago en garantía de ${{ (order.precio * order.condicion_cantidad) *
-            (order.porcentaje_inicial / 100) }}</h2>
+          <h2 class="text-md text-gray-700">Pago en garantía de ${{ ((order.precio * order.condicion_cantidad) *
+            (order.porcentaje_inicial / 100)).toFixed(2) }}</h2>
           <p class="text-sm text-gray-600" v-if="warranty">{{
             formatDateTime(warranty.fecha).orderDate
           }} {{
@@ -78,6 +78,15 @@
 
         <!--Recibido-->
         <div class="bg-blue-200 text-left px-4 py-3 rounded-md grid gap-1"
+          v-if="fetchStatusArray('Recibido').length > 0  && fetchStatusArray('Aceptado').length == 0 && fetchStatusArray('Rechazado').length == 0">
+          <h2 class="text-md text-gray-700">Recibido</h2>
+          <p class="text-sm text-gray-600">{{
+            formatDateTime(fetchStatusArray('Recibido')[0].fecha).orderDate
+          }} {{
+              formatDateTime(fetchStatusArray('Recibido')[0].fecha).time
+            }}</p>
+        </div>
+        <div class="bg-blue-200 text-left px-4 py-3 rounded-md grid gap-1"
           v-if="fetchStatusArray('Aceptado').length > 0">
           <h2 class="text-md text-gray-700">Recibido Aceptado</h2>
           <p class="text-sm text-gray-600">{{
@@ -95,8 +104,20 @@
               formatDateTime(fetchStatusArray('Rechazado')[0].fecha).time
             }}</p>
         </div>
+        <div class="bg-orange-200 text-left px-4 py-3 rounded-md grid gap-1"
+        v-if="fetchStatusArray('Recibido').length == 0 && fetchStatusArray('Rechazado').length == 0 && fetchStatusArray('Revision').length > 0">
+          <h2 class="text-md text-gray-700">En revisión</h2>
+          <p class="text-sm text-gray-600" v-if="fetchStatusArray('Revision').length > 0">{{
+            formatDateTime(statuses.filter(status => status.estado == 'Revision')[0].fecha).orderDate
+          }} {{
+              formatDateTime(statuses.filter(status => status.estado == 'Revision')[0].fecha).time
+            }}</p>
+          <p v-else class="text-sm text-gray-600">
+            Aun se esta evaluando la orden
+          </p>
+        </div>
         <div class="bg-green-200 text-left px-4 py-3 rounded-md grid gap-1"
-        v-if="fetchStatusArray('Aceptado').length == 0 && fetchStatusArray('Rechazado').length == 0 && fetchStatusArray('Entregada').length == 0">
+        v-if="fetchStatusArray('Recibido').length == 0 && fetchStatusArray('Aceptado').length == 0 && fetchStatusArray('Rechazado').length == 0 && fetchStatusArray('Entregada').length == 0 && fetchStatusArray('Revision').length == 0">
           <h2 class="text-md text-gray-700">En espera</h2>
           <p class="text-sm text-gray-600" v-if="fetchStatusArray('En espera').length > 0">{{
             formatDateTime(statuses.filter(status => status.estado == 'En espera')[0].fecha).orderDate
@@ -108,7 +129,7 @@
           </p>
         </div>
         <div class="bg-green-200 text-left px-4 py-3 rounded-md grid gap-1"
-          v-if="fetchStatusArray('Aceptado').length == 0 && fetchStatusArray('Rechazado').length == 0 && fetchStatusArray('Entregada').length > 0">
+          v-if="fetchStatusArray('Aceptado').length == 0 && fetchStatusArray('Rechazado').length == 0 && fetchStatusArray('Entregada').length > 0 && fetchStatusArray('Revision').length == 0">
           <h2 class="text-md text-gray-700">Entregada</h2>
           <p class="text-sm text-gray-600" v-if="fetchStatusArray('Entregada').length > 0">{{
             formatDateTime(statuses.filter(status => status.estado == 'Entregada')[0].fecha).orderDate
@@ -116,31 +137,31 @@
               formatDateTime(statuses.filter(status => status.estado == 'Entregada')[0].fecha).time
             }}</p>
           <p v-else class="text-sm text-gray-600">
-            Aun no has entregado la orden
+            Aun no has recibido la orden
           </p>
         </div>
       </div>
     </div>
 
     <div class="buttons inline-flex mx-auto w-full gap-3 justify-between md:w-3/4">
-      <button v-if="fetchStatusArray('Aceptado').length > 0 && !fee" @click="manageFeesModal"
+      <button v-if="fetchStatusArray('Recibido').length > 0 && !fee" @click="manageFeesModal"
         class="default-bar p-2 text-center w-full text-white font-bold rounded-lg">
         Aceptado por calidad
       </button>
-      <button v-if="fetchStatusArray('Aceptado').length > 0 && !fee"
+      <button v-if="fetchStatusArray('Recibido').length > 0 && !fee"
         class="bg-red-400 p-2 text-center w-full text-white font-bold rounded-lg"
         @click="manageRejectRatingModal('Rechazado por calidad')">
         Rechazado por calidad
       </button>
-      <button v-if="fetchStatusArray('Aceptado').length == 0 && fetchStatusArray('Rechazado').length == 0"
+      <button v-if="fetchStatusArray('Recibido').length == 0"
         @click="showModal" class="default-bar p-2 text-center w-full text-white font-bold rounded-lg">
         Recibir
       </button>
-      <button v-if="fetchStatusArray('Aceptado').length == 0 && fetchStatusArray('Rechazado').length == 0"
+      <button v-if="fetchStatusArray('Recibido').length == 0"
         class="bg-gray-400 p-2 text-center w-full text-white font-bold rounded-lg" @click="manageWaitingModal">
         Esperar
       </button>
-      <button v-if="fetchStatusArray('Aceptado').length == 0 && fetchStatusArray('Rechazado').length == 0"
+      <button v-if="fetchStatusArray('Recibido').length == 0"
         class="bg-red-400 p-2 text-center w-full text-white font-bold rounded-lg"
         @click="manageRejectRatingModal('Nunca llegó')">
         No llegó
@@ -266,14 +287,31 @@
             Se efectuará el cobro del {{ order.porcentaje_inicial }}%
           </p>
           <h1 class="text-center text-gray-700 font-bold text-xl">
-            Total <span class="text-lime-500 font-bold">$</span>{{ (order.precio * order.condicion_cantidad) *
-              (order.porcentaje_inicial / 100) }}
+            Total <span class="text-lime-500 font-bold">$</span>{{ ((order.precio * order.condicion_cantidad) *
+              (order.porcentaje_inicial / 100)).toFixed(2) }}
           </h1>
           <select name="paymentMethod" id="paymentMethod" v-model="warrantyPaymentMethod"
             class="bg-transparent p-2 h-12 border-2 rounded-md w-auto text-gray-700">
             <option value="TRANSFERENCIA">Transferencia Bancaria</option>
             <option value="TD/TC">TD/TC</option>
           </select>
+
+          <div
+            class="grid gap-1 mx-auto mt-3 w-full"
+            v-if="warrantyPaymentMethod == 'TRANSFERENCIA'"
+          >
+            <label for="garantia" class="text-gray-700"
+              >Transferencia Bancaria</label
+            >
+            <li class="text-gray-700">Numero Cuenta: 0000005721192722</li>
+            <li class="text-gray-700">Banco: Banco A</li>
+            <li class="text-gray-700">
+              Contacta con área financiera vía WhatsApp
+              <a href="wa.link/10nq8r" class="font-bold" target="_blank"
+                >+593 96 319 5377</a
+              >
+            </li>
+          </div>
 
           <div class="form-input grid gap-1 mt-2" v-if="warrantyPaymentMethod == 'TD/TC'">
             <label for="tarjeta" class="text-gray-600 font-bold w-5/6">Elige una tarjeta</label>
@@ -291,7 +329,7 @@
               class="bg-transparent p-2 h-12 border-2 rounded-md w-auto text-gray-700" />
           </div>
         </div>
-        <button @click="payWarranty" v-if="!paymentWaiting"
+        <button @click="payWarranty" v-if="!paymentWaiting && warrantyPaymentMethod == 'TD/TC'" 
           class="mt-1 default-bar text-white font-bold shadow p-2 h-12 mx-auto w-1/2 rounded-md">
           Pagar
         </button>
@@ -344,7 +382,7 @@
         </div>
         <Calify :value="value" v-if="value >= 1" @update:value="updateCalification"></Calify>
 
-        <button class="mt-1 default-bar text-white font-bold shadow p-2 h-12 mx-auto w-3/5 rounded-md">
+        <button  @click="sendQualification" class="mt-1 default-bar text-white font-bold shadow p-2 h-12 mx-auto w-3/5 rounded-md">
           Enviar
         </button>
       </div>
@@ -369,7 +407,7 @@
         </div>
         <Calify :value="value" v-if="value >= 1" @update:value="updateCalification"></Calify>
 
-        <button @click="sendQualification"
+        <button @click="sendRejectQualification"
           class="mt-1 default-bar text-white font-bold shadow p-2 h-12 mx-auto w-3/5 rounded-md">
           Enviar
         </button>
@@ -500,12 +538,20 @@ export default {
     fetchStatusArray(filter) {
       return this.statuses.filter(status => status.estado == filter)
     },
+    async sendRejectQualification() {
+      try {
+        const {message} = await qualificationService.sendQualification(this.$route.params.identifier, { id_calificado: this.order.id_vendedor, puntaje: this.value });
+        if(message){
+          this.setOrderRejectedStatus();
+        }
+      } catch (error) {
+        return emitAlert(error, 'error');
+      }
+    },
     async sendQualification() {
       try {
-        const { message } = await qualificationService.sendQualification(this.$route.params.identifier, { id_calificado: this.order.id_vendedor, puntaje: this.value });
-        if (message) {
-          await this.setOrderRejectedStatus();
-        }
+        await qualificationService.sendQualification(this.$route.params.identifier, { id_calificado: this.order.id_vendedor, puntaje: this.value });
+        this.manageCalificacionModal();
       } catch (error) {
         return emitAlert(error, 'error');
       }

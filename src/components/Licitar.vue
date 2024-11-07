@@ -137,7 +137,6 @@
 
 <script allowJs>
 import { emitAlert } from "@/libs/alert.js";
-import * as productService from '../services/product.service.js';
 import * as licitacionService from '../services/licitation.service.js';
 import { CModal, CModalBody } from "@coreui/vue";
 export default {
@@ -197,6 +196,7 @@ export default {
         this.maxParametro != ""
       ) {
         this.newParametros.push({
+          id: "",
           nombre: this.nombreParametro,
           min: this.minParametro,
           max: this.maxParametro,

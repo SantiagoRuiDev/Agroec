@@ -102,20 +102,21 @@
 
     <div class="grid gap-3 md:w-3/4 mx-auto">
       <div class="flex justify-between mx-auto w-full gap-3 h-full items-end"
-        v-if="!(conditions.estado_comprador == 'Aceptada' && conditions.estado_vendedor == 'Aceptada') && !(conditions.estado_comprador == 'Rechazada')">
+        v-if="!(conditions.estado_comprador == 'Aceptada' && conditions.estado_vendedor == 'Aceptada')">
         <button class="bg-red-400 px-2 py-1 w-1/2 h-8 rounded-md shadow-md color-white text-xs"
+          v-if="!(conditions.estado_comprador == 'Rechazada' || conditions.estado_comprador == 'Aceptada')"
           @click="manageRechazoModal">
           Rechazar
         </button>
         <button v-on:click="showDealDetails"
-          class="default-bar px-2 w-3/4 py-1 h-8 rounded-md shadow-md color-white text-xs">
+          class="default-bar px-2 w-full py-1 h-8 rounded-md shadow-md color-white text-xs">
           Condiciones
         </button>
-        <button v-if="!offerSaw" @click="showCondicionesMessage"
+        <button v-if="!offerSaw && !(conditions.estado_comprador == 'Rechazada' || conditions.estado_comprador == 'Aceptada')" @click="showCondicionesMessage"
           class="bg-gray-400 px-2 w-full py-1 h-8 rounded-md shadow-md color-white text-xs">
           Aceptar oferta
         </button>
-        <button v-if="offerSaw" @click="acceptProposal"
+        <button v-if="offerSaw && !(conditions.estado_comprador == 'Rechazada' || conditions.estado_comprador == 'Aceptada')" @click="acceptProposal"
           class="default-bar px-2 w-full py-1 h-8 rounded-md shadow-md color-white text-xs">
           Aceptar oferta
         </button>
