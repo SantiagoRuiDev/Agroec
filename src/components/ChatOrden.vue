@@ -74,7 +74,7 @@
           </ion-segment>
         </div>
         <div class="grid" v-if="entregasSelect">
-          <RouterLink :to="'/order/' + delivery.id_orden" v-for="delivery in deliveries.filter(del => del.estado == 'Aceptado')"
+          <RouterLink :to="'/order/' + delivery.id_orden" v-for="delivery in deliveries.filter(del => del.estado == 'Aceptado' || del.estado == 'Recibido')"
             :key="delivery">
             <div class="order-card flex md:grid md:grid-cols-2 gap-3 p-2">
               <div class="flex w-full gap-3">
@@ -102,7 +102,7 @@
 
         </div>
         <div class="grid" v-if="!entregasSelect">
-          <RouterLink :to="'/order/' + delivery.id_orden" v-for="delivery in deliveries.filter(del => del.estado != 'Aceptado')"
+          <RouterLink :to="'/order/' + delivery.id_orden" v-for="delivery in deliveries.filter(del => del.estado != 'Aceptado' || del.estado != 'Recibido')"
             :key="delivery">
             <div class="order-card flex md:grid md:grid-cols-2 gap-3 p-2">
               <div class="flex w-full gap-3">
@@ -227,6 +227,7 @@ export default {
     };
   },
   async created() {
+    await this.getChatConditions();
     await initializeSocket();
     this.scrollToBottom(); // Para asegurar que inicia en la parte inferior
     Event.on("close-details", () => {
@@ -236,12 +237,12 @@ export default {
       await this.getChatConditions();
       Event.emit('map-conditions');
     })
-    await this.getChatConditions();
     socket.emit('connect-room', { room: this.$route.params.identifier });
     socket.on('room-messages', (data) => {
+      const aux = this.chat.user_logged;
       this.chat = data.chat.chat;
       this.messages = data.chat.messages;
-      this.chat.user_logged = data.user;
+      this.chat.user_logged = aux;
     });
     socket.on('room-unauthorized', (data) => {
       emitAlert(data, 'error');
@@ -289,10 +290,11 @@ export default {
       }
     },
     async getChatConditions() {
-      const { condition, deliveries, quality_params } = await chatService.getChatConditions(this.$route.params.identifier);
+      const { condition, deliveries, quality_params, logged } = await chatService.getChatConditions(this.$route.params.identifier);
       this.deliveries = deliveries;
       this.conditions = condition;
       this.quality_params = quality_params;
+      this.chat.user_logged = logged;
       this.conditions.precio_puesto_domicilio = (this.conditions.precio_puesto_domicilio == 1) ? true : false;
 
       Event.emit('proposal-id', condition.id_propuesta);

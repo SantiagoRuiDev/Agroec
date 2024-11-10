@@ -40,20 +40,11 @@
       <div class="form-input grid gap-1">
         <label for="ubicacion" class="text-gray-700">Ubicación</label>
         <div class="inline-flex gap-2">
-          <select type="text" id="ubicacion" v-model="location" placeholder="Indica la ubicación."
+          <select id="ubicacion" v-model="location" placeholder="Indica la ubicación."
             @change="changeLocation" class="bg-gray-50 border p-2 rounded-md text-gray-600 w-full">
-            <option :value="location" selected v-if="!Object.values(location).includes('')">
-              {{ location.nombre }}
+            <option :value="point" v-for="point in points" :key="point.id" selected>
+              {{ point.nombre }}
             </option>
-            <option value="" selected disabled v-if="Object.values(location).includes('')">
-              Ubicación
-            </option>
-            <option
-              :value="{ nombre: 'Pueblo Gardey', direccion: 'Avenida Mayo 312', ubicacion: 'Gardey, Tandil, Buenos Aires, Argentina' }">
-              Pueblo Gardey</option>
-            <option
-              :value="{ nombre: 'Parroquia Carbo', direccion: 'Bolivar SMN 312', ubicacion: 'Pedro Carbo, Azcuay, Ecuador' }">
-              Parroquia Carbo</option>
           </select>
           <button type="button" @click="addNewLocation"
             class="default-bar p-1 text-center text-white font-bold rounded-md">
@@ -143,6 +134,7 @@ import * as proposalService from '../services/proposal.service.js';
 import ProfileIcon from "./ProfileIcon.vue";
 import { emitAlert } from "@/libs/alert.js";
 import router from "../router/index";
+import { getReceptionPoints } from "@/services/profile.service.js";
 export default {
   components: {
     CModal,
@@ -160,10 +152,11 @@ export default {
       offerSaw: false,
       visible: false,
       locationModal: false,
-      location: { nombre: "", direccion: "", ubicacion: "" },
+      location: { nombre: "", direccion: "", ubicacion_google_maps: "" },
       nombrePunto: "",
       direccionPunto: "",
       ubicacionPunto: "",
+      points: [],
 
       schema: {
         precio: 0,
@@ -180,6 +173,7 @@ export default {
   },
   async created() {
     await this.getSale()
+    await this.getReceptionPoints();
   },
   methods: {
     addNewLocation() {
@@ -188,14 +182,17 @@ export default {
     saveNewLocation() {
       this.location.nombre = this.nombrePunto
       this.location.direccion = this.direccionPunto
-      this.location.ubicacion = this.ubicacionPunto
+      this.location.ubicacion_google_maps = this.ubicacionPunto
       this.addNewLocation();
     },
     changeLocation() {
-      this.schema.ubicacion_google_maps = this.location.nombre + ", " + this.location.direccion, + ", " + this.location.ubicacion
+      this.schema.ubicacion_google_maps = this.location.nombre + ", " + this.location.direccion + ", " + this.location.ubicacion_google_maps;
     },
     async getSale() {
       this.sale = await saleService.getSaleByIdentifier(this.$route.params.identifier, this.$route.params.name);
+    },
+    async getReceptionPoints() {
+      this.points = await getReceptionPoints();
     },
     async sendProposal() {
       try {

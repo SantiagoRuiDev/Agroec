@@ -216,6 +216,27 @@
 
           <Contact />
 
+          <div class="grid w-full col-span-2" v-if="contact.length > 0">
+            <h1 class="text-gray-600 mb-3 font-bold">Contactos Añadidos</h1>
+
+            <div class="text-gray-500 gap-4 flex flex-row w-full items-center" v-for="item in contact"
+              :key="item">
+              <svg xmlns="http://www.w3.org/2000/svg" height="18" fill="#a2afbe" viewBox="0 -960 960 960" width="18">
+                <path d="m560-120-57-57 144-143H200v-480h80v400h367L503-544l56-57 241 241-240 240Z" />
+              </svg>
+              <p class="">
+                {{ item.nombre }}, {{ item.telefono }}, {{ item.cargo }}, {{ item.correo }}
+              </p>
+
+              <button type="button" v-on:click="deleteContacto(item)">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" fill="#E87C61">
+                  <path
+                    d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
           <div class="col-span-2">
             <label for="eco" class="text-gray-600 font-bold w-5/6 mx-auto" v-if="
               profile.actividad_economica != '' ||
@@ -372,6 +393,7 @@ import { CModal, CModalBody } from "@coreui/vue";
 import { IonPage, IonContent, IonToolbar, IonHeader } from "@ionic/vue";
 import { emitAlert } from '../libs/alert.js'
 import * as authService from '../services/auth.service.js'
+import event from "@/libs/event";
 export default {
   components: {
     CModal,
@@ -443,9 +465,18 @@ export default {
       },
       Provincias: Provincias,
       Cantones: [],
+      contact: []
     };
   },
+  created: function () {
+    event.on('add-contact', (data) => {
+      this.contact.push(data);
+    })
+  },
   methods: {
+    deleteContacto(x) {
+      this.contact = this.contact.filter((y) => y != x);
+    },
     deletePunto(x) {
       this.puntosRecepcion = this.puntosRecepcion.filter((y) => y != x);
     },
@@ -497,7 +528,8 @@ export default {
           this.showErrors = false;
           // Aca llamar registro.
           try {
-            await authService.createUserAccount({ user: this.user, profile: this.profile, points: this.puntosRecepcion });
+            const {code} = await authService.createUserAccount({ user: this.user, profile: this.profile, points: this.puntosRecepcion, contact: this.contact });
+            this.codigoNumerico = code;
           } catch (error) {
             return emitAlert(error.message, "error");
           }

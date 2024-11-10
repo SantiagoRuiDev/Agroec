@@ -78,7 +78,7 @@
 
         <!--Recibido-->
         <div class="bg-blue-200 text-left px-4 py-3 rounded-md grid gap-1"
-          v-if="fetchStatusArray('Recibido').length > 0  && fetchStatusArray('Aceptado').length == 0 && fetchStatusArray('Rechazado').length == 0">
+          v-if="fetchStatusArray('Recibido').length > 0 && fetchStatusArray('Aceptado').length == 0 && fetchStatusArray('Rechazado').length == 0">
           <h2 class="text-md text-gray-700">Recibido</h2>
           <p class="text-sm text-gray-600">{{
             formatDateTime(fetchStatusArray('Recibido')[0].fecha).orderDate
@@ -105,7 +105,7 @@
             }}</p>
         </div>
         <div class="bg-orange-200 text-left px-4 py-3 rounded-md grid gap-1"
-        v-if="fetchStatusArray('Recibido').length == 0 && fetchStatusArray('Rechazado').length == 0 && fetchStatusArray('Revision').length > 0">
+          v-if="fetchStatusArray('Recibido').length == 0 && fetchStatusArray('Rechazado').length == 0 && fetchStatusArray('Revision').length > 0">
           <h2 class="text-md text-gray-700">En revisión</h2>
           <p class="text-sm text-gray-600" v-if="fetchStatusArray('Revision').length > 0">{{
             formatDateTime(statuses.filter(status => status.estado == 'Revision')[0].fecha).orderDate
@@ -117,7 +117,7 @@
           </p>
         </div>
         <div class="bg-green-200 text-left px-4 py-3 rounded-md grid gap-1"
-        v-if="fetchStatusArray('Recibido').length == 0 && fetchStatusArray('Aceptado').length == 0 && fetchStatusArray('Rechazado').length == 0 && fetchStatusArray('Entregada').length == 0 && fetchStatusArray('Revision').length == 0">
+          v-if="fetchStatusArray('Recibido').length == 0 && fetchStatusArray('Aceptado').length == 0 && fetchStatusArray('Rechazado').length == 0 && fetchStatusArray('Entregada').length == 0 && fetchStatusArray('Revision').length == 0">
           <h2 class="text-md text-gray-700">En espera</h2>
           <p class="text-sm text-gray-600" v-if="fetchStatusArray('En espera').length > 0">{{
             formatDateTime(statuses.filter(status => status.estado == 'En espera')[0].fecha).orderDate
@@ -144,17 +144,19 @@
     </div>
 
     <div class="buttons inline-flex mx-auto w-full gap-3 justify-between md:w-3/4">
-      <button v-if="fetchStatusArray('Recibido').length > 0 && !fee" @click="manageFeesModal"
-        class="default-bar p-2 text-center w-full text-white font-bold rounded-lg">
+      <button
+        v-if="fetchStatusArray('Recibido').length > 0 && !fetchStatusArray('Rechazado').length > 0 && !fetchStatusArray('Aceptado').length > 0"
+        @click="manageFeesModal" class="default-bar p-2 text-center w-full text-white font-bold rounded-lg">
         Aceptado por calidad
       </button>
-      <button v-if="fetchStatusArray('Recibido').length > 0 && !fee"
+      <button
+        v-if="fetchStatusArray('Recibido').length > 0 && !fetchStatusArray('Rechazado').length > 0 && !fetchStatusArray('Aceptado').length > 0"
         class="bg-red-400 p-2 text-center w-full text-white font-bold rounded-lg"
         @click="manageRejectRatingModal('Rechazado por calidad')">
         Rechazado por calidad
       </button>
-      <button v-if="fetchStatusArray('Recibido').length == 0"
-        @click="showModal" class="default-bar p-2 text-center w-full text-white font-bold rounded-lg">
+      <button v-if="fetchStatusArray('Recibido').length == 0" @click="showModal"
+        class="default-bar p-2 text-center w-full text-white font-bold rounded-lg">
         Recibir
       </button>
       <button v-if="fetchStatusArray('Recibido').length == 0"
@@ -296,20 +298,13 @@
             <option value="TD/TC">TD/TC</option>
           </select>
 
-          <div
-            class="grid gap-1 mx-auto mt-3 w-full"
-            v-if="warrantyPaymentMethod == 'TRANSFERENCIA'"
-          >
-            <label for="garantia" class="text-gray-700"
-              >Transferencia Bancaria</label
-            >
+          <div class="grid gap-1 mx-auto mt-3 w-full" v-if="warrantyPaymentMethod == 'TRANSFERENCIA'">
+            <label for="garantia" class="text-gray-700">Transferencia Bancaria</label>
             <li class="text-gray-700">Numero Cuenta: 0000005721192722</li>
             <li class="text-gray-700">Banco: Banco A</li>
             <li class="text-gray-700">
               Contacta con área financiera vía WhatsApp
-              <a href="wa.link/10nq8r" class="font-bold" target="_blank"
-                >+593 96 319 5377</a
-              >
+              <a href="wa.link/10nq8r" class="font-bold" target="_blank">+593 96 319 5377</a>
             </li>
           </div>
 
@@ -329,7 +324,7 @@
               class="bg-transparent p-2 h-12 border-2 rounded-md w-auto text-gray-700" />
           </div>
         </div>
-        <button @click="payWarranty" v-if="!paymentWaiting && warrantyPaymentMethod == 'TD/TC'" 
+        <button @click="payWarranty" v-if="!paymentWaiting && warrantyPaymentMethod == 'TD/TC'"
           class="mt-1 default-bar text-white font-bold shadow p-2 h-12 mx-auto w-1/2 rounded-md">
           Pagar
         </button>
@@ -382,7 +377,8 @@
         </div>
         <Calify :value="value" v-if="value >= 1" @update:value="updateCalification"></Calify>
 
-        <button  @click="sendQualification" class="mt-1 default-bar text-white font-bold shadow p-2 h-12 mx-auto w-3/5 rounded-md">
+        <button @click="sendQualification"
+          class="mt-1 default-bar text-white font-bold shadow p-2 h-12 mx-auto w-3/5 rounded-md">
           Enviar
         </button>
       </div>
@@ -514,7 +510,7 @@ export default {
         }
         this.statuses = statuses;
         this.fee = fee;
-        if(fee){
+        if (fee) {
           this.feesPaid = true;
         }
         this.setThreeDaysLimit();
@@ -540,10 +536,11 @@ export default {
     },
     async sendRejectQualification() {
       try {
-        const {message} = await qualificationService.sendQualification(this.$route.params.identifier, { id_calificado: this.order.id_vendedor, puntaje: this.value });
-        if(message){
-          this.setOrderRejectedStatus();
-        }
+        await orderService.setOrderRejectedStatus(this.order.id, this.rejectReason);
+        const { message } = await qualificationService.sendQualification(this.$route.params.identifier, { id_calificado: this.order.id_vendedor, puntaje: this.value });
+        emitAlert(message, 'success');
+        await this.getOrderById();
+        return this.manageRejectRatingModal();
       } catch (error) {
         return emitAlert(error, 'error');
       }
@@ -592,10 +589,7 @@ export default {
     },
     async setOrderRejectedStatus() {
       try {
-        const { message } = await orderService.setOrderRejectedStatus(this.order.id, this.rejectReason);
-        emitAlert(message, 'success');
-        await this.getOrderById();
-        return this.manageRejectRatingModal();
+        return await orderService.setOrderRejectedStatus(this.order.id, this.rejectReason);
       } catch (error) {
         return emitAlert(error, 'error');
       }
@@ -655,9 +649,9 @@ export default {
     },
     setThreeDaysLimit() {
       // Calcular la fecha límite (3 días desde la fecha actual)
-      if(!this.order){
+      if (!this.order) {
         return;
-      } 
+      }
       const maxDate = new Date(this.order.fecha_entrega);
       maxDate.setDate(maxDate.getDate() + 3);
 

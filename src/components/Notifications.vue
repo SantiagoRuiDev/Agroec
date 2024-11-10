@@ -3,7 +3,7 @@
     <div class="content w-full mx-auto grid my-5 gap-2">
 
         <div class="grid gap-1" v-for="notification in filteredNotifications" :key="notification.id">
-            <RouterLink :to="'/chat/licitacion/' + notification.id_producto + '/' + notification.id_redireccion"
+            <RouterLink :to="'/chat/licitacion/' + notification.id_producto + '/' + notification.id_redireccion" v-if="!Object.values(notification).includes(null)"
                 class="tutorial-card grid gap-1 p-3 items-center w-11/12 mx-auto border-b-2 border-gray-100">
                 <div class="inline-flex justify-between">
                     <h3 class="text-gray-600 text-md font-bold">

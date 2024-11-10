@@ -75,7 +75,7 @@
           class="w-2/3 sm:w-1/2 mx-auto grid items-center text-center bg-gray-100 rounded-lg md:w-1/3">
           <span class="p-2 text-sm text-gray-500 font-bold">{{ formatDate(message.fecha) }}</span>
         </div>
-        <div class="flex gap-2 items-center" :class="{
+        <div class="flex gap-2 items-center" v-if="chat.user_logged != ''" :class="{
           'message-incoming': chat.user_logged != message.id_remitente,
           'message-outgoing': chat.user_logged == message.id_remitente
         }">
@@ -108,7 +108,7 @@
           @click="manageRechazoModal">
           Rechazar
         </button>
-        <button v-on:click="showDealDetails"
+        <button v-on:click="showDealDetails" v-if="!(conditions.estado_comprador == 'Rechazada')"
           class="default-bar px-2 w-full py-1 h-8 rounded-md shadow-md color-white text-xs">
           Condiciones
         </button>
@@ -303,6 +303,7 @@ export default {
     };
   },
   async created() {
+    await this.getChatConditions();
     await initializeSocket();
     this.scrollToBottom(); // Para asegurar que inicia en la parte inferior
     Event.on("close-details", () => {
@@ -312,12 +313,12 @@ export default {
       await this.getChatConditions();
       Event.emit('map-conditions');
     })
-    await this.getChatConditions();
     socket.emit('connect-room', { room: this.$route.params.identifier });
     socket.on('room-messages', (data) => {
+      const aux = this.chat.user_logged;
       this.chat = data.chat.chat;
       this.messages = data.chat.messages;
-      this.chat.user_logged = data.user;
+      this.chat.user_logged = aux;
     });
     socket.on('room-unauthorized', (data) => {
       console.log(data);
@@ -372,10 +373,11 @@ export default {
       }
     },
     async getChatConditions() {
-      const { condition, deliveries, quality_params } = await chatService.getChatConditions(this.$route.params.identifier);
+      const { condition, deliveries, quality_params, logged } = await chatService.getChatConditions(this.$route.params.identifier);
       this.deliveries = deliveries;
       this.conditions = condition;
       this.quality_params = quality_params;
+      this.chat.user_logged = logged;
       this.conditions.precio_puesto_domicilio = (this.conditions.precio_puesto_domicilio == 1) ? true : false;
     },
     draggedMessageEnd(e) {
