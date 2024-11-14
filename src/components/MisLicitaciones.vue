@@ -26,7 +26,7 @@
               </h1>
               <p class="text-gray-500 text-xs">Cant: {{ licitation.cantidad }}{{ licitation.cantidad_unidad }}</p>
               <p class="text-gray-500 text-xs">{{ licitation.presentacion_entrega }}</p>
-              <h1 class="text-yellow-400 text-xs font-bold mt-1">${{ licitation.precio }}</h1>
+              <h1 class="text-yellow-400 text-xs font-bold mt-1">${{ licitation.precio.toFixed(2) }}</h1>
               <h1 class="text-yellow-400 text-xs font-bold">{{ licitation.precio_unidad }}</h1>
             </div>
           </RouterLink>
@@ -65,7 +65,7 @@
               </h1>
               <p class="text-gray-500 text-xs">Cant: {{ licitation.cantidad }}{{ licitation.cantidad_unidad }}</p>
               <p class="text-gray-500 text-xs">{{ licitation.presentacion_entrega }}</p>
-              <h1 class="text-yellow-400 text-xs font-bold mt-1">${{ licitation.precio }}</h1>
+              <h1 class="text-yellow-400 text-xs font-bold mt-1">${{ licitation.precio.toFixed(2) }}</h1>
               <h1 class="text-yellow-400 text-xs font-bold">{{ licitation.precio_unidad }}</h1>
             </div>
           </RouterLink>
@@ -104,7 +104,7 @@
               </h1>
               <p class="text-gray-500 text-xs">Cant: {{ licitation.cantidad }}{{ licitation.cantidad_unidad }}</p>
               <p class="text-gray-500 text-xs">{{ licitation.presentacion_entrega }}</p>
-              <h1 class="text-yellow-400 text-xs font-bold mt-1">${{ licitation.precio }}</h1>
+              <h1 class="text-yellow-400 text-xs font-bold mt-1">${{ licitation.precio.toFixed(2) }}</h1>
               <h1 class="text-yellow-400 text-xs font-bold">{{ licitation.precio_unidad }}</h1>
             </div>
           </RouterLink>
@@ -142,7 +142,7 @@
               </h1>
               <p class="text-gray-500 text-xs">Cant: {{ licitation.cantidad }}{{ licitation.cantidad_unidad }}</p>
               <p class="text-gray-500 text-xs">{{ licitation.presentacion_entrega }}</p>
-              <h1 class="text-yellow-400 text-xs font-bold mt-1">${{ licitation.precio }}</h1>
+              <h1 class="text-yellow-400 text-xs font-bold mt-1">${{ licitation.precio.toFixed(2) }}</h1>
               <h1 class="text-yellow-400 text-xs font-bold">{{ licitation.precio_unidad }}</h1>
               <h1 class="second-color text-xs font-bold">Prom: $250</h1>
               <h1 class="third-color text-xs font-bold">

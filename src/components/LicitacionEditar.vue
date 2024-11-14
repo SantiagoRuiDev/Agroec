@@ -83,7 +83,7 @@
         </div>
       </div>
 
-      <div class="grid gap-1 mx-auto mt-2" v-if="quality_params.length > 0">
+      <div class="grid gap-1 mt-2" v-if="quality_params.length > 0">
         <h1 class="text-gray-700 mb-3">Parámetros Agregados</h1>
 
         <p class="text-gray-600 flex gap-3 items-center" v-for="(item, index) in quality_params" :key="index">
@@ -280,6 +280,7 @@ export default {
         this.quality_param.min >= 0 &&
         this.quality_param.max > 0
       ) {
+        console.log(1);
         this.quality_params.push({ ...this.quality_param });
         return;
       }
@@ -329,11 +330,8 @@ export default {
         this.minParametro != "" &&
         this.maxParametro != ""
       ) {
-        this.newParametros.push({
-          id: "",
-          nombre: this.nombreParametro,
-          min: this.minParametro,
-          max: this.maxParametro,
+        this.quality_params.push({
+          ...this.quality_param
         });
         return;
       }

@@ -129,7 +129,7 @@
           </p>
         </div>
         <div class="bg-green-200 text-left px-4 py-3 rounded-md grid gap-1"
-          v-if="fetchStatusArray('Aceptado').length == 0 && fetchStatusArray('Rechazado').length == 0 && fetchStatusArray('Entregada').length > 0 && fetchStatusArray('Revision').length == 0">
+          v-if="fetchStatusArray('Aceptado').length == 0 && fetchStatusArray('Recibido').length == 0 && fetchStatusArray('Rechazado').length == 0 && fetchStatusArray('Entregada').length > 0 && fetchStatusArray('Revision').length == 0">
           <h2 class="text-md text-gray-700">Entregada</h2>
           <p class="text-sm text-gray-600" v-if="fetchStatusArray('Entregada').length > 0">{{
             formatDateTime(statuses.filter(status => status.estado == 'Entregada')[0].fecha).orderDate
@@ -145,25 +145,25 @@
 
     <div class="buttons inline-flex mx-auto w-full gap-3 justify-between md:w-3/4">
       <button
-        v-if="fetchStatusArray('Recibido').length > 0 && !fetchStatusArray('Rechazado').length > 0 && !fetchStatusArray('Aceptado').length > 0"
+        v-if="fetchStatusArray('Recibido').length > 0 && fetchStatusArray('Rechazado').length == 0 && fetchStatusArray('Aceptado').length == 0"
         @click="manageFeesModal" class="default-bar p-2 text-center w-full text-white font-bold rounded-lg">
         Aceptado por calidad
       </button>
       <button
-        v-if="fetchStatusArray('Recibido').length > 0 && !fetchStatusArray('Rechazado').length > 0 && !fetchStatusArray('Aceptado').length > 0"
+        v-if="fetchStatusArray('Recibido').length > 0 && fetchStatusArray('Rechazado').length == 0 && fetchStatusArray('Aceptado').length == 0"
         class="bg-red-400 p-2 text-center w-full text-white font-bold rounded-lg"
         @click="manageRejectRatingModal('Rechazado por calidad')">
         Rechazado por calidad
       </button>
-      <button v-if="fetchStatusArray('Recibido').length == 0" @click="showModal"
+      <button v-if="fetchStatusArray('Recibido').length == 0 && fetchStatusArray('Aceptado').length == 0 && fetchStatusArray('Rechazado').length == 0" @click="showModal"
         class="default-bar p-2 text-center w-full text-white font-bold rounded-lg">
         Recibir
       </button>
-      <button v-if="fetchStatusArray('Recibido').length == 0"
+      <button v-if="fetchStatusArray('Recibido').length == 0 && fetchStatusArray('Aceptado').length == 0 && fetchStatusArray('Rechazado').length == 0"
         class="bg-gray-400 p-2 text-center w-full text-white font-bold rounded-lg" @click="manageWaitingModal">
         Esperar
       </button>
-      <button v-if="fetchStatusArray('Recibido').length == 0"
+      <button v-if="fetchStatusArray('Recibido').length == 0 && fetchStatusArray('Aceptado').length == 0 && fetchStatusArray('Rechazado').length == 0"
         class="bg-red-400 p-2 text-center w-full text-white font-bold rounded-lg"
         @click="manageRejectRatingModal('Nunca llegó')">
         No llegó

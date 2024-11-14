@@ -24,7 +24,7 @@
       </div>
       <div class="form-input grid gap-1">
         <label for="cantidad" class="text-gray-700">Cantidad</label>
-        <input type="number" id="cantidad" placeholder="Cantidad" v-model="schema.cantidad"
+        <input type="number" id="cantidad" placeholder="Cantidad" v-model="schema.cantidad" v-if="sale" @change="checkQuantity"
           class="bg-gray-50 border p-2 rounded-md text-gray-600" />
         <select name="unidadCantidad" v-model="schema.cantidad_unidad"
           class="w-full mx-auto bg-gray-50 border p-2 rounded-md text-gray-600">
@@ -83,7 +83,12 @@
       </div>
     </div>
 
-    <button class="default-bar p-3 rounded-md text-center text-zinc-50 w-5/6 mx-auto mb-4 md:w-1/2"
+    <button v-if="loading" class="default-bar p-3 rounded-md text-center text-zinc-50 w-5/6 mx-auto mb-4 md:w-1/2"
+      >
+      <div style="border-top-color:transparent"
+      class="w-6 h-6 mx-auto border-4 border-white-400 border-solid rounded-full animate-spin"></div>
+    </button>
+    <button v-if="!loading" class="default-bar p-3 rounded-md text-center text-zinc-50 w-5/6 mx-auto mb-4 md:w-1/2"
       @click="sendProposal">Enviar propuesta de compra</button>
   </div>
 
@@ -157,7 +162,7 @@ export default {
       direccionPunto: "",
       ubicacionPunto: "",
       points: [],
-
+      loading: false,
       schema: {
         precio: 0,
         precio_unidad: "QQ",
@@ -176,6 +181,11 @@ export default {
     await this.getReceptionPoints();
   },
   methods: {
+    checkQuantity(){
+      if(this.schema.cantidad > this.sale.cantidad){
+        this.schema.cantidad = this.sale.cantidad;
+      }
+    },
     addNewLocation() {
       this.locationModal = !this.locationModal;
     },
@@ -195,8 +205,10 @@ export default {
       this.points = await getReceptionPoints();
     },
     async sendProposal() {
+      this.loading = true;
       try {
         const {chat} = await proposalService.createLicitationProposal(this.$route.params.identifier, this.schema);
+        this.loading = false;
         router.push('/chat/licitacion/' + this.$route.params.name + '/' + chat);
       } catch (error) {
         return emitAlert(error, 'error')

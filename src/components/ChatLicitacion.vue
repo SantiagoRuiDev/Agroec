@@ -116,7 +116,12 @@
           class="bg-gray-400 px-2 w-full py-1 h-8 rounded-md shadow-md color-white text-xs">
           Aceptar oferta
         </button>
-        <button v-if="offerSaw && !(conditions.estado_comprador == 'Rechazada' || conditions.estado_comprador == 'Aceptada')" @click="acceptProposal"
+        <button v-if="loading && offerSaw && !(conditions.estado_comprador == 'Rechazada' || conditions.estado_comprador == 'Aceptada')"
+          class="default-bar px-2 w-full py-1 h-8 rounded-md shadow-md color-white text-xs">
+          <div style="border-top-color:transparent"
+            class="w-6 h-6 mx-auto border-4 border-white-400 border-solid rounded-full animate-spin"></div>
+        </button>
+        <button v-if="!loading && offerSaw && !(conditions.estado_comprador == 'Rechazada' || conditions.estado_comprador == 'Aceptada')" @click="acceptProposal"
           class="default-bar px-2 w-full py-1 h-8 rounded-md shadow-md color-white text-xs">
           Aceptar oferta
         </button>
@@ -269,9 +274,8 @@ export default {
       entregasModal: false,
       entregasSelect: true,
       repliedMessage: "",
-
       quality_params: [],
-
+      loading: false,
       lastDate: null,
       conditions: {
         id: "",
@@ -313,6 +317,12 @@ export default {
       await this.getChatConditions();
       Event.emit('map-conditions');
     })
+    Event.on("delete-delivery", (item) => {
+      this.deleteDelivery(item);
+    })
+    Event.on("delete-param", (item) => {
+      this.deleteQualityParam(item);
+    })
     socket.emit('connect-room', { room: this.$route.params.identifier });
     socket.on('room-messages', (data) => {
       const aux = this.chat.user_logged;
@@ -333,6 +343,12 @@ export default {
     }
   },
   methods: {
+    deleteDelivery(del){
+      this.deliveries = this.deliveries.filter(x => x.id != del.id);
+    },
+    deleteQualityParam(del){
+      this.quality_params = this.quality_params.filter(x => x.id != del.id);
+    },
     async rejectProposal () {
       try {
         await proposalService.rejectProposal(this.chat.id_condiciones);
@@ -364,10 +380,12 @@ export default {
       return formatDateTime(x)
     },
     async acceptProposal() {
+      this.loading = true;
       try {
         await proposalService.acceptProposal(this.chat.id_condiciones);
         await this.getChatConditions();
         this.showModal();
+        this.loading = false;
       } catch (error) {
         emitAlert(error, 'error');
       }

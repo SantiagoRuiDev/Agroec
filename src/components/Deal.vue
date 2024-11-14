@@ -14,7 +14,7 @@
     <div class="pricepad bg-gray-200 text-center h-28 grid items-center">
       <div class="">
         <h2 class="text-sm font-bold text-gray-900">Precio con transacción protegida</h2>
-        <p class="text-3xl font-bold text-gray-700">USD ${{ sale.precio }} x {{ sale.precio_unidad }}</p>
+        <p class="text-3xl font-bold text-gray-700">USD ${{ Number(sale.precio).toFixed(2) }} x {{ sale.precio_unidad }}</p>
       </div>
     </div>
 

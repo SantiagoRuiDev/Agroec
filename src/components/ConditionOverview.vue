@@ -27,7 +27,7 @@
         <div class="grid gap-1 w-full">
           <label for="cantidad" class="text-gray-700">Cantidad</label>
           <div class="grid grid-cols-2 gap-1">
-            <input type="number" id="cantidad" placeholder="Cantidad" v-model="conditions.cantidad"
+            <input type="number" id="cantidad" placeholder="Cantidad" v-model="conditions.cantidad" @change="changeQuantity"
               class="bg-gray-50 border p-2 rounded-md text-gray-600" />
             <select name="unidad" v-model="conditions.cantidad_unidad"
               class="w-full bg-gray-50 border rounded-md p-2 text-gray-600">
@@ -334,6 +334,7 @@ import Event from "../libs/event.js";
 import { IonIcon, IonSegment, IonLabel, IonSegmentButton } from "@ionic/vue";
 import { emitAlert } from "@/libs/alert.js";
 import { formatDateTime } from "@/libs/date.js";
+import event from "../libs/event.js";
 export default {
   components: {
     CModal,
@@ -417,6 +418,11 @@ export default {
     })
   },
   methods: {
+    changeQuantity(){
+      if(this.conditions.cantidad > this.conditions.cantidad_maxima){
+        this.conditions.cantidad = this.conditions.cantidad_maxima;
+      }
+    },
     async getReceptionPoints() {
       try {
         this.reception_points = await profileService.getReceptionPoints();
@@ -514,8 +520,8 @@ export default {
         }
         const { message } = await proposalService.deleteQualityParam(item.id);
 
+        this.deleteLocalParam(item);
         emitAlert(message, 'success');
-        Event.emit('fetch-conditions');
       } catch (error) {
         return emitAlert(error, 'error');
       }
@@ -526,18 +532,24 @@ export default {
           return this.deleteLocalDelivery(item);
         }
         const { message } = await proposalService.deleteDelivery(item.id);
-
+        
+        this.deleteLocalDelivery(item);
         emitAlert(message, 'success');
-        Event.emit('fetch-conditions');
       } catch (error) {
         return emitAlert(error, 'error');
       }
     },
     deleteLocalDelivery(y) {
-      this.deliveries = this.deliveries.filter(x => x == y);
+      this.deliveries = this.deliveries.filter(x => x != y);
+      if(y.id != ""){
+        event.emit('delete-delivery', y);
+      }
     },
     deleteLocalParam(x) {
-      return (this.quality_params = this.quality_params.filter((y) => y != x));
+      this.quality_params = this.quality_params.filter((y) => y != x);
+      if(x.id != ""){
+        event.emit('delete-param', x);
+      }
     },
     newParametro() {
       if (

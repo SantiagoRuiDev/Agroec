@@ -59,7 +59,7 @@
           </div>
 
           <RouterLink :to="'/sale/' + Item + '/' + sale.id" class="Profile-Text text-right  w-1/4">
-            <h1 class="text-yellow-400 text-md font-bold">${{ sale.precio }}</h1>
+            <h1 class="text-yellow-400 text-md font-bold">${{ Number(sale.precio).toFixed(2) }}</h1>
             <p class="text-yellow-400 text-md font-bold" v-if="sale.nombre_parametro_calidad">{{sale.nombre_parametro_calidad}} {{sale.min_parametro_calidad}}-{{sale.max_parametro_calidad}}%</p>
           </RouterLink>
         </div>
