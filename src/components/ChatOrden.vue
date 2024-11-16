@@ -25,7 +25,7 @@
                 formatDateTime(message.fecha).time }}</span>
             </div>
           </div>
-          <img src="@/assets/People/Aso.svg" alt="Outgoing Message Profile Icon" class="h-16 w-16"
+          <img src="@/assets/People/Comprador.svg" alt="Outgoing Message Profile Icon" class="h-16 w-16"
             v-if="chat.user_logged == message.id_remitente" />
         </div>
       </div>

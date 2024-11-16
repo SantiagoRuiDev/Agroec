@@ -15,7 +15,9 @@
       </div>
       <div class="mx-auto grid relative w-full">
         <div class="relative">
-          <label for="identificador" class="text-gray-600 font-bold w-5/6 mx-auto" v-if="user.tipo_identificacion != '' || user.tipo_identificacion == '' || !showErrors">Tipo de Identificacion</label>
+          <label for="identificador" class="text-gray-600 font-bold w-5/6 mx-auto"
+            v-if="user.tipo_identificacion != '' || user.tipo_identificacion == '' || !showErrors">Tipo de
+            Identificacion</label>
           <label for="identificador" class="text-red-400 font-bold w-5/6 mx-auto"
             v-if="user.tipo_identificacion == '' && showErrors">Debes seleccionar un Tipo de Identificacion</label>
           <select id="identificador" v-model="user.tipo_identificacion"
@@ -71,10 +73,10 @@
       <div class="mx-auto grid relative w-full">
         <div class="relative">
           <label for="provincia" class="text-gray-600 font-bold w-5/6 mx-auto"
-            v-if="user.provincia != '' || user.provincia == '' || !showErrors">Provincia</label>
+            v-if="selectedProvincia != '' || selectedProvincia == '' || !showErrors">Provincia</label>
           <label for="provincia" class="text-red-400 font-bold w-5/6 mx-auto"
-            v-if="user.provincia == '' && showErrors">Debes seleccionar una Provincia</label>
-          <select id="provincia" v-model="user.provincia" @change="loadCantonesByProvincia"
+            v-if="selectedProvincia == '' && showErrors">Debes seleccionar una Provincia</label>
+          <select id="provincia" v-model="selectedProvincia" @change="loadCantonesByProvincia"
             class="w-full mx-auto bg-transparent border-2 border-gray-300 px-3 py-3 rounded-md text-gray-600">
             <option v-for="provincia in Provincias" :key="provincia.id" :value="provincia.id">{{ provincia.nombre }}
             </option>
@@ -85,10 +87,11 @@
       <div class="mx-auto grid relative w-full">
         <div class="relative">
           <label for="canton" class="text-gray-600 font-bold w-5/6 mx-auto"
-            v-if="user.canton != '' || user.canton == '' || !showErrors">Cantón</label>
-          <label for="canton" class="text-red-400 font-bold w-5/6 mx-auto" v-if="user.canton == '' && showErrors">Debes
+            v-if="profile.canton != '' || profile.canton == '' || !showErrors">Cantón</label>
+          <label for="canton" class="text-red-400 font-bold w-5/6 mx-auto"
+            v-if="profile.canton == '' && showErrors">Debes
             seleccionar un Cantón</label>
-          <select id="canton" v-model="user.canton"
+          <select id="canton" v-model="profile.canton"
             class="w-full mx-auto bg-transparent border-2 border-gray-300 px-3 py-3 rounded-md text-gray-600">
             <option v-for="canton in Cantones" :key="canton.ID" :value="canton.Nombre">{{ canton.Nombre }}</option>
           </select>
@@ -98,11 +101,11 @@
       <div class="grid gap-1 mx-auto mt-3 col-span-2 w-full">
         <label for="" class="text-gray-600 font-bold">Matriz y puntos de recepción</label>
         <label for="direccionMatriz" class="text-gray-500">Dirección</label>
-        <input type="text" id="direccionMatriz" placeholder="Direccion"
+        <input type="text" id="direccionMatriz" placeholder="Direccion" v-model="profile.direccion"
           class="w-full mx-auto bg-transparent border-2 border-gray-300 px-3 py-3 rounded-md text-gray-600" />
         <label for="ubicacionMatriz" class="text-gray-500">Ubicación</label>
         <div class="inline-flex justify-between gap-2">
-          <input type="text" id="ubicacionMatriz" placeholder="Ubicacion"
+          <input type="text" id="ubicacionMatriz" placeholder="Ubicacion" v-model="profile.ubicacion_google_maps"
             class="w-full mx-auto bg-transparent border-2 border-gray-300 px-3 py-3 rounded-md text-gray-600" />
           <button class="default-bar text-white font-bold grid items-center h-full p-2 rounded-md">
             <img src="@/assets/Status/LocationPin.svg" alt="Pin Ubication" />
@@ -164,6 +167,26 @@
       </div>
 
       <Contact />
+
+      <div class="grid w-full col-span-2" v-if="contact.length > 0">
+        <h1 class="text-gray-600 mb-3 font-bold">Contactos Añadidos</h1>
+
+        <div class="text-gray-500 gap-4 flex flex-row w-full items-center" v-for="item in contact" :key="item">
+          <svg xmlns="http://www.w3.org/2000/svg" height="18" fill="#a2afbe" viewBox="0 -960 960 960" width="18">
+            <path d="m560-120-57-57 144-143H200v-480h80v400h367L503-544l56-57 241 241-240 240Z" />
+          </svg>
+          <p class="">
+            {{ item.nombre }}, {{ item.telefono }}, {{ item.cargo }}, {{ item.correo }}
+          </p>
+
+          <button type="button" v-on:click="deleteContacto(item)">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" fill="#E87C61">
+              <path
+                d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" />
+            </svg>
+          </button>
+        </div>
+      </div>
 
       <div class="col-span-2">
         <label for="eco" class="text-gray-600 font-bold w-5/6 mx-auto" v-if="
@@ -275,8 +298,8 @@ import Cantones from "../assets/JSON/Cantones.json";
 import { mapGetters, mapActions } from "vuex";
 import { CModal, CModalBody } from "@coreui/vue";
 import { emitAlert } from '../libs/alert.js'
-import * as authService from '../services/auth.service.js'
 import * as profileService from '../services/profile.service.js';
+import event from "@/libs/event";
 export default {
   components: {
     CModal,
@@ -316,17 +339,29 @@ export default {
         consumo_mes_tm: 0,
         consumo_anual: 0,
         presupuesto_mes: 0,
-        politicas_recepcion: ""
+        politicas_recepcion: "",
+        direccion: "",
+        ubicacion_google_maps: "",
+        provincia: "",
+        canton: ""
       },
+      selectedProvincia: 0,
       Provincias: Provincias,
       Cantones: [],
       showErrors: false,
+      contact: []
     };
   },
   created: async function () {
+    event.on('add-contact', (data) => {
+      this.contact.push(data);
+    })
     await this.getProfile();
   },
   methods: {
+    deleteContacto(x) {
+      this.contact = this.contact.filter((y) => y != x);
+    },
     async getProfile() {
       const data = await profileService.getProfileByUser();
       this.user.canton = data.user.canton;
@@ -339,7 +374,11 @@ export default {
       this.user.tipo_identificacion = data.user.tipo_identificacion;
       this.user.ubicacion = data.user.ubicacion;
 
-      this.profile = {...data.profile}
+      this.profile = { ...data.profile }
+      this.selectedProvincia = Provincias.find((prov) => prov.nombre == this.profile.provincia).id;
+      this.puntosRecepcion = Array.from(data.points);
+      this.contact = Array.from(data.contacts);
+      this.loadCantonesByProvincia();
     },
     showModal() {
       this.visible = true;
@@ -355,6 +394,7 @@ export default {
         this.direccionPunto != ""
       ) {
         this.puntosRecepcion.push({
+          id: "",
           nombre: this.nombrePunto,
           ubicacion: this.ubicacionPunto,
           direccion: this.direccionPunto,
@@ -362,7 +402,7 @@ export default {
       }
     },
     loadCantonesByProvincia() {
-      this.Cantones = Cantones.filter(canton => canton.Provincia_ID == this.user.provincia);
+      this.Cantones = Cantones.filter(canton => canton.Provincia_ID == this.selectedProvincia);
     },
     deletePunto(x) {
       this.puntosRecepcion = this.puntosRecepcion.filter((y) => y != x);

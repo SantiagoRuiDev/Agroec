@@ -94,7 +94,7 @@
                 formatDateTime(message.fecha).time }}</span>
             </div>
           </div>
-          <img src="@/assets/People/Aso.svg" alt="Outgoing Message Profile Icon" class="h-16 w-16"
+          <img src="@/assets/People/Comprador.svg" alt="Outgoing Message Profile Icon" class="h-16 w-16"
             v-if="chat.user_logged == message.id_remitente" />
         </div>
       </div>
@@ -244,6 +244,7 @@ import { IonIcon, IonSegment, IonLabel, IonSegmentButton } from "@ionic/vue";
 import { emitAlert } from "@/libs/alert.js";
 import ProfileIcon from "./ProfileIcon.vue";
 import ConditionOverview from "./ConditionOverview.vue";
+import router from "@/router/index.js";
 export default {
   components: {
     CModal,
@@ -322,6 +323,9 @@ export default {
     })
     Event.on("delete-param", (item) => {
       this.deleteQualityParam(item);
+    })
+    Event.on("condition-updated", (data) => {
+      this.closeDetails();
     })
     socket.emit('connect-room', { room: this.$route.params.identifier });
     socket.on('room-messages', (data) => {
@@ -453,6 +457,7 @@ export default {
     closeModal() {
       // Close the menu by setting menuOpen to false
       this.visible = false;
+      router.push('/app/home');
     },
     managePercetangeFinal(e) {
       if (e.target.value > 100) {

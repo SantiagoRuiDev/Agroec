@@ -316,6 +316,10 @@ Aliquam pretium libero in quam gravida, sed ornare eros efficitur. Nam vitae mat
           </div>
 
           <button class="default-bar p-2 text-center text-white font-bold rounded-lg mt-2 w-full"
+            @click="backToChat">
+            Regresar a la conversación
+          </button>
+          <button class="default-bar p-2 text-center text-white font-bold rounded-lg mt-2 w-full"
             @click="saveEntregaParam">
             Guardar
           </button>
@@ -478,6 +482,9 @@ export default {
         return emitAlert(error, 'error');
       }
     },
+    backToChat(){
+      event.emit('condition-updated', null);
+    },
     manageEditParamModal() {
       this.editParam = !this.editParam;
     },
@@ -636,6 +643,7 @@ export default {
           quality_params: this.quality_params
         });
         emitAlert(message, 'success');
+        event.emit('condition-updated', null);
       } catch (error) {
         return emitAlert(error, 'error');
       }

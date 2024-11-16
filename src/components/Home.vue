@@ -1,6 +1,7 @@
 <template>
   <div class="portait">
-    <img src="@/assets/IconClean.svg" alt="App Icon" class="h-48 w-48 mx-auto" />
+    <img src="@/assets/IconClean.svg" alt="App Icon" class="h-44 w-44 mx-auto object-cover" />
+    <h1 class="font-bold opacity-90 text-lg uppercase text-center">APP COMPRADOR</h1>
   </div>
   <div class="content w-11/12 mx-auto grid mb-5 mt-2 gap-2 md:w-3/4 relative">
     <Slider :advertising="advertising" />
@@ -177,7 +178,7 @@ export default {
 
 <style scoped>
 .portait {
-  height: 168px;
+  height: 224px;
   background: linear-gradient(to bottom, #3b4c28, #455d29, #456025);
 }
 </style>

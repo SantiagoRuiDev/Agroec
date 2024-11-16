@@ -139,6 +139,7 @@
 import { emitAlert } from "@/libs/alert.js";
 import * as licitacionService from '../services/licitation.service.js';
 import { CModal, CModalBody } from "@coreui/vue";
+import router from "@/router/index.js";
 export default {
   components: {
     CModal,
@@ -188,6 +189,7 @@ export default {
     closeModal() {
       // Close the menu by setting menuOpen to false
       this.visible = false;
+      router.push('/app/home');
     },
     newParametro() {
       if (
