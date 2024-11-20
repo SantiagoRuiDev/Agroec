@@ -308,6 +308,9 @@ http://ionicframework.com/docs/theming/ */
   background-color: rgba(168, 207, 123, 0.33); /* Color aclarado al 33% */
 }
 
+.system-chat {
+  background-color: rgba(210, 236, 116, 0.33); /* Color aclarado al 33% */
+}
 
 .replied-outgoing-chat {
   background-color: rgba(168, 207, 123, 0.22); /* Color aclarado al 33% */

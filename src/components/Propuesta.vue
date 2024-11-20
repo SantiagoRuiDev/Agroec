@@ -92,7 +92,7 @@
       @click="sendProposal">Enviar propuesta de compra</button>
   </div>
 
-  <CModal alignment="center" :visible="visible">
+  <CModal alignment="center" :visible="visible" @click="closeModal">
     <CModalBody>
       <div class="grid w-full gap-3 pb-3">
         <img src="@/assets/Nav/X.svg" alt="Close alert" @click="closeModal" class="justify-self-end" />

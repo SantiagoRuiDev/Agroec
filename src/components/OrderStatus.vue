@@ -155,15 +155,18 @@
         @click="manageRejectRatingModal('Rechazado por calidad')">
         Rechazado por calidad
       </button>
-      <button v-if="fetchStatusArray('Recibido').length == 0 && fetchStatusArray('Aceptado').length == 0 && fetchStatusArray('Rechazado').length == 0" @click="showModal"
-        class="default-bar p-2 text-center w-full text-white font-bold rounded-lg">
+      <button
+        v-if="fetchStatusArray('Recibido').length == 0 && fetchStatusArray('Aceptado').length == 0 && fetchStatusArray('Rechazado').length == 0"
+        @click="showModal" class="default-bar p-2 text-center w-full text-white font-bold rounded-lg">
         Recibir
       </button>
-      <button v-if="fetchStatusArray('Recibido').length == 0 && fetchStatusArray('Aceptado').length == 0 && fetchStatusArray('Rechazado').length == 0"
+      <button
+        v-if="fetchStatusArray('Recibido').length == 0 && fetchStatusArray('Aceptado').length == 0 && fetchStatusArray('Rechazado').length == 0"
         class="bg-gray-400 p-2 text-center w-full text-white font-bold rounded-lg" @click="manageWaitingModal">
         Esperar
       </button>
-      <button v-if="fetchStatusArray('Recibido').length == 0 && fetchStatusArray('Aceptado').length == 0 && fetchStatusArray('Rechazado').length == 0"
+      <button
+        v-if="fetchStatusArray('Recibido').length == 0 && fetchStatusArray('Aceptado').length == 0 && fetchStatusArray('Rechazado').length == 0"
         class="bg-red-400 p-2 text-center w-full text-white font-bold rounded-lg"
         @click="manageRejectRatingModal('Nunca llegó')">
         No llegó
@@ -222,7 +225,7 @@
       </div>
       <div class="grid grid-cols-2">
         <p class="text-sm text-gray-800 text-left font-bold">Total</p>
-        <p class="text-sm text-gray-800 text-right font-bold">${{ order.condicion_cantidad * order.precio }}</p>
+        <p class="text-sm text-gray-800 text-right font-bold">{{ formatToUSD(order.condicion_cantidad * order.precio) }}</p>
       </div>
     </div>
   </div>
@@ -259,15 +262,22 @@
           Cobro de fee de Agroec
         </h2>
         <div class="flex gap-3 w-5/6 mx-auto justify-center">
-          <p class="text-center text-gray-700">
+          <p class="text-center text-gray-700" v-if="!paymentError">
             Se efectuará el cobro del 1.5%
+          </p>
+          <p class="text-center text-gray-700" v-else>
+            {{ String(paymentMessage).split('Error:')[1] }}
           </p>
         </div>
 
-        <button @click="payFee" v-if="!paymentWaiting"
+        <button @click="payFee" v-if="!paymentWaiting && !paymentError"
           class="mt-1 default-bar text-white font-bold shadow p-2 h-12 mx-auto w-3/5 rounded-md">
           Pagar
         </button>
+        <RouterLink to="/app/recargar" v-if="!paymentWaiting && paymentError"
+          class="mt-1 default-bar grid items-center text-center text-white font-bold shadow p-2 h-12 mx-auto w-3/5 rounded-md">
+          Recargar billetera
+        </RouterLink>
         <button v-if="paymentWaiting"
           class="mt-1 default-bar text-white font-bold shadow p-2 h-12 mx-auto w-3/5 rounded-md">
           <div style="border-top-color:transparent"
@@ -308,7 +318,7 @@
             </li>
           </div>
 
-          <div class="form-input grid gap-1 mt-2" v-if="warrantyPaymentMethod == 'TD/TC'">
+          <div class="form-input grid gap-1 mt-2" v-if="warrantyPaymentMethod == 'TD/TC' && cards.length > 0">
             <label for="tarjeta" class="text-gray-600 font-bold w-5/6">Elige una tarjeta</label>
             <select name="tarjeta" v-model="identificador" id="tarjeta"
               class="bg-transparent p-2 h-12 border-2 rounded-md w-auto text-gray-700">
@@ -318,13 +328,22 @@
             </select>
           </div>
 
-          <div class="form-input grid gap-1" v-if="warrantyPaymentMethod == 'TD/TC'">
+          <div class="form-input grid gap-1" v-if="warrantyPaymentMethod == 'TD/TC' && cards.length > 0">
             <label for="documento" class="text-gray-600 font-bold w-5/6">Confirma el numero de documento</label>
             <input type="number" id="documento" v-model="documento" placeholder="El mismo que el de la tarjeta"
               class="bg-transparent p-2 h-12 border-2 rounded-md w-auto text-gray-700" />
           </div>
+
+          <div class="form-input grid gap-1 my-3" v-if="warrantyPaymentMethod == 'TD/TC' && cards.length == 0">
+            <label for="documento" class="text-gray-600 font-bold w-full">No se encontraron tarjetas asociadas</label>
+            <RouterLink to="/app/cards/add"
+              class="mt-1 dark-bar grid items-center text-center text-white font-bold p-2 h-12 rounded-md">
+              Agregar tarjeta
+            </RouterLink>
+          </div>
+
         </div>
-        <button @click="payWarranty" v-if="!paymentWaiting && warrantyPaymentMethod == 'TD/TC'"
+        <button @click="payWarranty" v-if="!paymentWaiting && (warrantyPaymentMethod == 'TD/TC' && cards.length > 0)"
           class="mt-1 default-bar text-white font-bold shadow p-2 h-12 mx-auto w-1/2 rounded-md">
           Pagar
         </button>
@@ -467,6 +486,8 @@ export default {
       rejectModal: false,
       rejectReason: "",
       paymentWaiting: false,
+      paymentError: false,
+      paymentMessage: "",
       warrantyPaymentMethod: "TD/TC",
       cards: [],
       identificador: "",
@@ -490,14 +511,18 @@ export default {
     }
   },
   methods: {
+    formatToUSD(amount) {
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD'
+      }).format(amount);
+    },
     async getWalletCards() {
       try {
         const { cardsInfo } = await walletService.getWalletCards();
         this.cards = cardsInfo;
       } catch (error) {
-        this.permissionError.enabled = true;
-        this.permissionError = error;
-        return emitAlert(error, 'error');
+        return;
       }
     },
     async getOrderById() {
@@ -555,14 +580,18 @@ export default {
     },
     async payFee() {
       try {
+        this.paymentWaiting = true;
+        this.paymentError = false;
         const feeAmount = (this.order.precio * this.order.cantidad) * (1.5 / 100)
         const { message } = await orderService.payFee(this.order.id_entrega, feeAmount);
-        this.feesPaid;
+        this.paymentWaiting = false;
         emitAlert(message, 'success');
         await this.getOrderById();
         return this.manageFeesModal();
       } catch (error) {
-        return emitAlert(error, 'error');
+        this.paymentError = true;
+        this.paymentWaiting = false;
+        this.paymentMessage = error;
       }
     },
     async payWarranty() {

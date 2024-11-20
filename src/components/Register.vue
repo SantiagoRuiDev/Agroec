@@ -53,7 +53,7 @@
               ">Tipo de Identificacion</label>
               <label for="identificador" class="text-red-400 font-bold w-5/6 mx-auto"
                 v-if="user.tipo_identificacion == '' && showErrors">Debes seleccionar un Tipo de Identificacion</label>
-              <select id="identificador" v-model="user.tipo_identificacion"
+              <select id="identificador" v-model="user.tipo_identificacion" @change="verifyDocument"
                 class="w-full mx-auto bg-transparent border-2 border-gray-300 px-3 py-3 rounded-md text-gray-600">
                 <option selected value="RUC">RUC</option>
                 <option value="Cédula">Cédula</option>
@@ -63,13 +63,15 @@
           </div>
           <div class="">
             <label for="cedula" class="text-gray-600 font-bold w-5/6 mx-auto" v-if="
-              user.numero_identificacion != '' ||
-              user.numero_identificacion == '' ||
-              !showErrors
-            ">Numero de Identificacion</label>
+              (user.numero_identificacion != '' ||
+              user.numero_identificacion == '') &&
+              (!showErrors && !documentVerification)">
+              Numero de Identificacion</label>
             <label for="cedula" class="text-red-400 font-bold w-5/6 mx-auto"
               v-if="user.numero_identificacion == '' && showErrors">Debes ingresar un Numero de Identificacion</label>
-            <input type="text" name="cedula" v-model="user.numero_identificacion"
+            <label for="cedula" class="text-red-400 font-bold w-5/6 mx-auto"
+              v-if="documentVerification">{{ verifyDocument().message }}</label>
+            <input type="text" name="cedula" v-model="user.numero_identificacion" @change="verifyDocument"
               class="text-gray-400 w-full mx-auto bg-transparent border-2 border-gray-300 px-3 py-3 rounded-md"
               placeholder="Numero de Identificacion" />
           </div>
@@ -219,8 +221,7 @@
           <div class="grid w-full col-span-2" v-if="contact.length > 0">
             <h1 class="text-gray-600 mb-3 font-bold">Contactos Añadidos</h1>
 
-            <div class="text-gray-500 gap-4 flex flex-row w-full items-center" v-for="item in contact"
-              :key="item">
+            <div class="text-gray-500 gap-4 flex flex-row w-full items-center" v-for="item in contact" :key="item">
               <svg xmlns="http://www.w3.org/2000/svg" height="18" fill="#a2afbe" viewBox="0 -960 960 960" width="18">
                 <path d="m560-120-57-57 144-143H200v-480h80v400h367L503-544l56-57 241 241-240 240Z" />
               </svg>
@@ -432,6 +433,7 @@ export default {
       ],
       visible: false,
       visiblePassword: true,
+      documentVerification: false,
       codigoNumerico: "",
       nombrePunto: "",
       ubicacionPunto: "",
@@ -509,6 +511,21 @@ export default {
     loadCantonesByProvincia() {
       this.Cantones = Cantones.filter(canton => canton.Provincia_ID == this.user.provincia);
     },
+    verifyDocument() {
+      if (this.user.tipo_identificacion == "RUC" && this.user.numero_identificacion.length != 13) {
+        this.documentVerification = true;
+        return { message: "Debes ingresar 13 digitos" }
+      } else if (this.user.tipo_identificacion == "Cédula" && this.user.numero_identificacion.length != 10) {
+        this.documentVerification = true;
+        return { message: "Debes ingresar 10 digitos" }
+      } else if (this.user.tipo_identificacion == "Pasaporte" && this.user.numero_identificacion.length != 8) {
+        this.documentVerification = true;
+        return { message: "Debes ingresar 8 digitos" }
+      } else {
+        this.documentVerification = false;
+        return { message: "" }
+      }
+    },
     async confirmVerification() {
       if (this.codigoNumerico != "") {
         this.showErrors = false;
@@ -528,7 +545,7 @@ export default {
           this.showErrors = false;
           // Aca llamar registro.
           try {
-            const {code} = await authService.createUserAccount({ user: this.user, profile: this.profile, points: this.puntosRecepcion, contact: this.contact });
+            const { code } = await authService.createUserAccount({ user: this.user, profile: this.profile, points: this.puntosRecepcion, contact: this.contact });
             this.codigoNumerico = code;
           } catch (error) {
             return emitAlert(error.message, "error");

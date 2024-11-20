@@ -37,7 +37,7 @@
           </div>
         </div>
         <div class="grid gap-1 w-full">
-          <label for="cantidadEntrega" class="text-gray-700">Número de entregas</label>
+          <label for="cantidadEntrega" class="text-gray-700">Programe su número de entregas</label>
           <div class="inline-flex justify-between gap-2">
             <input type="text" id="cantidadEntrega" v-model="cantidadEntrega" placeholder="Cantidad"
               class="bg-gray-50 border p-2 rounded-md text-gray-600 w-full" />
@@ -50,7 +50,7 @@
       </div>
 
       <div class="grid my-2 col-span-2" v-if="deliveries.length > 0">
-        <h1 class="text-gray-600 mb-3 font-bold">Entregas</h1>
+        <h1 class="text-gray-600 mb-3 font-bold">Entregas programadas</h1>
 
         <p class="text-gray-500 flex gap-3 items-center" v-for="(item, index) in deliveries" :key="index">
           <svg xmlns="http://www.w3.org/2000/svg" height="18" fill="#a2afbe" viewBox="0 -960 960 960" width="18">
@@ -58,8 +58,8 @@
           </svg>
           <span class="grid gap-1">
             {{ index + startIndex }}: {{ Number(item.cantidad).toFixed(0) }}
-            {{ item.cantidad_unidad }}, {{ formatDateTime(item.fecha_entrega).formattedDate }} -
-            {{ item.hora_entrega }} -
+            {{ item.cantidad_unidad }}, {{ (item.fecha_entrega != undefined) ? formatDateTime(item.fecha_entrega).formattedDate : "Definir fecha" }} -
+            {{ (item.hora_entrega != undefined) ? item.hora_entrega : "Definir horario" }} -
             {{ item.punto.direccion }}, {{ item.punto.ubicacion_google_maps }}
           </span>
 
@@ -133,7 +133,7 @@
 
       <div class="grid gap-1 mx-auto col-span-2 w-full mt-3">
         <label for="recepcion" class="text-gray-700 text-sm">Politicas de recepción</label>
-        <textarea type="text" rows="5" v-model="conditions.politicas_recepcion"
+        <textarea type="text" rows="5" v-model="conditions.politicas_recepcion" disabled
           placeholder="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam vestibulum orci ligula. Proin eget lorem justo. Donec sodales urna vel imperdiet accumsan. Ut dignissim ipsum et condimentum placerat. Aenean porttitor tellus purus, a feugiat nibh faucibus et. Praesent quam tellus, rutrum at vehicula quis, condimentum nec tellus. Mauris quis aliquet orci. Nulla condimentum dapibus metus, vel faucibus mauris dignissim ut.
 
 Aliquam pretium libero in quam gravida, sed ornare eros efficitur. Nam vitae mattis est. Vivamus ornare metus eu neque auctor hendrerit. Sed tincidunt nisi et porta imperdiet. Donec sagittis turpis felis, et imperdiet neque viverra at. Duis nisl purus, congue sed lacus sit amet, pellentesque ullamcorper mauris. Quisque laoreet, odio eu pretium euismod, tortor nisi scelerisque orci, a malesuada augue diam in dolor. Cras nec sagittis sem, vel imperdiet tellus. Proin gravida quis nisi vitae fringilla. Cras feugiat sapien mi, vel mattis augue hendrerit non. Morbi efficitur at leo vel scelerisque. Duis turpis ligula, ultrices in mollis et, faucibus non neque. Nunc sed nisl in arcu vulputate vestibulum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed finibus eleifend laoreet. Donec aliquet placerat vulputate."
@@ -192,6 +192,10 @@ Aliquam pretium libero in quam gravida, sed ornare eros efficitur. Nam vitae mat
       </div>
     </div>
 
+    <button class="default-bar h-12 p-2 rounded-md text-center text-white font-bold w-11/12 md:w-1/2 mx-auto"
+            @click="backToChat">
+            Regresar a la conversación
+          </button>
     <button @click="updateCondition"
       class="default-bar h-12 p-2 rounded-md text-center text-white font-bold w-11/12 md:w-1/2 mx-auto">
       Actualizar
@@ -314,11 +318,6 @@ Aliquam pretium libero in quam gravida, sed ornare eros efficitur. Nam vitae mat
                 class="w-full mx-auto bg-transparent border-2 border-gray-300 p-2 rounded-md text-gray-600" />
             </div>
           </div>
-
-          <button class="default-bar p-2 text-center text-white font-bold rounded-lg mt-2 w-full"
-            @click="backToChat">
-            Regresar a la conversación
-          </button>
           <button class="default-bar p-2 text-center text-white font-bold rounded-lg mt-2 w-full"
             @click="saveEntregaParam">
             Guardar

@@ -6,7 +6,7 @@
           class="w-2/3 sm:w-1/2 mx-auto grid items-center text-center bg-gray-100 rounded-lg md:w-1/3">
           <span class="p-2 text-sm text-gray-500 font-bold">{{ formatDate(message.fecha) }}</span>
         </div>
-        <div class="flex gap-2 items-center" :class="{
+        <div class="flex gap-2 items-center" v-if="chat.user_logged != '' && message.id_remitente != 'Sistema'" :class="{
           'message-incoming': chat.user_logged != message.id_remitente,
           'message-outgoing': chat.user_logged == message.id_remitente
         }">
@@ -28,6 +28,22 @@
           <img src="@/assets/People/Comprador.svg" alt="Outgoing Message Profile Icon" class="h-16 w-16"
             v-if="chat.user_logged == message.id_remitente" />
         </div>
+        <div v-if="message.id_remitente == 'Sistema'" class="message-outgoing flex gap-2 items-center">
+          <div class="w-full">
+            <div class="message-content rounded-md p-2 w-full grid system-chat gap-2">
+              <h1 class="text-gray-800 font-bold text-center opacity-80">SISTEMA AGROEC</h1>
+              <p class="text-sm text-gray-800 w-11/12">
+                {{ message.texto }}
+              </p>
+
+              <span class="text-gray-700 text-sm justify-self-end hour-text">{{
+                formatDateTime(message.fecha).time }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div v-if="messages.length == 0" class="grid items-center h-[16rem]">
+        <h1 class="text-gray-800 opacity-70 text-center font-bold text-2xl">No hay mensajes recientes</h1>
       </div>
     </div>
 
@@ -74,7 +90,8 @@
           </ion-segment>
         </div>
         <div class="grid" v-if="entregasSelect">
-          <RouterLink :to="'/order/' + delivery.id_orden" v-for="delivery in deliveries.filter(del => del.estado == 'Aceptado' || del.estado == 'Recibido')"
+          <RouterLink :to="'/order/' + delivery.id_orden"
+            v-for="delivery in deliveries.filter(del => del.estado == 'Aceptado' || del.estado == 'Recibido')"
             :key="delivery">
             <div class="order-card flex md:grid md:grid-cols-2 gap-3 p-2">
               <div class="flex w-full gap-3">
@@ -83,7 +100,7 @@
                 </div>
 
                 <div class="Order-Text text-left">
-                  <h1 class="text-gray-600 text-sm font-bold">Orden #{{ delivery.id.slice(0, 8) }}</h1>
+                  <h1 class="text-gray-600 text-sm font-bold">Orden #{{ delivery.id_orden.slice(0, 8) }}</h1>
                   <h1 class="text-gray-600 text-xs font-bold">
                     {{ this.$route.params.name }}
                   </h1>
@@ -95,14 +112,17 @@
               <div class="Order-Price text-right grid mt-2 justify-end">
                 <h1 class="text-yellow-400 text-md font-bold">${{ Number(conditions.precio).toFixed(2) }}</h1>
                 <h1 class="text-yellow-400 text-md font-bold">{{ conditions.precio_unidad }}</h1>
-                <p class="text-lime text-xs font-bold">Entregada</p>
+                <p class="text-lime text-xs font-bold">{{ delivery.estado }}</p>
               </div>
             </div>
           </RouterLink>
-
+          <h1 class="font-bold text-gray-600 text-center opacity-70"
+            v-if="!deliveries.filter(del => del.estado == 'Aceptado' || del.estado == 'Recibido').length > 0">No hay
+            ordenes entregadas</h1>
         </div>
         <div class="grid" v-if="!entregasSelect">
-          <RouterLink :to="'/order/' + delivery.id_orden" v-for="delivery in deliveries.filter(del => del.estado != 'Aceptado' || del.estado != 'Recibido')"
+          <RouterLink :to="'/order/' + delivery.id_orden"
+            v-for="delivery in deliveries.filter(del => del.estado != 'Aceptado' && del.estado != 'Recibido')"
             :key="delivery">
             <div class="order-card flex md:grid md:grid-cols-2 gap-3 p-2">
               <div class="flex w-full gap-3">
@@ -111,7 +131,7 @@
                 </div>
 
                 <div class="Order-Text text-left">
-                  <h1 class="text-gray-600 text-sm font-bold">Orden #{{ delivery.id.slice(0, 8) }}</h1>
+                  <h1 class="text-gray-600 text-sm font-bold">Orden #{{ delivery.id_orden.slice(0, 8) }}</h1>
                   <h1 class="text-gray-600 text-xs font-bold">
                     {{ this.$route.params.name }}
                   </h1>
@@ -127,6 +147,9 @@
               </div>
             </div>
           </RouterLink>
+          <h1 class="font-bold text-gray-600 text-center opacity-70"
+            v-if="!deliveries.filter(del => del.estado != 'Aceptado' && del.estado != 'Recibido').length > 0">No hay
+            entregas pendientes</h1>
         </div>
       </div>
     </CModalBody>

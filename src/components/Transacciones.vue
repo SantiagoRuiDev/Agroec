@@ -24,7 +24,7 @@
 
             <div class="Order-Price inline-flex justify-between w-full items-center">
               <p class="text-gray-500 text-xs">{{formatWalletDate(transaction.fecha)}}</p>
-              <h1 class="text-red-400 text-md font-bold">${{transaction.monto.toFixed(2)}}</h1>
+              <h1 class="text-red-400 text-md font-bold">{{formatToUSD(transaction.monto)}}</h1>
             </div>
           </div>
           <div class="Order-Text grid gap-2 w-full"  v-if="transaction.tipo == 'Devolucion'">
@@ -35,7 +35,7 @@
 
             <div class="Order-Price inline-flex justify-between w-full items-center">
               <p class="text-gray-500 text-xs">{{ formatWalletDate(transaction.fecha) }}</p>
-              <h1 class="text-gray-400 text-md font-bold">${{transaction.monto.toFixed(2)}}</h1>
+              <h1 class="text-gray-400 text-md font-bold">{{formatToUSD(transaction.monto)}}</h1>
             </div>
           </div>
           <div class="Order-Text grid gap-2 w-full"  v-if="transaction.tipo == 'Recarga'">
@@ -46,7 +46,7 @@
 
             <div class="Order-Price inline-flex justify-between w-full items-center">
               <p class="text-gray-500 text-xs">{{formatWalletDate(transaction.fecha)}}</p>
-              <h1 class="default-color text-md font-bold">${{transaction.monto.toFixed(2)}}</h1>
+              <h1 class="default-color text-md font-bold">{{formatToUSD(transaction.monto)}}</h1>
             </div>
           </div>
         </div>
@@ -112,6 +112,12 @@ export default {
     this.getWalletStats();
   },
   methods: {
+    formatToUSD(amount) {
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD'
+      }).format(amount);
+    },
     async getWalletStats() {
       try {
         const stats = await walletService.getWalletStats();

@@ -33,7 +33,7 @@
         <div class="inline-flex gap-2 items-center">
           <img src="../assets/Pago.svg" alt="Metodo pago Imagen" class="h-6 w-6">
           <h2 class="uppercase font-bold">TOTAL NEGOCIADO</h2>
-          <p>${{ conditions.cantidad_propuesta * conditions.precio_propuesta }}</p>
+          <p>${{ (conditions.cantidad_propuesta * conditions.precio_propuesta).toFixed(2) }}</p>
         </div>
       </div>
       <div class="grid gap-2 p-2 md:w-5/6 rounded-md bg-lime-100 text-lime-900" v-else>
@@ -75,7 +75,7 @@
           class="w-2/3 sm:w-1/2 mx-auto grid items-center text-center bg-gray-100 rounded-lg md:w-1/3">
           <span class="p-2 text-sm text-gray-500 font-bold">{{ formatDate(message.fecha) }}</span>
         </div>
-        <div class="flex gap-2 items-center" v-if="chat.user_logged != ''" :class="{
+        <div class="flex gap-2 items-center" v-if="chat.user_logged != '' && message.id_remitente != 'Sistema'" :class="{
           'message-incoming': chat.user_logged != message.id_remitente,
           'message-outgoing': chat.user_logged == message.id_remitente
         }">
@@ -97,10 +97,36 @@
           <img src="@/assets/People/Comprador.svg" alt="Outgoing Message Profile Icon" class="h-16 w-16"
             v-if="chat.user_logged == message.id_remitente" />
         </div>
+        <div v-if="message.id_remitente == 'Sistema'" class="message-outgoing flex gap-2 items-center">
+          <div class="w-full">
+            <div class="message-content rounded-md p-2 w-full grid system-chat gap-2">
+              <h1 class="text-gray-800 font-bold text-center opacity-80">SISTEMA AGROEC</h1>
+              <p class="text-sm text-gray-800 w-11/12">
+                {{ message.texto }}
+              </p>
+
+              <span class="text-gray-700 text-sm justify-self-end hour-text">{{
+                formatDateTime(message.fecha).time }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div v-if="messages.length == 0" class="grid items-center h-[16rem]">
+        <h1 class="text-gray-800 opacity-70 text-center font-bold text-2xl">No hay mensajes recientes</h1>
       </div>
     </div>
 
     <div class="grid gap-3 md:w-3/4 mx-auto">
+      <div v-if="conditions.estado_comprador == 'Recibida' && conditions.estado_vendedor == 'Aceptada'"
+        class="bg-orange-300 text-orange-800 font-bold rounded-md p-2 inline-flex items-center gap-2">
+        <img src="@/assets/Statistics/InformativeStatus.svg" class="h-8 w-8 opacity-70">
+        <h2 class="opacity-70">Falta que el comprador acepte la oferta.</h2>
+      </div>
+      <div v-if="conditions.estado_comprador == 'Aceptada' && conditions.estado_vendedor == 'Recibida'"
+      class="bg-orange-300 text-orange-800 font-bold rounded-md p-2 inline-flex items-center gap-2">
+        <img src="@/assets/Statistics/InformativeStatus.svg" class="h-8 w-8 opacity-70">
+        <h2 class="opacity-70">Falta que el vendedor acepte la oferta.</h2>
+      </div>
       <div class="flex justify-between mx-auto w-full gap-3 h-full items-end"
         v-if="!(conditions.estado_comprador == 'Aceptada' && conditions.estado_vendedor == 'Aceptada')">
         <button class="bg-red-400 px-2 py-1 w-1/2 h-8 rounded-md shadow-md color-white text-xs"
@@ -108,21 +134,25 @@
           @click="manageRechazoModal">
           Rechazar
         </button>
-        <button v-on:click="showDealDetails" v-if="!(conditions.estado_comprador == 'Rechazada')"
+        <button v-on:click="showDealDetails" v-if="!(conditions.estado_comprador == 'Aceptada' && conditions.estado_vendedor == 'Aceptada')"
           class="default-bar px-2 w-full py-1 h-8 rounded-md shadow-md color-white text-xs">
           Condiciones
         </button>
-        <button v-if="!offerSaw && !(conditions.estado_comprador == 'Rechazada' || conditions.estado_comprador == 'Aceptada')" @click="showCondicionesMessage"
+        <button
+          v-if="!offerSaw && !(conditions.estado_comprador == 'Rechazada' || conditions.estado_comprador == 'Aceptada')"
+          @click="showCondicionesMessage"
           class="bg-gray-400 px-2 w-full py-1 h-8 rounded-md shadow-md color-white text-xs">
           Aceptar oferta
         </button>
-        <button v-if="loading && offerSaw && !(conditions.estado_comprador == 'Rechazada' || conditions.estado_comprador == 'Aceptada')"
+        <button
+          v-if="loading && offerSaw && !(conditions.estado_comprador == 'Rechazada' || conditions.estado_comprador == 'Aceptada')"
           class="default-bar px-2 w-full py-1 h-8 rounded-md shadow-md color-white text-xs">
           <div style="border-top-color:transparent"
             class="w-6 h-6 mx-auto border-4 border-white-400 border-solid rounded-full animate-spin"></div>
         </button>
-        <button v-if="!loading && offerSaw && !(conditions.estado_comprador == 'Rechazada' || conditions.estado_comprador == 'Aceptada')" @click="acceptProposal"
-          class="default-bar px-2 w-full py-1 h-8 rounded-md shadow-md color-white text-xs">
+        <button
+          v-if="!loading && offerSaw && !(conditions.estado_comprador == 'Rechazada' || conditions.estado_comprador == 'Aceptada')"
+          @click="acceptProposal" class="default-bar px-2 w-full py-1 h-8 rounded-md shadow-md color-white text-xs">
           Aceptar oferta
         </button>
       </div>
@@ -244,7 +274,7 @@ import { IonIcon, IonSegment, IonLabel, IonSegmentButton } from "@ionic/vue";
 import { emitAlert } from "@/libs/alert.js";
 import ProfileIcon from "./ProfileIcon.vue";
 import ConditionOverview from "./ConditionOverview.vue";
-import router from "@/router/index.js";
+import router from "../router/index";
 export default {
   components: {
     CModal,
@@ -347,13 +377,13 @@ export default {
     }
   },
   methods: {
-    deleteDelivery(del){
+    deleteDelivery(del) {
       this.deliveries = this.deliveries.filter(x => x.id != del.id);
     },
-    deleteQualityParam(del){
+    deleteQualityParam(del) {
       this.quality_params = this.quality_params.filter(x => x.id != del.id);
     },
-    async rejectProposal () {
+    async rejectProposal() {
       try {
         await proposalService.rejectProposal(this.chat.id_condiciones);
         await this.getChatConditions();

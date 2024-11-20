@@ -142,13 +142,13 @@
     </CModalBody>
   </CModal>
 
-  <CModal alignment="center" :visible="paid" @close="closeModal">
+  <CModal alignment="center" :visible="paid" @close="closeSuccessModal">
     <CModalBody>
       <div class="grid w-full gap-3 pb-3">
         <img
           src="@/assets/Nav/X.svg"
           alt="Close alert"
-          @click="closeModal"
+          @click="closeSuccessModal"
           class="justify-self-end"
         />
         <h2 class="text-center text-xl font-bold text-gray-500 w-5/6 mx-auto">
@@ -168,6 +168,7 @@
 import { CModal, CModalBody } from "@coreui/vue";
 import { emitAlert } from '../libs/alert.js'
 import * as walletService from '../services/wallet.service.js'
+import router from "@/router/index";
 export default {
   components: {
     CModal,
@@ -191,6 +192,11 @@ export default {
   methods: {
     showModal() {
       this.visible = true;
+    },
+    closeSuccessModal() {
+      // Close the menu by setting menuOpen to false
+      this.paid = false;
+      router.push('/app/transacciones');
     },
     closeModal() {
       // Close the menu by setting menuOpen to false

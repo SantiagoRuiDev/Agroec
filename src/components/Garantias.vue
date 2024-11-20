@@ -6,7 +6,7 @@
       </h1>
       <h1 class="text-green font-bold text-md text-right">${{stats.saldo}}</h1>
     </div>
-    <div class="grid gap-1 max-h-72 overflow-y-scroll pb-2">
+    <div class="grid gap-1 max-h-96 overflow-y-scroll pb-2">
 
       <div
         class="order-card w-11/12 mx-auto rounded flex md:grid gap-3 shadow-sm p-2"  v-for="warranty in stats.warranties" :key="warranty.id"
@@ -22,7 +22,7 @@
               class="Order-Price inline-flex justify-between w-full items-center"
             >
               <p class="text-gray-500 text-xs">{{formatWalletDate(warranty.fecha)}}</p>
-              <h1 class="text-gray-400 text-md font-bold">${{warranty.total}}</h1>
+              <h1 class="text-gray-400 text-md font-bold">{{formatToUSD(warranty.total)}}</h1>
             </div>
           </div>
         </div>
@@ -37,7 +37,7 @@
               class="Order-Price inline-flex justify-between w-full items-center"
             >
               <p class="text-gray-500 text-xs">{{formatWalletDate(warranty.fecha)}}</p>
-              <h1 class="text-red-400 text-md font-bold">${{warranty.total}}</h1>
+              <h1 class="text-red-400 text-md font-bold">{{formatToUSD(warranty.total)}}</h1>
             </div>
           </div>
         </div>
@@ -72,6 +72,12 @@ export default {
     }
   },
   methods: {
+    formatToUSD(amount) {
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD'
+      }).format(amount);
+    },
     async getWarranties() {
       try {
         this.stats = await warrantyService.getWarranties();
