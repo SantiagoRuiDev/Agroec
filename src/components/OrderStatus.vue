@@ -35,8 +35,8 @@
 
       <div class="deliver-cards grid gap-3 w-full">
         <div class="bg-yellow-100 text-left px-4 py-3 rounded-md grid gap-1" v-if="order.modo_pago == 'Modo Garantía'">
-          <h2 class="text-md text-gray-700">Pago en garantía de ${{ ((order.precio * order.condicion_cantidad) *
-            (order.porcentaje_inicial / 100)).toFixed(2) }}</h2>
+          <h2 class="text-md text-gray-700">Pago en garantía de {{ formatToUSD((order.precio * order.condicion_cantidad) *
+            (order.porcentaje_inicial / 100)) }}</h2>
           <p class="text-sm text-gray-600" v-if="warranty">{{
             formatDateTime(warranty.fecha).orderDate
           }} {{

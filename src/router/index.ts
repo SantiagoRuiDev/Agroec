@@ -1,3 +1,4 @@
+import { removeMultiuserToken, removeToken, storeMultiuserToken, storeToken } from "@/libs/storage";
 import { isAuthentified } from "@/services/auth.service";
 import { createRouter, createWebHistory } from "@ionic/vue-router";
 import { RouteRecordRaw } from "vue-router";
@@ -269,6 +270,17 @@ router.beforeEach(async (to, from, next) => {
     if (to.matched.some((record) => record.meta.requiresAuth)) {
       // Rutas que requieren autenticación
       if (response.loggedIn) {
+        if(response.token){
+          if(response.type == "user"){
+            await removeToken();
+            await storeToken(response.token);
+          } else {
+            await removeToken();
+            await storeToken(response.token);
+            await removeMultiuserToken();
+            await storeMultiuserToken(response.multiuser_token);
+          }
+        }
         next(); // Usuario autenticado, continuar a la ruta
       } else {
         if (to.path !== "/app/signin") {
@@ -280,6 +292,9 @@ router.beforeEach(async (to, from, next) => {
     } else {
       // Rutas que no requieren autenticación
       if (response.loggedIn) {
+        if(response.token){
+          console.log(" Hay nuevo token para refrescar ")
+        }
         next("/app/home"); // Si está autenticado y quiere ir a signin, redirigir a home
       } else {
         next(); // Continuar a la ruta deseada

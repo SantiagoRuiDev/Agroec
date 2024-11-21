@@ -3,7 +3,7 @@
     <div class="grid gap-1">
       <div class="tutorial-card w-full p-2 gap-2 grid" v-if="proposals.length > 0">
         <div class="w-11/12 mx-auto flex gap-3 justify-between" v-for="proposal in proposals" :key="proposal">
-          <RouterLink class="message-incoming flex gap-2 w-full" v-if="proposal.lastMessage.id_remitente != 'Sistema'" :to="'/chat/licitacion/' + proposal.id_producto + '/' + proposal.chat_id">
+          <RouterLink class="message-incoming flex gap-2 w-full" v-if="proposal.lastMessage && proposal.lastMessage.id_remitente != 'Sistema'" :to="'/chat/licitacion/' + proposal.id_producto + '/' + proposal.chat_id">
             <div class="grid gap-2 justify-center items-end text-center text-gray-700 text-sm max-w-16">
               <ProfileIcon :profile="proposal.tipo_perfil" :height="true" :weight="true"></ProfileIcon>
             </div>

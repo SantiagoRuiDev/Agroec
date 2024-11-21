@@ -40,7 +40,7 @@
           </div>
 
           <div class="Order-Price text-right grid mt-2 justify-end">
-            <h1 class="text-yellow-400 text-md font-bold">${{order.precio}}</h1>
+            <h1 class="text-yellow-400 text-md font-bold">${{Number(order.precio).toFixed(2)}}</h1>
             <h1 class="text-yellow-400 text-md font-bold">{{order.precio_unidad}}</h1>
             <p class="text-red-600 text-xs font-bold" v-if="order.estado == 'Rechazado'">{{order.estado}}</p>
             <p class="text-lime-600 text-xs font-bold w-16" v-else-if="order.estado == 'En camino'">{{order.estado}}</p>

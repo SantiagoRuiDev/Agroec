@@ -67,7 +67,10 @@ export const addCard = async (schema) => {
     });
     return data;
   } catch (error) {
-    throw new Error(error.response.data.error);
+    const customError = new Error(error.response?.data?.error || "Error desconocido");
+    customError.reason = error.response?.data?.error;
+    customError.document_field = error.response?.data?.document_field;
+    throw customError;
   }
 };
 export const removeCard = async (id) => {

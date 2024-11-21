@@ -89,7 +89,7 @@
       class="w-6 h-6 mx-auto border-4 border-white-400 border-solid rounded-full animate-spin"></div>
     </button>
     <button v-if="!loading" class="default-bar p-3 rounded-md text-center text-zinc-50 w-5/6 mx-auto mb-4 md:w-1/2"
-      @click="sendProposal">Enviar propuesta de compra</button>
+      @click="debouncedCreateLicitationProposal">Enviar propuesta de compra</button>
   </div>
 
   <CModal alignment="center" :visible="visible" @click="closeModal">
@@ -133,6 +133,7 @@
 </template>
 
 <script allowJs>
+import { debounce } from 'lodash';
 import { CModal, CModalBody } from "@coreui/vue";
 import * as saleService from '../services/sale.service.js';
 import * as proposalService from '../services/proposal.service.js';
@@ -204,6 +205,9 @@ export default {
     async getReceptionPoints() {
       this.points = await getReceptionPoints();
     },
+    debouncedCreateLicitationProposal: debounce(function () {
+      this.sendProposal(); // Llama al método aceptado
+    }, 1000), // Establecemos el debounce en 1000 ms (1 segundo)
     async sendProposal() {
       this.loading = true;
       try {
@@ -211,6 +215,7 @@ export default {
         this.loading = false;
         router.push('/chat/licitacion/' + this.$route.params.name + '/' + chat);
       } catch (error) {
+        this.loading = false;
         return emitAlert(error, 'error')
       }
     },

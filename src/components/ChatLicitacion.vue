@@ -152,7 +152,7 @@
         </button>
         <button
           v-if="!loading && offerSaw && !(conditions.estado_comprador == 'Rechazada' || conditions.estado_comprador == 'Aceptada')"
-          @click="acceptProposal" class="default-bar px-2 w-full py-1 h-8 rounded-md shadow-md color-white text-xs">
+          @click="debouncedAcceptProposal" class="default-bar px-2 w-full py-1 h-8 rounded-md shadow-md color-white text-xs">
           Aceptar oferta
         </button>
       </div>
@@ -264,6 +264,7 @@
 </template>
 
 <script allowJs>
+import { debounce } from 'lodash';
 import Event from "../libs/event.js";
 import { CModal, CModalBody } from "@coreui/vue";
 import { formatDateTime } from '../libs/date.js'
@@ -355,6 +356,7 @@ export default {
       this.deleteQualityParam(item);
     })
     Event.on("condition-updated", (data) => {
+      socket.emit('connect-room', { room: this.$route.params.identifier })
       this.closeDetails();
     })
     socket.emit('connect-room', { room: this.$route.params.identifier });
@@ -416,14 +418,18 @@ export default {
     async acceptProposal() {
       this.loading = true;
       try {
-        await proposalService.acceptProposal(this.chat.id_condiciones);
-        await this.getChatConditions();
-        this.showModal();
+        await proposalService.acceptProposal(this.chat.id_condiciones); // Llamada al servicio
+        await this.getChatConditions(); // Obtiene las condiciones del chat
+        this.showModal(); // Muestra el modal
         this.loading = false;
       } catch (error) {
         emitAlert(error, 'error');
+        this.loading = false; // Asegúrate de detener el loading incluso en caso de error
       }
     },
+    debouncedAcceptProposal: debounce(function() {
+      this.acceptProposal(); // Llama al método aceptado
+    }, 1000), // Establecemos el debounce en 1000 ms (1 segundo)
     async getChatConditions() {
       const { condition, deliveries, quality_params, logged } = await chatService.getChatConditions(this.$route.params.identifier);
       this.deliveries = deliveries;

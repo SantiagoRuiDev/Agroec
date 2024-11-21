@@ -75,7 +75,7 @@
 
       <!--BOTTOM GRID-->
       <div class="card p-1 w-full h-28 border rounded-md border-gray-300 grid text-center items-center" v-if="stats">
-        <Qualification :average="stats.qualifications.promedio_calificacion" :qualifications="[]"></Qualification>
+        <Qualification :average="Number(stats.qualifications.promedio_calificacion)" :qualifications="[]"></Qualification>
         <h1 class="text-gray-500 text-xs font-bold">Tu Calificación</h1>
       </div>
 

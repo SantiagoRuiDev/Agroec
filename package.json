@@ -1,5 +1,5 @@
 {
-  "name": "Agroec_Comprador",
+  "name": "agroec_comprador_app",
   "private": true,
   "version": "0.0.1",
   "type": "module",
@@ -29,8 +29,7 @@
     "flowbite": "^2.2.1",
     "flowbite-vue": "^0.1.2",
     "ionicons": "^7.0.0",
-    "npm": "^10.5.1",
-    "remove": "^0.1.5",
+    "lodash.debounce": "^4.0.8",
     "socket.io-client": "^4.7.5",
     "sweetalert2": "^11.12.4",
     "vue": "^3.5.12",

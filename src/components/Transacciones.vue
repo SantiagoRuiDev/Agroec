@@ -15,7 +15,7 @@
               <h1 class="text-gray-600 text-xs font-bold">{{transaction.id.slice(0,8)}}</h1>
             </div>
             <div class="inline-flex gap-2">
-              <h1 class="text-gray-600 text-xs font-bold">#5663</h1>
+              <h1 class="text-gray-600 text-xs font-bold">#{{transaction.id.slice(0,4)}}</h1>
               <p class="text-gray-700 text-xs">{{ transaction.nombre }} {{transaction.apellido}}</p>
             </div>
             <p class="text-gray-700 text-xs w-5/6">

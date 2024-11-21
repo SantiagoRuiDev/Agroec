@@ -7,63 +7,28 @@
               Pagosmedios controlara y asegurara los datos de tu tarjeta y podras usarla en tus transacciones en la plataforma.
             </h3>
   
-            <div class="form-input grid gap-1">
-              <label for="documento" class="text-gray-600 font-bold w-5/6"
-                >Documento de Identidad</label
+            <div class="form-input grid gap-1" v-if="valid_document_field">
+              <label for="nombre" class="text-gray-600 font-bold w-5/6" 
+                >Documento</label
               >
               <input
-                type="number"
-                id="documento"
+                type="text"
+                id="nombre"
                 v-model="token.documento"
-                placeholder="Documento de Identidad"
+                @change="verifyDocument"
+                placeholder="Debe reunir 10 digitos"
                 class="text-gray-400 w-full mx-auto bg-transparent border-2 border-gray-300 px-3 py-3 rounded-md"
               />
             </div>
             <div class="form-input grid gap-1">
               <label for="nombre" class="text-gray-600 font-bold w-5/6"
-                >Nombre</label
+                >Nombre completo</label
               >
               <input
                 type="text"
                 id="nombre"
                 v-model="token.nombre"
                 placeholder="Nombre que figura en tarjeta"
-                class="text-gray-400 w-full mx-auto bg-transparent border-2 border-gray-300 px-3 py-3 rounded-md"
-              />
-            </div>
-            <div class="form-input grid gap-1">
-              <label for="email" class="text-gray-600 font-bold w-5/6"
-                >Correo</label
-              >
-              <input
-                type="email"
-                id="email"
-                v-model="token.email"
-                placeholder="Correo electronico"
-                class="text-gray-400 w-full mx-auto bg-transparent border-2 border-gray-300 px-3 py-3 rounded-md"
-              />
-            </div>
-            <div class="form-input grid gap-1">
-              <label for="telefono" class="text-gray-600 font-bold w-5/6"
-                >Telefono</label
-              >
-              <input
-                type="number"
-                id="telefono"
-                v-model="token.telefono"
-                placeholder="Telefono"
-                class="text-gray-400 w-full mx-auto bg-transparent border-2 border-gray-300 px-3 py-3 rounded-md"
-              />
-            </div>
-            <div class="form-input grid gap-1">
-              <label for="direccion" class="text-gray-600 font-bold w-5/6"
-                >Dirección</label
-              >
-              <input
-                type="text"
-                id="direccion"
-                v-model="token.direccion"
-                placeholder="Dirección"
                 class="text-gray-400 w-full mx-auto bg-transparent border-2 border-gray-300 px-3 py-3 rounded-md"
               />
             </div>
@@ -126,8 +91,9 @@
     data() {
       return {
         visible: false,
+        valid_document_field: false,
         token: {
-          documento: 0,
+          documento: "",
           nombre: "",
           telefono: 0,
           email: "",
@@ -143,13 +109,33 @@
         // Close the menu by setting menuOpen to false
         this.visible = false;
       },
+      verifyDocument(){
+        const value = this.token.documento; // Obtiene el valor del input y elimina espacios en blanco
+        const TEN_DIGITS_TEST = /^[0-9]{10}$/.test(value); // Verifica si son exactamente 10 dígitos
+        if(TEN_DIGITS_TEST){
+          return emitAlert("Documento valido", 'success');
+        } else {
+          return emitAlert("Documento invalido, revisa la cantidad de digitos", "warning");
+        }
+      },
       async addCard() {
+        if(this.token.nombre.trim() == "") {
+          return emitAlert("Completa el campo de nombre", 'error');
+        }
         this.closeModal();
         try {
-          const data = await walletService.addCard(this.token);
+          let data;
+          if(this.valid_document_field){
+            data = await walletService.addCard({tipo:"with-document", ...this.token});
+          } else {
+            data = await walletService.addCard(this.token);
+          }
           window.open(data.url, "_blank");
         } catch (error) {
-          emitAlert(error, 'error');
+          emitAlert(error.reason, 'error');
+          if(error.document_field){
+            this.valid_document_field = true;
+          }
         }
       }
     },

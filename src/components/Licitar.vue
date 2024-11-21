@@ -7,7 +7,7 @@
 
       <div class="ficha md:w-1/3 grid gap-2 w-11/12 p-2 mx-auto rounded-md-2 border-gray-100 text-center">
         <h2 class="text-gray-500 text-sm font-bold">Ficha del Producto</h2>
-        <p class="text-gray-400 text-xs">{{Licitacion}}</p>
+        <p class="text-gray-400 text-xs">{{ Licitacion }}</p>
       </div>
     </div>
 
@@ -110,7 +110,12 @@
           class="w-full text-gray-500 mx-auto bg-transparent border-2 border-gray-300 px-3 py-3 rounded-md" />
       </div>
 
-      <button @click="showModal" type="button"
+      <button v-if="loading" type="button"
+        class="py-3 px-5 default-bar mx-auto mt-3 w-2/3 rounded font-bold grid items-center mb-3">
+        <div style="border-top-color:transparent"
+            class="w-6 h-6 mx-auto border-4 border-white-400 border-solid rounded-full animate-spin"></div>
+      </button>
+      <button v-if="!loading" @click="debouncedCreateLicitation" type="button"
         class="py-3 px-5 default-bar mx-auto mt-3 w-2/3 rounded font-bold grid items-center mb-3">
         Publicar Licitación
       </button>
@@ -136,10 +141,11 @@
 </template>
 
 <script allowJs>
+import { debounce } from 'lodash';
 import { emitAlert } from "@/libs/alert.js";
 import * as licitacionService from '../services/licitation.service.js';
 import { CModal, CModalBody } from "@coreui/vue";
-import router from "@/router/index.js";
+import router from "@/router/index";
 export default {
   components: {
     CModal,
@@ -152,6 +158,7 @@ export default {
     return {
       today: new Date().toISOString().split('T')[0],
       visible: false,
+      loading: false,
       parametros: false,
       nombreParametro: "",
       newParametros: [],
@@ -172,17 +179,21 @@ export default {
     };
   },
   methods: {
+    debouncedCreateLicitation: debounce(function () {
+      this.showModal(); // Llama al método aceptado
+    }, 1000), // Establecemos el debounce en 1000 ms (1 segundo)
     async showModal() {
+      this.loading = true;
       this.licitation.presentacion_entrega = this.entrega + " de " + this.sacos;
-
       try {
         await licitacionService.createLicitation(this.$route.params.name, {
           licitation: this.licitation,
           quality_params: this.newParametros
         });
-
+        this.loading = false;
         this.visible = true
       } catch (error) {
+        this.loading = false;
         emitAlert(error, "error");
       }
     },
