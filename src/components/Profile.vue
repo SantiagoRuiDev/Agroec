@@ -20,7 +20,7 @@
             Identificacion</label>
           <label for="identificador" class="text-red-400 font-bold w-5/6 mx-auto"
             v-if="user.tipo_identificacion == '' && showErrors">Debes seleccionar un Tipo de Identificacion</label>
-          <select id="identificador" v-model="user.tipo_identificacion"
+          <select id="identificador" v-model="user.tipo_identificacion" @change="verifyDocument"
             class="w-full mx-auto bg-transparent border-2 border-gray-300 px-3 py-3 rounded-md text-gray-600">
             <option selected value="RUC">RUC</option>
             <option value="Cédula">Cédula</option>
@@ -30,13 +30,15 @@
       </div>
       <div class="">
         <label for="cedula" class="text-gray-600 font-bold w-5/6 mx-auto" v-if="
-          user.numero_identificacion != '' ||
-          user.numero_identificacion == '' ||
-          !showErrors
-        ">Numero de Identificacion</label>
+          (user.numero_identificacion != '' ||
+            user.numero_identificacion == '') &&
+          (!showErrors && !documentVerification)">
+          Numero de Identificacion</label>
         <label for="cedula" class="text-red-400 font-bold w-5/6 mx-auto"
           v-if="user.numero_identificacion == '' && showErrors">Debes ingresar un Numero de Identificacion</label>
-        <input type="text" name="cedula" v-model="user.numero_identificacion"
+        <label for="cedula" class="text-red-400 font-bold w-5/6 mx-auto" v-if="documentVerification">{{
+          verifyDocument().message }}</label>
+        <input type="text" name="cedula" v-model="user.numero_identificacion" @change="verifyDocument"
           class="text-gray-400 w-full mx-auto bg-transparent border-2 border-gray-300 px-3 py-3 rounded-md"
           placeholder="Numero de Identificacion" />
       </div>
@@ -87,11 +89,10 @@
       <div class="mx-auto grid relative w-full">
         <div class="relative">
           <label for="canton" class="text-gray-600 font-bold w-5/6 mx-auto"
-            v-if="profile.canton != '' || profile.canton == '' || !showErrors">Cantón</label>
-          <label for="canton" class="text-red-400 font-bold w-5/6 mx-auto"
-            v-if="profile.canton == '' && showErrors">Debes
+            v-if="user.canton != '' || user.canton == '' || !showErrors">Cantón</label>
+          <label for="canton" class="text-red-400 font-bold w-5/6 mx-auto" v-if="user.canton == '' && showErrors">Debes
             seleccionar un Cantón</label>
-          <select id="canton" v-model="profile.canton"
+          <select id="canton" v-model="user.canton"
             class="w-full mx-auto bg-transparent border-2 border-gray-300 px-3 py-3 rounded-md text-gray-600">
             <option v-for="canton in Cantones" :key="canton.ID" :value="canton.Nombre">{{ canton.Nombre }}</option>
           </select>
@@ -101,11 +102,11 @@
       <div class="grid gap-1 mx-auto mt-3 col-span-2 w-full">
         <label for="" class="text-gray-600 font-bold">Matriz y puntos de recepción</label>
         <label for="direccionMatriz" class="text-gray-500">Dirección</label>
-        <input type="text" id="direccionMatriz" placeholder="Direccion" v-model="profile.direccion"
+        <input type="text" id="direccionMatriz" placeholder="Direccion" v-model="user.direccion"
           class="w-full mx-auto bg-transparent border-2 border-gray-300 px-3 py-3 rounded-md text-gray-600" />
         <label for="ubicacionMatriz" class="text-gray-500">Ubicación</label>
         <div class="inline-flex justify-between gap-2">
-          <input type="text" id="ubicacionMatriz" placeholder="Ubicacion" v-model="profile.ubicacion_google_maps"
+          <input type="text" id="ubicacionMatriz" placeholder="Ubicacion" v-model="user.ubicacion_google_maps"
             class="w-full mx-auto bg-transparent border-2 border-gray-300 px-3 py-3 rounded-md text-gray-600" />
           <button class="default-bar text-white font-bold grid items-center h-full p-2 rounded-md">
             <img src="@/assets/Status/LocationPin.svg" alt="Pin Ubication" />
@@ -138,14 +139,14 @@
         </div>
       </div>
 
-      <div class="grid mb-2" v-if="puntosRecepcion.length > 0">
+      <div class="grid mb-2 col-span-2" v-if="puntosRecepcion.length > 0">
         <h1 class="text-gray-600 mb-3 font-bold">Puntos de recepción</h1>
 
-        <p class="text-gray-500 flex gap-3 items-center" v-for="item in puntosRecepcion" :key="item.nombre">
+        <p class="text-gray-500 flex gap-3 w-full items-center" v-for="item in puntosRecepcion" :key="item.nombre">
           <svg xmlns="http://www.w3.org/2000/svg" height="18" fill="#a2afbe" viewBox="0 -960 960 960" width="18">
             <path d="m560-120-57-57 144-143H200v-480h80v400h367L503-544l56-57 241 241-240 240Z" />
           </svg>
-          {{ item.nombre }}
+          {{ item.nombre }} - {{ item.ubicacion_google_maps }}
 
           <button type="button" v-on:click="deletePunto(item)">
             <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" fill="#E87C61">
@@ -260,7 +261,7 @@
           class="text-gray-400 w-full mx-auto bg-transparent border-2 border-gray-300 px-3 py-3 rounded-md"></textarea>
       </div>
 
-      <button type="button" @click="showModal"
+      <button type="button" @click="updateProfile"
         class="py-3 px-5 default-bar mx-auto mt-3 w-2/3 col-span-2 rounded font-bold grid items-center mb-3">
         Guardar
       </button>
@@ -299,7 +300,9 @@ import { mapGetters, mapActions } from "vuex";
 import { CModal, CModalBody } from "@coreui/vue";
 import { emitAlert } from '../libs/alert.js'
 import * as profileService from '../services/profile.service.js';
+import * as authService from '../services/auth.service.js';
 import event from "@/libs/event";
+import router from "@/router";
 export default {
   components: {
     CModal,
@@ -314,6 +317,7 @@ export default {
     return {
       visible: false,
       visiblePassword: true,
+      documentVerification: false,
       nombrePunto: "",
       ubicacionPunto: "",
       direccionPunto: "",
@@ -323,12 +327,11 @@ export default {
         numero_identificacion: "",
         correo: "",
         clave: "",
-        acepto_terminos: false,
         provincia: "",
         canton: "",
         parroquia: "",
         direccion: "",
-        ubicacion: "",
+        ubicacion_google_maps: "",
         telefono: ""
       },
       profile: {
@@ -339,11 +342,7 @@ export default {
         consumo_mes_tm: 0,
         consumo_anual: 0,
         presupuesto_mes: 0,
-        politicas_recepcion: "",
-        direccion: "",
-        ubicacion_google_maps: "",
-        provincia: "",
-        canton: ""
+        politicas_recepcion: ""
       },
       selectedProvincia: 0,
       Provincias: Provincias,
@@ -352,15 +351,43 @@ export default {
       contact: []
     };
   },
+  watch: {
+    '$route.fullPath': async function () {
+      if (this.$route.fullPath == '/profile') {
+        await this.getProfile();
+        return;
+      }
+    }
+  },
   created: async function () {
     event.on('add-contact', (data) => {
-      this.contact.push(data);
+      this.contact.push({id: "", ...data});
     })
     await this.getProfile();
   },
   methods: {
-    deleteContacto(x) {
-      this.contact = this.contact.filter((y) => y != x);
+    verifyDocument() {
+      if (this.user.tipo_identificacion == "RUC" && this.user.numero_identificacion.length != 13) {
+        this.documentVerification = true;
+        return { message: "Debes ingresar 13 digitos" }
+      } else if (this.user.tipo_identificacion == "Cédula" && this.user.numero_identificacion.length != 10) {
+        this.documentVerification = true;
+        return { message: "Debes ingresar 10 digitos" }
+      } else if (this.user.tipo_identificacion == "Pasaporte" && this.user.numero_identificacion.length != 8) {
+        this.documentVerification = true;
+        return { message: "Debes ingresar 8 digitos" }
+      } else {
+        this.documentVerification = false;
+        return { message: "" }
+      }
+    },
+    async deleteContacto(x) {
+      if (x.id != "") {
+        await profileService.deleteContact(x.id);
+        this.contact = this.contact.filter((y) => y != x);
+      } else {
+        this.contact = this.contact.filter((y) => y != x);
+      }
     },
     async getProfile() {
       const data = await profileService.getProfileByUser();
@@ -371,14 +398,31 @@ export default {
       this.user.parroquia = data.user.parroquia;
       this.user.provincia = data.user.provincia;
       this.user.telefono = data.user.telefono;
+      this.user.ubicacion_google_maps = data.user.ubicacion_google_maps;
       this.user.tipo_identificacion = data.user.tipo_identificacion;
       this.user.ubicacion = data.user.ubicacion;
 
-      this.profile = { ...data.profile }
-      this.selectedProvincia = Provincias.find((prov) => prov.nombre == this.profile.provincia).id;
+      this.profile.razon_social = data.profile.razon_social;
+      this.profile.consumo_anual = data.profile.consumo_anual;
+      this.profile.consumo_mes_tm = data.profile.consumo_mes_tm;
+      this.profile.actividad_economica = data.profile.actividad_economica;
+      this.profile.tipo_negocio = data.profile.tipo_negocio;
+      this.profile.presupuesto_mes = data.profile.presupuesto_mes;
+      this.profile.politicas_recepcion = data.profile.politicas_recepcion;
+      this.selectedProvincia = Provincias.find((prov) => prov.nombre == this.user.provincia).id;
       this.puntosRecepcion = Array.from(data.points);
       this.contact = Array.from(data.contacts);
       this.loadCantonesByProvincia();
+    },
+    async updateProfile() {
+      try {
+        await profileService.updateProfile({ profile: this.profile, points: this.puntosRecepcion, contact: this.contact });
+        this.user.provincia = Provincias.find((prov) => prov.id == this.selectedProvincia).nombre;
+        await authService.updateAccount(this.user);
+        this.showModal();
+      } catch (error) {
+        emitAlert(error, 'error');
+      }
     },
     showModal() {
       this.visible = true;
@@ -386,6 +430,7 @@ export default {
     closeModal() {
       // Close the menu by setting menuOpen to false
       this.visible = false;
+      router.push('/app/home');
     },
     savePunto() {
       if (
@@ -396,7 +441,7 @@ export default {
         this.puntosRecepcion.push({
           id: "",
           nombre: this.nombrePunto,
-          ubicacion: this.ubicacionPunto,
+          ubicacion_google_maps: this.ubicacionPunto,
           direccion: this.direccionPunto,
         });
       }
@@ -404,8 +449,13 @@ export default {
     loadCantonesByProvincia() {
       this.Cantones = Cantones.filter(canton => canton.Provincia_ID == this.selectedProvincia);
     },
-    deletePunto(x) {
-      this.puntosRecepcion = this.puntosRecepcion.filter((y) => y != x);
+    async deletePunto(x) {
+      if (x.id != "") {
+        await profileService.deleteReceptionPoint(x.id);
+        this.puntosRecepcion = this.puntosRecepcion.filter((y) => y != x);
+      } else {
+        this.puntosRecepcion = this.puntosRecepcion.filter((y) => y != x);
+      }
     },
     changeVisibility() {
       this.visiblePassword = !this.visiblePassword;

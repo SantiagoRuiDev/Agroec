@@ -280,8 +280,10 @@ export default {
         this.quality_param.min >= 0 &&
         this.quality_param.max > 0
       ) {
-        console.log(1);
         this.quality_params.push({ ...this.quality_param });
+        this.quality.param.nombre = "";
+        this.quality_param.min = 0;
+        this.quality_param.max = 0;
         return;
       }
     },
@@ -323,18 +325,6 @@ export default {
     closeModal() {
       // Close the menu by setting menuOpen to false
       this.visible = false;
-    },
-    newParametro() {
-      if (
-        this.nombreParametro != "" &&
-        this.minParametro != "" &&
-        this.maxParametro != ""
-      ) {
-        this.quality_params.push({
-          ...this.quality_param
-        });
-        return;
-      }
     },
   },
 };

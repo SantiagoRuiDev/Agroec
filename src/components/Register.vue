@@ -260,9 +260,9 @@
                 v-if="profile.tipo_negocio == '' && showErrors">Debes ingresar un tipo de Negocio</label>
               <select id="negocio" v-model="profile.tipo_negocio"
                 class="w-full mx-auto bg-transparent border-2 border-gray-300 px-3 py-3 rounded-md text-gray-600">
-                <option selected>Industrial</option>
-                <option>Comercial</option>
-                <option>Intermediario</option>
+                <option selected value="Industrial">Industrial</option>
+                <option value="Comercial">Comercial</option>
+                <option value="Intermediario">Intermediario</option>
               </select>
             </div>
           </div>

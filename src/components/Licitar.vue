@@ -203,6 +203,9 @@ export default {
           min: this.minParametro,
           max: this.maxParametro,
         });
+        this.nombreParametro = "";
+        this.minParametro = 0;
+        this.maxParametro = 0;
         return;
       }
     },

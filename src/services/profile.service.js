@@ -44,6 +44,34 @@ export const getStats = async () => {
   }
 };
 
+export const deleteReceptionPoint = async (id) => {
+  try {
+    const { data } = await instance.delete("/profile/me/reception-points/" + id, {
+      headers: {
+        Authorization: `Bearer ${await getToken()}`,
+        "x-multiuser-token": await getMultiuserToken(),
+      },
+    });
+    return data;
+  } catch (error) {
+    throw new Error(error.response.data.error);
+  }
+};
+
+export const deleteContact = async (id) => {
+  try {
+    const { data } = await instance.delete("/profile/me/contact/" + id, {
+      headers: {
+        Authorization: `Bearer ${await getToken()}`,
+        "x-multiuser-token": await getMultiuserToken(),
+      },
+    });
+    return data;
+  } catch (error) {
+    throw new Error(error.response.data.error);
+  }
+};
+
 export const getReceptionPoints = async () => {
   try {
     const { data } = await instance.get("/profile/me/reception-points", {
@@ -57,3 +85,17 @@ export const getReceptionPoints = async () => {
     throw new Error(error.response.data.error);
   }
 };
+
+export const updateProfile = async (profile) => {
+  try {
+    const { data } = await instance.put("/profile", profile, {
+      headers: {
+        Authorization: `Bearer ${await getToken()}`,
+        "x-multiuser-token": await getMultiuserToken(),
+      },
+    });
+    return data;
+  } catch (error) {
+    throw new Error(error.response.data.error);
+  }
+}

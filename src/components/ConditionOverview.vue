@@ -564,6 +564,9 @@ export default {
         this.quality_param.max > 0
       ) {
         this.quality_params.push({ ...this.quality_param });
+        this.quality_param.nombre = "";
+        this.quality_param.max = 0;
+        this.quality_param.min = 0;
         return;
       }
     },

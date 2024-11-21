@@ -61,3 +61,21 @@ export const finalizeSession = async () => {
     throw new Error(error.response.data.message);
   }
 };
+
+export const updateAccount = async (schema) => {
+  try {
+    const { data } = await instance.put(
+      "/auth",
+      schema,
+      {
+        headers: {
+          Authorization: `Bearer ${await getToken()}`,
+          'x-multiuser-token': await getMultiuserToken()
+        },
+      }
+    );
+    return data;
+  } catch (error) {
+    throw new Error(error.response.data.message);
+  }
+};
