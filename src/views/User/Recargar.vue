@@ -17,7 +17,7 @@
 </template>
 
 <script allowJs>
-import Recargar from "@/components/Recargar.vue";
+import Recargar from "@/components/wallet/Recargar.vue";
 import {
   IonPage,
   IonHeader,

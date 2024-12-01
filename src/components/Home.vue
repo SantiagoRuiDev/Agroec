@@ -126,9 +126,9 @@
 import { emitAlert } from "@/libs/alert.js";
 import * as profileService from '../services/profile.service.js';
 import * as advertisingService from '../services/advertising.service.js';
-import Slider from "@/components/Slider.vue";
-import Qualification from "./Qualification.vue";
-import Spinner from "./Spinner.vue";
+import Slider from "@/components/others/Slider.vue";
+import Qualification from "./others/Qualification.vue";
+import Spinner from "./others/Spinner.vue";
 import event from "@/libs/event.js";
 export default {
   name: "Home",

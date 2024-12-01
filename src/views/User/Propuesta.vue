@@ -17,7 +17,7 @@
 </template>
 
 <script allowJs>
-import Propuesta from "@/components/Propuesta.vue";
+import Propuesta from "@/components/proposal/Propuesta.vue";
 import {
   IonPage,
   IonHeader,

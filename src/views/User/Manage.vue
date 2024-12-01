@@ -50,8 +50,8 @@
 </template>
 
 <script allowJs>
-import BottomBar from '@/components/Bottom.vue';
-import Manage from "@/components/Manage.vue";
+import BottomBar from '@/components/others/Bottom.vue';
+import Manage from "@/components/dashboard/Manage.vue";
 import { CModal, CModalBody } from "@coreui/vue";
 import {
   IonPage,

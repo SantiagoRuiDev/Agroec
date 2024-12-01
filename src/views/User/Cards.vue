@@ -17,7 +17,7 @@
 </template>
 
 <script allowJs>
-import Cards from "@/components/Cards.vue";
+import Cards from "@/components/wallet/Cards.vue";
 import {
   IonPage,
   IonHeader,

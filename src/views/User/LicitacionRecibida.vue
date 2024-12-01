@@ -42,7 +42,7 @@
 </template>
 
 <script allowJs>
-import LicitacionesRecibidas from "@/components/LicitacionesRecibidas.vue";
+import LicitacionesRecibidas from "@/components/licitations/LicitacionesRecibidas.vue";
 import {
   IonPage,
   IonHeader,

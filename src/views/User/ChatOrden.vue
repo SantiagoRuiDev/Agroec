@@ -21,7 +21,7 @@
 
 <script allowJs>
 import Event from "../../libs/event.js";
-import ChatOrden from "@/components/ChatOrden.vue";
+import ChatOrden from "@/components/chats/ChatOrden.vue";
 import {
   IonPage,
   IonHeader,

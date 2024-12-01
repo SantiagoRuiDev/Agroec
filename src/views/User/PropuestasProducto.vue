@@ -19,7 +19,7 @@
 </template>
 
 <script allowJs>
-import Ofertas from "@/components/PropuestasEnviadas.vue";
+import Ofertas from "@/components/proposal/PropuestasEnviadas.vue";
 import {
   IonPage,
   IonHeader,

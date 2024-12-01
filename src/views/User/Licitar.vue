@@ -17,7 +17,7 @@
   </template>
   
   <script allowJs>
-  import Licitar from "@/components/Licitar.vue";
+  import Licitar from "@/components/licitations/Licitar.vue";
   import {
     IonPage,
     IonHeader,

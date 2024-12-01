@@ -26,8 +26,8 @@
 
 <script allowJs>
 import Home from '@/components/Home.vue';
-import BottomBar from '@/components/Bottom.vue';
-import Sidebar from '@/components/Sidebar.vue'
+import BottomBar from '@/components/others/Bottom.vue';
+import Sidebar from '@/components/others/Sidebar.vue'
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonIcon } from '@ionic/vue';
 import event from '@/libs/event';
 

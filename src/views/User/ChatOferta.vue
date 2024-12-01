@@ -35,7 +35,7 @@
 
 <script allowJs>
 import Event from "../../libs/event.js";
-import ChatOferta from "@/components/ChatOferta.vue";
+import ChatOferta from "@/components/chats/ChatOferta.vue";
 import {
   IonPage,
   IonHeader,

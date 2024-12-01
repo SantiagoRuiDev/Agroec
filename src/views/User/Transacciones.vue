@@ -22,7 +22,7 @@
 </template>
 
 <script allowJs>
-import Transacciones from "@/components/Transacciones.vue";
+import Transacciones from "@/components/wallet/Transacciones.vue";
 import {
   IonPage,
   IonHeader,

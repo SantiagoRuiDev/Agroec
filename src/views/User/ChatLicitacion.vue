@@ -21,7 +21,7 @@
 
 <script allowJs>
 import Event from '../../libs/event.js';
-import ChatLicitacion from "@/components/ChatLicitacion.vue";
+import ChatLicitacion from "@/components/chats/ChatLicitacion.vue";
 import {
   IonPage,
   IonHeader,

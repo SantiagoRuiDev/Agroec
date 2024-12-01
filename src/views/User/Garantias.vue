@@ -17,7 +17,7 @@
 </template>
 
 <script allowJs>
-import Garantias from "@/components/Garantias.vue";
+import Garantias from "@/components/wallet/Garantias.vue";
 import {
   IonPage,
   IonHeader,
