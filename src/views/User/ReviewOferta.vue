@@ -18,7 +18,7 @@
 
 <script allowJs>
 import Event from "../../libs/event.js";
-import Deal from "@/components/ReviewOferta.vue";
+import Deal from "@/components/proposal/ReviewOferta.vue";
 import {
   IonPage,
   IonHeader,

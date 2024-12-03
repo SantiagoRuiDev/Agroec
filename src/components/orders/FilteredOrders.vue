@@ -44,7 +44,7 @@
 
 <script>
 import { emitAlert } from "@/libs/alert.js";
-import * as orderService from '../services/order.service.js';
+import * as orderService from '@/services/order.service.js';
 import { formatWalletDate } from "@/libs/date.js";
 export default {
   data() {

@@ -22,7 +22,7 @@
 
 <script>
 import { emitAlert } from "@/libs/alert.js";
-import * as orderService from '../../services/order.service.js';
+import * as orderService from '@/services/order.service.js';
 export default {
   data() {
     return {

@@ -49,8 +49,8 @@
 
 <script>
 import { formatWalletDate } from '@/libs/date.js';
-import { emitAlert } from '../../libs/alert.js'
-import * as warrantyService from '../../services/warranty.service.js'
+import { emitAlert } from '@/libs/alert.js'
+import * as warrantyService from '@/services/warranty.service.js'
 export default {
   data() {
     return {

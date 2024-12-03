@@ -309,7 +309,7 @@
 
 <script>
 import { getMultiuserToken, removeMultiuserToken, removeToken } from '@/libs/storage.js';
-import * as authService from '../../services/auth.service.js'
+import * as authService from '@/services/auth.service.js'
 export default {
   name: "Sidebar",
   props: {

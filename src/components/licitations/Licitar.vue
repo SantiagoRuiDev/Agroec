@@ -113,11 +113,15 @@
       <button v-if="loading" type="button"
         class="py-3 px-5 default-bar mx-auto mt-3 w-2/3 rounded font-bold grid items-center mb-3">
         <div style="border-top-color:transparent"
-            class="w-6 h-6 mx-auto border-4 border-white-400 border-solid rounded-full animate-spin"></div>
+          class="w-6 h-6 mx-auto border-4 border-white-400 border-solid rounded-full animate-spin"></div>
       </button>
-      <button v-if="!loading" @click="debouncedCreateLicitation" type="button"
+      <button v-if="!loading && !buttonIsLocked" @click="debouncedCreateLicitation" type="button"
         class="py-3 px-5 default-bar mx-auto mt-3 w-2/3 rounded font-bold grid items-center mb-3">
         Publicar Licitación
+      </button>
+      <button v-if="!loading && buttonIsLocked" type="button"
+        class="py-3 px-5 default-bar mx-auto mt-3 w-5/6 rounded font-bold grid items-center mb-3">
+        Publicación realizada
       </button>
     </form>
   </div>
@@ -154,10 +158,19 @@ export default {
   props: {
     Licitacion: String,
   },
+  watch: {
+    '$route.fullPath': async function () {
+      if (String(this.$route.fullPath).includes("/app/licitar/")) {
+        this.buttonIsLocked = false;
+        return;
+      }
+    }
+  },
   data() {
     return {
       today: new Date().toISOString().split('T')[0],
       visible: false,
+      buttonIsLocked: false,
       loading: false,
       parametros: false,
       nombreParametro: "",
@@ -166,6 +179,7 @@ export default {
       maxParametro: 0,
       entrega: "",
       sacos: "",
+      product_name: this.$route.params.name,
 
       licitation: {
         precio: 0,
@@ -186,13 +200,16 @@ export default {
       this.loading = true;
       this.licitation.presentacion_entrega = this.entrega + " de " + this.sacos;
       try {
-        await licitacionService.createLicitation(this.$route.params.name, {
+        await licitacionService.createLicitation(this.product_name, {
           licitation: this.licitation,
           quality_params: this.newParametros
         });
         this.loading = false;
-        this.visible = true
+        this.visible = true;
+        this.buttonIsLocked = true;
+        this.resetFormData();
       } catch (error) {
+        this.buttonIsLocked = false;
         this.loading = false;
         emitAlert(error, "error");
       }
@@ -220,6 +237,18 @@ export default {
         return;
       }
     },
+    resetFormData() {
+      this.licitation = {
+        precio: 0,
+        precio_unidad: "QQ",
+        cantidad: 0,
+        cantidad_unidad: "QQ",
+        presentacion_entrega: "",
+        valida_hasta: "",
+        informacion_adicional: ""
+      }
+      this.newParametros = [];
+    }
   },
 };
 </script>

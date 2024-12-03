@@ -49,7 +49,7 @@
 
 <script allowJs>
 import { emitAlert } from "@/libs/alert.js";
-import * as multiuserService from '../services/multiuser.service.js';
+import * as multiuserService from '@/services/multiuser.service.js';
 import { CModal, CModalBody } from "@coreui/vue";
 export default {
   components: {

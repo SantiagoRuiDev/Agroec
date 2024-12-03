@@ -31,7 +31,7 @@
 
 <script>
 import { emitAlert } from "@/libs/alert.js";
-import * as inputService from '../services/input.service.js';
+import * as inputService from '@/services/input.service.js';
 import {
   CAccordion,
   CAccordionItem,

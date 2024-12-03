@@ -175,16 +175,16 @@
 </template>
 
 <script allowJs>
-import Event from "../../libs/event.js";
+import Event from "@/libs/event.js";
 import { CModal, CModalBody } from "@coreui/vue";
-import { formatDateTime, formatWalletDate } from '../../libs/date.js'
-import { initializeSocket, socket } from '../../socket/socket.js'
-import * as chatService from '../../services/chat.service.js';
-import * as proposalService from '../../services/proposal.service.js';
+import { formatDateTime, formatWalletDate } from '@/libs/date.js'
+import { initializeSocket, socket } from '@/socket/socket.js'
+import * as chatService from '@/services/chat.service.js';
+import * as proposalService from '@/services/proposal.service.js';
 import { IonIcon, IonSegment, IonLabel, IonSegmentButton } from "@ionic/vue";
 import { emitAlert } from "@/libs/alert.js";
-import ProfileIcon from "./profile/ProfileIcon.vue";
-import ConditionOverview from "./ConditionOverview.vue";
+import ProfileIcon from "@/components/profile/ProfileIcon.vue";
+import ConditionOverview from "@/components/proposal/ConditionOverview.vue";
 export default {
   components: {
     CModal,

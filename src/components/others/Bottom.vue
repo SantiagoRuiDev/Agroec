@@ -50,7 +50,7 @@
 
 <script allowjs>
 import { IonFooter, IonToolbar } from "@ionic/vue"
-import NotificationButton from "../notifications/NotificationButton.vue";
+import NotificationButton from "@/components/notifications/NotificationButton.vue";
 export default {
   components: {
     IonFooter,

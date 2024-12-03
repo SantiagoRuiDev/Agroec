@@ -34,7 +34,7 @@
 </template>
 
 <script allowJs>
-import MisLicitaciones from "@/components/MisLicitaciones.vue";
+import MisLicitaciones from "@/components/licitations/MisLicitaciones.vue";
 import {
   IonPage,
   IonHeader,

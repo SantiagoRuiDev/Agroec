@@ -344,13 +344,13 @@ Aliquam pretium libero in quam gravida, sed ornare eros efficitur. Nam vitae mat
 <script allowJs>
 import { debounce } from 'lodash';
 import { CModal, CModalBody } from "@coreui/vue";
-import * as proposalService from '../../services/proposal.service.js';
-import * as profileService from '../../services/profile.service.js';
-import Event from "../../libs/event.js";
+import * as proposalService from '@/services/proposal.service.js';
+import * as profileService from '@/services/profile.service.js';
+import Event from "@/libs/event.js";
 import { IonIcon, IonSegment, IonLabel, IonSegmentButton } from "@ionic/vue";
 import { emitAlert } from "@/libs/alert.js";
 import { formatDateTime } from "@/libs/date.js";
-import event from "../../libs/event.js";
+import event from "@/libs/event.js";
 export default {
   components: {
     CModal,

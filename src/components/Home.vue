@@ -124,11 +124,11 @@
 
 <script>
 import { emitAlert } from "@/libs/alert.js";
-import * as profileService from '../services/profile.service.js';
-import * as advertisingService from '../services/advertising.service.js';
+import * as profileService from '@/services/profile.service.js';
+import * as advertisingService from '@/services/advertising.service.js';
 import Slider from "@/components/others/Slider.vue";
-import Qualification from "./others/Qualification.vue";
-import Spinner from "./others/Spinner.vue";
+import Qualification from "@/components/others/Qualification.vue";
+import Spinner from "@/components/others/Spinner.vue";
 import event from "@/libs/event.js";
 export default {
   name: "Home",

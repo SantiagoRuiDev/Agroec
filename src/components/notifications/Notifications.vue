@@ -22,7 +22,7 @@
 
 <script allowJs>
 import { emitAlert } from '@/libs/alert.js';
-import * as notificationService from '../../services/notification.service.js';
+import * as notificationService from '@/services/notification.service.js';
 import { formatDateTime } from '@/libs/date.js';
 
 export default {

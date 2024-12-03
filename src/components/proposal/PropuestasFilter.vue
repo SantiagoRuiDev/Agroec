@@ -34,9 +34,9 @@ span {
 
 <script>
 import { emitAlert } from "@/libs/alert.js";
-import event from "../../libs/event.js";
-import * as productService from '../../services/product.service.js';
-import * as proposalService from '../../services/proposal.service.js';
+import event from "@/libs/event.js";
+import * as productService from '@/services/product.service.js';
+import * as proposalService from '@/services/proposal.service.js';
 export default {
   data() {
     return {

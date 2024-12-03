@@ -67,9 +67,9 @@
 
 <script>
 import { emitAlert } from "@/libs/alert.js";
-import * as orderService from '../../services/order.service.js';
+import * as orderService from '@/services/order.service.js';
 import { formatWalletDate } from "@/libs/date.js";
-import Spinner from './Spinner.vue';
+import Spinner from '@/components/others/Spinner.vue';
 export default {
   props: {
     product_filter: {

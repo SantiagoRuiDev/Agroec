@@ -56,7 +56,7 @@
 </template>
 
 <script allowJs>
-import Orders from "@/components/Orders.vue";
+import Orders from "@/components/orders/Orders.vue";
 import {
   IonPage,
   IonHeader,

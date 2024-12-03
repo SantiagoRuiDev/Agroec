@@ -26,8 +26,8 @@
 </template>
 
 <script allowJs>
-import BottomBar from '@/components/Bottom.vue';
-import MarketDeals from "@/components/MarketDeals.vue";
+import BottomBar from '@/components/others/Bottom.vue';
+import MarketDeals from "@/components/products/MarketDeals.vue";
 import event from "../../libs/event.js";
 import {
   IonPage,

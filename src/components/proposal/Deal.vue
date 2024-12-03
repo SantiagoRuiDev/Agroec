@@ -62,7 +62,7 @@
 
 <script>
 import Slider from '@/components/others/SliderImage.vue';
-import * as saleService from '../../services/sale.service.js';
+import * as saleService from '@/services/sale.service.js';
 import { formatDateTime } from '@/libs/date.js';
 export default {
   name: 'Home',

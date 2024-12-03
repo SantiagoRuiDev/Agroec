@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import * as categoryService from '../../services/category.service.js';
+import * as categoryService from '@/services/category.service.js';
 export default {
   name: 'Categories',
   data(){

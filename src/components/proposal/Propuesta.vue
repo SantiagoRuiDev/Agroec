@@ -135,11 +135,11 @@
 <script allowJs>
 import { debounce } from 'lodash';
 import { CModal, CModalBody } from "@coreui/vue";
-import * as saleService from '../../services/sale.service.js';
-import * as proposalService from '../../services/proposal.service.js';
-import ProfileIcon from "./profile/ProfileIcon.vue";
+import * as saleService from '@/services/sale.service.js';
+import * as proposalService from '@/services/proposal.service.js';
+import ProfileIcon from "@/components/profile/ProfileIcon.vue";
 import { emitAlert } from "@/libs/alert.js";
-import router from "../../router/index";
+import router from "@/router/index";
 import { getReceptionPoints } from "@/services/profile.service.js";
 export default {
   components: {
@@ -212,8 +212,9 @@ export default {
       this.loading = true;
       try {
         const {chat} = await proposalService.createLicitationProposal(this.$route.params.identifier, this.schema);
-        this.loading = false;
+        this.resetFormData();
         router.push('/chat/licitacion/' + this.$route.params.name + '/' + chat);
+        this.loading = false;
       } catch (error) {
         this.loading = false;
         return emitAlert(error, 'error')
@@ -226,6 +227,20 @@ export default {
       // Close the menu by setting menuOpen to false
       this.visible = false;
     },
+    resetFormData(){
+      this.schema = {
+        precio: 0,
+        precio_unidad: "QQ",
+        cantidad: 0,
+        cantidad_unidad: "QQ",
+        presentacion_entrega: "",
+        ubicacion_google_maps: "",
+        horarios: "",
+        valida_hasta: "",
+        informacion_adicional: ""
+      }
+      this.points = [];
+    }
   },
 };
 </script>

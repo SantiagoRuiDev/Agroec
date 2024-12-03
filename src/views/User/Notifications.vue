@@ -44,7 +44,7 @@
 </template>
 
 <script allowJs>
-import Notifications from "@/components/Notifications.vue";
+import Notifications from "@/components/notifications/Notifications.vue";
 import {
   IonPage,
   IonHeader,

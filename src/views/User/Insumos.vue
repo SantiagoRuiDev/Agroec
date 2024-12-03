@@ -18,8 +18,8 @@
 </template>
 
 <script allowJs>
-import BottomBar from '@/components/Bottom.vue';
-import Insumos from "@/components/InsumosCategorias.vue";
+import BottomBar from '@/components/others/Bottom.vue';
+import Insumos from "@/components/input/InsumosCategorias.vue";
 import {
   IonPage,
   IonHeader,

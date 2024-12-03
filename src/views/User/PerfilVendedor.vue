@@ -17,7 +17,7 @@
 </template>
 
 <script allowJs>
-import PerfilVendedor from "@/components/PerfilVendedor.vue";
+import PerfilVendedor from "@/components/profile/PerfilVendedor.vue";
 import {
   IonPage,
   IonHeader,

@@ -17,7 +17,7 @@
 </template>
 
 <script allowJs>
-import Profile from "@/components/Profile.vue";
+import Profile from "@/components/profile/Profile.vue";
 import {
   IonPage,
   IonHeader,

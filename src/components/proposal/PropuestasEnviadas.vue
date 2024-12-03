@@ -91,8 +91,8 @@
 
 <script allowJs>
 import { emitAlert } from "@/libs/alert.js";
-import * as proposalService from '../../services/proposal.service.js';
-import ProfileIcon from "./profile/ProfileIcon.vue";
+import * as proposalService from '@/services/proposal.service.js';
+import ProfileIcon from "@/components/profile/ProfileIcon.vue";
 import { formatDateTime } from "@/libs/date.js";
 export default {
   data() {

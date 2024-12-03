@@ -93,7 +93,7 @@
 </template>
 
 <script>
-import Qualification from './Qualification.vue';
+import Qualification from '../others/Qualification.vue';
 import * as profileService from '../../services/profile.service.js';
 import {
   IonPage,

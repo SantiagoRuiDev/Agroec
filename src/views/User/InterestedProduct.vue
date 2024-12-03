@@ -17,7 +17,7 @@
 </template>
 
 <script allowJs>
-import AddProduct from "@/components/InterestedProduct.vue";
+import AddProduct from "@/components/products/InterestedProduct.vue";
 import {
   IonPage,
   IonHeader,

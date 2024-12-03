@@ -185,8 +185,7 @@
 <script allowJs>
 import { CModal, CModalBody } from "@coreui/vue";
 import { emitAlert } from "@/libs/alert.js";
-import * as licitacionService from '../../services/licitation.service.js';
-import event from "@/libs/event.js";
+import * as licitacionService from '@/services/licitation.service.js';
 export default {
   components: {
     CModal,

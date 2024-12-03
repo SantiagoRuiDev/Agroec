@@ -18,7 +18,7 @@
   
   <script allowJs>
   import BottomBar from '@/components/others/Bottom.vue';
-  import Multiusuarios from "@/components/MultiusuariosEditar.vue";
+  import Multiusuarios from "@/components/multiusers/MultiusuariosEditar.vue";
   import {
     IonPage,
     IonHeader,

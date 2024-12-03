@@ -214,7 +214,7 @@
 
 <script>
 import { emitAlert } from "@/libs/alert.js";
-import * as licitacionService from '../services/licitation.service.js';
+import * as licitacionService from '@/services/licitation.service.js';
 import { CModal, CModalBody } from "@coreui/vue";
 export default {
   props: {

@@ -67,8 +67,8 @@
 
 <script>
 import { formatWalletDate } from '@/libs/date';
-import { emitAlert } from '../../libs/alert.js';
-import * as walletService from '../../services/wallet.service.js';
+import { emitAlert } from '@/libs/alert.js';
+import * as walletService from '@/services/wallet.service.js';
 export default {
   data() {
     return {

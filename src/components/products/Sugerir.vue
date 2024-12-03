@@ -74,7 +74,7 @@
 
 <script allowJs>
 import { CModal, CModalBody } from "@coreui/vue";
-import * as suggestionService from '../../services/suggestion.service.js';
+import * as suggestionService from '@/services/suggestion.service.js';
 import { emitAlert } from "@/libs/alert.js";
 export default {
   components: {

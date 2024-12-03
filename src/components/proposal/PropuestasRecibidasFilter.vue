@@ -17,7 +17,7 @@
 
 <script allowJs>
 import { emitAlert } from "@/libs/alert.js";
-import * as productService from '../../services/product.service.js';
+import * as productService from '@/services/product.service.js';
 export default {
     data() {
         return {

@@ -23,7 +23,7 @@
 
 <script allowJs>
 import Event from '@/libs/event';
-import Orders from "@/components/OrderStatus.vue";
+import Orders from "@/components/orders/OrderStatus.vue";
 import {
   IonPage,
   IonHeader,

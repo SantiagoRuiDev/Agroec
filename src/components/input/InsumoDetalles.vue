@@ -168,9 +168,9 @@
 
 
 <script>
-import Slider from './others/SliderInsumos.vue';
+import Slider from '@/components/others/SliderInsumos.vue';
 import { emitAlert } from "@/libs/alert.js";
-import * as inputService from '../../services/input.service.js';
+import * as inputService from '@/services/input.service.js';
 import {
     CAccordion,
     CAccordionItem,

@@ -17,7 +17,7 @@
 </template>
 
 <script allowJs>
-import Print from "@/components/Print.vue";
+import Print from "@/components/others/Print.vue";
 import {
   IonPage,
   IonHeader,

@@ -47,8 +47,8 @@
 
 <script>
 import { formatDateTime } from '@/libs/date.js';
-import * as proposalService from '../../services/proposal.service.js';
-import ProfileIcon from '../profile/ProfileIcon.vue';
+import * as proposalService from '@/services/proposal.service.js';
+import ProfileIcon from '@/components/profile/ProfileIcon.vue';
 export default {
   name: "Revisar Detalles de Oferta",
   components: {

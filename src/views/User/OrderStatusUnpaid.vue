@@ -22,7 +22,7 @@
 </template>
 
 <script allowJs>
-import Orders from "@/components/OrderStatusUnpaid.vue";
+import Orders from "@/components/orders/OrderStatusUnpaid.vue";
 import {
   IonPage,
   IonHeader,

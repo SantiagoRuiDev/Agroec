@@ -166,8 +166,8 @@
 
 <script>
 import { CModal, CModalBody } from "@coreui/vue";
-import { emitAlert } from '../../libs/alert.js'
-import * as walletService from '../../services/wallet.service.js'
+import { emitAlert } from '@/libs/alert.js'
+import * as walletService from '@/services/wallet.service.js'
 import router from "@/router/index";
 export default {
   components: {

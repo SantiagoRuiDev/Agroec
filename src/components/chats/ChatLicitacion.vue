@@ -12,26 +12,26 @@
           </h2>
         </div>
         <div class="inline-flex gap-2 items-center">
-          <img src="../assets/Event.svg" alt="Calendario Imagen" class="h-6 w-6">
+          <img src="@/assets/Event.svg" alt="Calendario Imagen" class="h-6 w-6">
           <div class="grid gap-1">
             <p>Fecha limite/entrega: {{ formatDateTime(conditions.fecha_limite).plainDate }}</p>
             <p v-if="conditions.horarios">Horarios: {{ conditions.horarios }}</p>
           </div>
         </div>
         <div class="inline-flex gap-2 items-center" v-if="conditions.ubicacion">
-          <img src="../assets/Status/LocationChat.svg" alt="Location Imagen" class="h-6 w-6">
+          <img src="@/assets/Status/LocationChat.svg" alt="Location Imagen" class="h-6 w-6">
           <p>{{ conditions.ubicacion }}</p>
         </div>
         <div class="inline-flex gap-2 items-center">
-          <img src="../assets/Sack.svg" alt="Saco Imagen" class="h-6 w-6">
+          <img src="@/assets/Sack.svg" alt="Saco Imagen" class="h-6 w-6">
           <p>Presentación: {{ conditions.presentacion_propuesta }}</p>
         </div>
         <div class="inline-flex gap-2 items-center">
-          <img src="../assets/Informative.svg" alt="Info Imagen" class="h-6 w-6">
+          <img src="@/assets/Informative.svg" alt="Info Imagen" class="h-6 w-6">
           <p>Información: {{ conditions.informacion_adicional }}</p>
         </div>
         <div class="inline-flex gap-2 items-center">
-          <img src="../assets/Pago.svg" alt="Metodo pago Imagen" class="h-6 w-6">
+          <img src="@/assets/Pago.svg" alt="Metodo pago Imagen" class="h-6 w-6">
           <h2 class="uppercase font-bold">TOTAL NEGOCIADO</h2>
           <p>{{ formatToUSD(conditions.cantidad_propuesta * conditions.precio_propuesta) }}</p>
         </div>
@@ -45,26 +45,26 @@
           </h2>
         </div>
         <div class="inline-flex gap-2 items-center">
-          <img src="../assets/Event.svg" alt="Calendario Imagen" class="h-6 w-6">
+          <img src="@/assets/Event.svg" alt="Calendario Imagen" class="h-6 w-6">
           <div class="grid gap-1">
             <p>Fecha limite/entrega: {{ formatDateTime(conditions.fecha_limite).plainDate }}</p>
             <p v-if="conditions.horarios">Horarios: {{ conditions.horarios }}</p>
           </div>
         </div>
         <div class="inline-flex gap-2 items-center" v-if="conditions.ubicacion">
-          <img src="../assets/Status/LocationChat.svg" alt="Location Imagen" class="h-6 w-6">
+          <img src="@/assets/Status/LocationChat.svg" alt="Location Imagen" class="h-6 w-6">
           <p>{{ conditions.ubicacion }}</p>
         </div>
         <div class="inline-flex gap-2 items-center">
-          <img src="../assets/Sack.svg" alt="Saco Imagen" class="h-6 w-6">
+          <img src="@/assets/Sack.svg" alt="Saco Imagen" class="h-6 w-6">
           <p>Presentación: {{ conditions.presentacion_propuesta }}</p>
         </div>
         <div class="inline-flex gap-2 items-center">
-          <img src="../assets/Informative.svg" alt="Info Imagen" class="h-6 w-6">
+          <img src="@/assets/Informative.svg" alt="Info Imagen" class="h-6 w-6">
           <p>Información: {{ conditions.informacion_adicional }}</p>
         </div>
         <div class="inline-flex gap-2 items-center">
-          <img src="../assets/Pago.svg" alt="Metodo pago Imagen" class="h-6 w-6">
+          <img src="@/assets/Pago.svg" alt="Metodo pago Imagen" class="h-6 w-6">
           <h2 class="uppercase font-bold">TOTAL NEGOCIADO</h2>
           <p>{{ formatToUSD(conditions.cantidad * conditions.precio) }}</p>
         </div>
@@ -265,17 +265,17 @@
 
 <script allowJs>
 import { debounce } from 'lodash';
-import Event from "../../libs/event.js";
+import Event from "@/libs/event.js";
 import { CModal, CModalBody } from "@coreui/vue";
-import { formatDateTime } from '../../libs/date.js'
-import { initializeSocket, socket } from '../../socket/socket.js'
-import * as chatService from '../../services/chat.service.js';
-import * as proposalService from '../../services/proposal.service.js';
+import { formatDateTime } from '@/libs/date.js'
+import { initializeSocket, socket } from '@/socket/socket.js'
+import * as chatService from '@/services/chat.service.js';
+import * as proposalService from '@/services/proposal.service.js';
 import { IonIcon, IonSegment, IonLabel, IonSegmentButton } from "@ionic/vue";
 import { emitAlert } from "@/libs/alert.js";
-import ProfileIcon from "./profile/ProfileIcon.vue";
-import ConditionOverview from "./ConditionOverview.vue";
-import router from "../../router/index";
+import ProfileIcon from "@/components/profile/ProfileIcon.vue";
+import ConditionOverview from "@/components/proposal/ConditionOverview.vue";
+import router from "@/router/index";
 export default {
   components: {
     CModal,

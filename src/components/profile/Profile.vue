@@ -296,7 +296,7 @@
 import Contact from "@/components/auth/Contacto.vue";
 import Provincias from "../../assets/JSON/Provincias.json";
 import Cantones from "../../assets/JSON/Cantones.json";
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters } from "vuex";
 import { CModal, CModalBody } from "@coreui/vue";
 import { emitAlert } from '../../libs/alert.js'
 import * as profileService from '../../services/profile.service.js';

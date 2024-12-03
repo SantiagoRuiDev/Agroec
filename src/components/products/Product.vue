@@ -98,12 +98,12 @@
 </template>
 
 <script allowJs>
-import Qualification from "./others/Qualification.vue";
+import Qualification from "../others/Qualification.vue";
 import Provincias from "../../assets/JSON/Provincias.json";
 import Cantones from "../../assets/JSON/Cantones.json";
 import * as saleService from '../../services/sale.service.js';
 import { CModal, CModalBody } from "@coreui/vue";
-import ProfileIcon from "./profile/ProfileIcon.vue";
+import ProfileIcon from "../profile/ProfileIcon.vue";
 export default {
   components: {
     CModal,

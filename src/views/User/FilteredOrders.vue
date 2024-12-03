@@ -18,7 +18,7 @@
 </template>
 
 <script allowJs>
-import Orders from "@/components/FilteredOrders.vue";
+import Orders from "@/components/orders/FilteredOrders.vue";
 import {
   IonPage,
   IonHeader,
