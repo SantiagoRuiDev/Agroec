@@ -12,7 +12,7 @@ export const createLicitation = async (product_id, schema) => {
     });
     return data;
   } catch (error) {
-    throw new Error(error.response.data.error);
+    throw error;
   }
 };
 

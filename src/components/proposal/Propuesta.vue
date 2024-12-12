@@ -92,6 +92,21 @@
       @click="debouncedCreateLicitationProposal">Enviar propuesta de compra</button>
   </div>
 
+  <CModal alignment="center" :visible="accountModal" @click="closeAccountModal">
+    <CModalBody>
+      <div class="grid w-full gap-3 pb-3">
+        <img src="@/assets/Nav/X.svg" alt="Close alert" @click="closeAccountModal" class="justify-self-end" />
+        <h2 class="text-center text-xl font-bold text-gray-500 w-3/4 mx-auto">
+          Cuenta Suspendida
+        </h2>
+        <div class="mx-auto text-center">
+          <p class="text-gray-400 text-sm w-3/4 mx-auto">
+            {{errorMessage}}
+          </p>
+        </div>
+      </div>
+    </CModalBody>
+  </CModal>
   <CModal alignment="center" :visible="visible" @click="closeModal">
     <CModalBody>
       <div class="grid w-full gap-3 pb-3">
@@ -141,6 +156,7 @@ import ProfileIcon from "@/components/profile/ProfileIcon.vue";
 import { emitAlert } from "@/libs/alert.js";
 import router from "@/router/index";
 import { getReceptionPoints } from "@/services/profile.service.js";
+import axios from 'axios';
 export default {
   components: {
     CModal,
@@ -157,6 +173,8 @@ export default {
       details: false,
       offerSaw: false,
       visible: false,
+      accountModal: false,
+      errorMessage: "",
       locationModal: false,
       location: { nombre: "", direccion: "", ubicacion_google_maps: "" },
       nombrePunto: "",
@@ -217,8 +235,22 @@ export default {
         this.loading = false;
       } catch (error) {
         this.loading = false;
-        return emitAlert(error, 'error')
+        if(axios.isAxiosError(error)){
+          if(error.response.status == 403){
+            this.openAccountModal();
+            this.errorMessage = error.response.data.error
+            return;
+          } else {
+            return emitAlert(error.response.data.error, 'error')
+          }
+        }
       }
+    },
+    openAccountModal(){
+      this.accountModal = true;
+    },
+    closeAccountModal(){
+      this.accountModal = false;
     },
     showModal() {
       this.visible = true;

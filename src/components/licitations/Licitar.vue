@@ -142,6 +142,21 @@
       </div>
     </CModalBody>
   </CModal>
+  <CModal alignment="center" :visible="accountModal" @click="closeAccountModal">
+    <CModalBody>
+      <div class="grid w-full gap-3 pb-3">
+        <img src="@/assets/Nav/X.svg" alt="Close alert" @click="closeAccountModal" class="justify-self-end" />
+        <h2 class="text-center text-xl font-bold text-gray-500 w-3/4 mx-auto">
+          Cuenta Suspendida
+        </h2>
+        <div class="mx-auto text-center">
+          <p class="text-gray-400 text-sm w-3/4 mx-auto">
+            {{errorMessage}}
+          </p>
+        </div>
+      </div>
+    </CModalBody>
+  </CModal>
 </template>
 
 <script allowJs>
@@ -150,6 +165,7 @@ import { emitAlert } from "@/libs/alert.js";
 import * as licitacionService from '../../services/licitation.service.js';
 import { CModal, CModalBody } from "@coreui/vue";
 import router from "@/router/index";
+import axios from 'axios';
 export default {
   components: {
     CModal,
@@ -180,6 +196,8 @@ export default {
       entrega: "",
       sacos: "",
       product_name: this.$route.params.name,
+      accountModal: false,
+      errorMessage: "",
 
       licitation: {
         precio: 0,
@@ -211,8 +229,22 @@ export default {
       } catch (error) {
         this.buttonIsLocked = false;
         this.loading = false;
-        emitAlert(error, "error");
+        if(axios.isAxiosError(error)){
+          if(error.response.status == 403){
+            this.openAccountModal();
+            this.errorMessage = error.response.data.error
+            return;
+          } else {
+            return emitAlert(error.response.data.error, 'error')
+          }
+        }
       }
+    },
+    openAccountModal(){
+      this.accountModal = true;
+    },
+    closeAccountModal(){
+      this.accountModal = false;
     },
     closeModal() {
       // Close the menu by setting menuOpen to false

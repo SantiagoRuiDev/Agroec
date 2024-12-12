@@ -29,7 +29,7 @@
           <h2 class="text-center text-gray-600 text-2xl">Octubre 5, 2023</h2>
         </div>
         <button class="justify-self-end default-bar p-2 rounded-md" @click="manageCondicionesPage">
-          <img src="../assets/Document.svg" alt="Condiciones" class="h-6 w-6" />
+          <img src="@/assets/Document.svg" alt="Condiciones" class="h-6 w-6" />
         </button>
       </div>
     </div>
@@ -464,7 +464,7 @@
 <script>
 import { CModal, CModalBody } from "@coreui/vue";
 import Calify from "@/components/others/Calify.vue";
-import CondicionesOferta from './CondicionesOferta.vue';
+import CondicionesOferta from '@/components/proposal/CondicionesOferta.vue';
 import event from '@/libs/event';
 export default {
   components: {

@@ -211,7 +211,7 @@
       </div>
       <div class="grid grid-cols-2">
         <p class="text-sm text-gray-700 text-left">Vendedor</p>
-        <p class="text-sm text-gray-700 text-right">{{ order.vendedor_nombre }} {{ order.vendedor_apellido }}</p>
+        <p class="text-sm text-gray-700 text-right">{{ order.vendedor_nombre }}</p>
       </div>
       <div class="grid grid-cols-2">
         <p class="text-sm text-gray-700 text-left">Precio</p>

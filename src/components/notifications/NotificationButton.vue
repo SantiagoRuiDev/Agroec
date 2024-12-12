@@ -2,7 +2,7 @@
     <div @click="requestNotificationPermission" v-if="!subscribed"
         class="notification-wrapper cursor-pointer absolute right-8 bottom-16">
         <div class="phone">
-            <img src="../assets/Notifications.svg" alt="Activar Notificaciones">
+            <img src="@/assets/Notifications.svg" alt="Activar Notificaciones">
         </div>
         <div class="circle1"></div>
         <div class="circle2"></div>
