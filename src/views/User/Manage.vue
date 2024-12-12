@@ -38,7 +38,7 @@
               <p class="text-gray-400">* Demanda del Mercado</p>
               <p class="text-gray-400">* Precios por estacionalidad</p>
             </div>
-            <button class="default-bar rounded-md py-1 shadow-md w-1/2 mx-auto text-center text-white font-bold">Claro, si</button>
+            <button @click="openSuscriptionModal" class="default-bar rounded-md py-1 shadow-md w-1/2 mx-auto text-center text-white font-bold">Claro, si</button>
           </div>
         </CModalBody>
       </CModal>
@@ -53,6 +53,7 @@
 import BottomBar from '@/components/others/Bottom.vue';
 import Manage from "@/components/dashboard/Manage.vue";
 import { CModal, CModalBody } from "@coreui/vue";
+import event from "@/libs/event.js";
 import {
   IonPage,
   IonHeader,
@@ -85,6 +86,9 @@ export default {
   methods: {
     showModal() {
       this.visible = true;
+    },
+    openSuscriptionModal(){
+      event.emit('suscription-modal')
     },
     downloadExcel(){
       this.excel = !this.excel;

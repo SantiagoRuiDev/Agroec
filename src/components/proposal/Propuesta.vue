@@ -5,7 +5,7 @@
       <ProfileIcon :profile="sale.type"></ProfileIcon>
       <div class="grid gap-1 items-center">
         <h2 class="text-xl font-bold text-gray-500">{{ sale.type }}</h2>
-        <p class="text-sm text-gray-400">{{ sale.nombre }} {{ sale.apellido }}</p>
+        <p class="text-sm text-gray-400">{{ sale.nombre }}</p>
       </div>
     </div>
 

@@ -16,7 +16,7 @@
             </div>
             <div class="inline-flex gap-2">
               <h1 class="text-gray-600 text-xs font-bold">#{{transaction.id.slice(0,4)}}</h1>
-              <p class="text-gray-700 text-xs">{{ transaction.nombre }} {{transaction.apellido}}</p>
+              <p class="text-gray-700 text-xs">{{ transaction.nombre }}</p>
             </div>
             <p class="text-gray-700 text-xs w-5/6">
               Orden de {{ transaction.cantidad }} {{ transaction.cantidad_unidad }} de {{ transaction.id_producto }}, a entregar en {{ transaction.ubicacion }}
@@ -147,7 +147,6 @@ export default {
           cantidad_unidad: fee.cantidad_unidad,
           ubicacion: fee.ubicacion_google_maps,
           nombre: fee.vendedor_nombre,
-          apellido: fee.vendedor_apellido,
           tipo: "Fee"
         }
       })

@@ -5,7 +5,7 @@
       <ProfileIcon :profile="proposal.tipo_perfil"></ProfileIcon>
       <div class="grid gap-1 items-center">
         <h2 class="text-xl font-bold text-gray-500">{{proposal.tipo_perfil}}</h2>
-        <p class="text-sm text-gray-400">{{proposal.nombre}} {{proposal.apellido}}</p>
+        <p class="text-sm text-gray-400">{{proposal.nombre}}</p>
       </div>
     </RouterLink>
 

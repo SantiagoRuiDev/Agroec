@@ -8,7 +8,7 @@
                 <p class="text-gray-800 text-md font-semibold">{{ input.nombre_comercial }}</p>
             </div>
             <div class="card-info border-bottom-1 pb-2">
-                <h1 class="text-gray-400">Precio Agroec (Precio más IVA o incluído IVA)</h1>
+                <h1 class="text-gray-400">Precio Agroec ({{ (input.incluido_iva > 0) ? "Incluído IVA" : "Precio más IVA"}})</h1>
                 <p class="text-gray-800 text-md font-semibold"><span
                         class="text-lime-700">$</span>{{ input.precio_agroec }}</p>
             </div>
@@ -111,7 +111,7 @@
                     </CAccordionHeader>
                     <CAccordionBody>
                         <div class="grid gap-2 visible">
-                            <span>{{ input.clasificacion }}</span>
+                            <span>{{ input.epoca_intervalo }}</span>
                         </div>
                     </CAccordionBody>
                 </CAccordionItem>

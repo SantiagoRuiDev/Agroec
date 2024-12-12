@@ -4,7 +4,7 @@
 
     <div class="grid gap-2 text-center">
       <h1 class="font-bold text-md text-gray-600">{{ user.type }}</h1>
-      <p class="text-md text-gray-400">{{ user.nombre }} {{ user.apellido }}</p>
+      <p class="text-md text-gray-400">{{ user.nombre }}</p>
     </div>
   </div>
   <div class="content w-11/12 mx-auto grid mt-5 gap-2 md:w-3/4 bg-gray-100 p-2 rounded-md items-center">
