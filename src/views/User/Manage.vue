@@ -10,7 +10,7 @@
           <div class="inline-flex">
           <img
             src="@/assets/Statistics/Informative.svg"
-            alt="Back"
+            alt="Back" v-if="suscriptionButton"
             class="w-4 h-4"
             v-on:click="showModal"
           />
@@ -80,8 +80,18 @@ export default {
     return {
       Producto: this.$route.params.name,
       visible: false,
+      suscriptionButton: true,
       excel: false,
     };
+  },
+  created(){
+    event.on('suscription-data', (data) => {
+      if(data){
+        this.suscriptionButton = false;
+      } else {
+        this.suscriptionButton = true;
+      }
+    })
   },
   methods: {
     showModal() {

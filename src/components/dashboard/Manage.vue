@@ -14,7 +14,7 @@
       <div class="grid mt-1">
         <label for="canton" class="second-color text-left font-bold">Prox. Cobro</label>
         <h2 class="second-color font-bold text-left text-xl" v-if="suscription.estado == 1">
-          {{ formatDateTime(suscription.vencimiento).yearMonthDay }}
+          {{ formatDateTime(suscription.vencimiento).plainDate }}
         </h2>
         <h2 class="second-color font-bold text-left text-xl" v-else>
           No se cobrara
@@ -29,7 +29,7 @@
     </div>
 
     <button v-if="suscription.estado == 1" @click="openSuscriptionModal"
-      class="default-bar rounded-md w-full text-center second-color p-2 font-bold mt-3">Cancelar
+      class="bg-black rounded-md w-full text-center text-white p-2 font-bold mt-3">Cancelar
       Suscripción</button>
   </div>
 
@@ -155,7 +155,7 @@
     </div>
 
     <div class="grid md:grid-cols-2 md:w-2/3 mx-auto md:gap-4">
-      <button @click="showModal" class="default-bar p-3 h-16 rounded-md text-center text-white mt-4">
+      <button @click="showModal" v-if="suscription" class="default-bar p-3 h-16 rounded-md text-center text-white mt-4">
         Desbloquear más reportes
       </button>
 
@@ -511,6 +511,7 @@ export default {
       try {
         const data = await suscriptionService.getSuscription();
         this.suscription = data;
+        event.emit('suscription-data', this.suscription);
       } catch (error) {
         return emitAlert(error.message, 'error');
       }
