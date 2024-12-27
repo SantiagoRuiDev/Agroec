@@ -95,7 +95,7 @@ export const rejectProposal = async (proposal_id) => {
     );
     return data;
   } catch (error) {
-    throw new Error(error.response.data.error);
+    throw error;
   }
 };
 export const acceptProposal = async (proposal_id) => {
@@ -112,7 +112,7 @@ export const acceptProposal = async (proposal_id) => {
     );
     return data;
   } catch (error) {
-    throw new Error(error.response.data.error);
+    throw error;
   }
 };
 export const declineProposal = async (proposal_id) => {

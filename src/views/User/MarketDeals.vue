@@ -3,17 +3,13 @@
     <ion-header>
       <ion-toolbar color="tertiary">
         <div class="flex items-center mx-auto w-11/12">
-          <RouterLink to="/app/home">
+          <button @click="goBack">
             <img src="@/assets/Arrow.svg" alt="Back" class="w-4 h-4" />
-          </RouterLink>
+          </button>
           <h2 class="text-center mx-auto">Ofertas del Mercado</h2>
           <button>
-            <img
-            src="@/assets/Nav/Xred.svg"
-            alt="Back"
-            class="w-4 h-4"
-            v-on:click="deleteProduct"
-          />
+            <img src="@/assets/Nav/Xred.svg" alt="Back" class="w-4 h-4" v-on:click="deleteProduct" v-if="!deleteProducts"/>
+            <img src="@/assets/Save.svg" alt="Back" class="w-6 h-6" v-on:click="deleteProduct" v-if="deleteProducts"/>
           </button>
         </div>
       </ion-toolbar>
@@ -57,7 +53,11 @@ export default {
   methods: {
     deleteProduct(){
       event.emit("change-deleteProduct");
+      this.deleteProducts = !this.deleteProducts;
     },
+    goBack() {
+      this.$router.go(-1);
+    }
   },
 };
 </script>

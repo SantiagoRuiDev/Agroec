@@ -268,6 +268,10 @@ router.beforeEach(async (to, from, next) => {
     const response = await isAuthentified();
 
     if (to.matched.some((record) => record.meta.requiresAuth)) {
+      if(response.profile != "buyer"){
+        await removeToken();
+        next("/app/signin"); // Usuario no autenticado, redirigir a login
+      }
       // Rutas que requieren autenticación
       if (response.loggedIn) {
         if(response.token){

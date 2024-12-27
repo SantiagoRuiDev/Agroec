@@ -155,7 +155,7 @@
     </div>
 
     <div class="grid md:grid-cols-2 md:w-2/3 mx-auto md:gap-4">
-      <button @click="showModal" v-if="suscription" class="default-bar p-3 h-16 rounded-md text-center text-white mt-4">
+      <button @click="showModal" v-if="!suscription" class="default-bar p-3 h-16 rounded-md text-center text-white mt-4">
         Desbloquear más reportes
       </button>
 

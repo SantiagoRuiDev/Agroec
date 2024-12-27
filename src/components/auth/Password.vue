@@ -4,7 +4,7 @@
       <ion-header>
         <ion-toolbar color="tertiary">
           <div class="grid grid-cols-3 items-center mx-auto w-11/12">
-            <RouterLink to="/app/signin">
+            <RouterLink to="/app/auth/signin">
               <img src="@/assets/Arrow.svg" alt="Back" class="w-4 h-4" />
             </RouterLink>
             <h2 class="text-center">Recuperar</h2>
@@ -13,7 +13,11 @@
       </ion-header>
 
       <div class="logIn my-4">
-        <img src="@/assets/AgroIcon.svg" alt="App Icon" class="icon-app mx-auto my-4" />
+        <img
+          src="@/assets/AgroIcon.svg"
+          alt="App Icon"
+          class="icon-app mx-auto my-4"
+        />
 
         <div class="text-content my-5 grid gap-3 text-center w-5/6 mx-auto">
           <h3 class="text-md text-gray-700 font-bold">Recuperar clave</h3>
@@ -23,25 +27,34 @@
         </div>
 
         <form class="mx-auto grid items-center gap-3 w-full md:w-1/3">
-          <input type="email"
+          <input
+            type="email"
             class="text-gray-400 w-5/6 mx-auto bg-transparent border-2 border-gray-300 px-3 py-3 rounded-md"
-            placeholder="Correo" v-model="correo" />
-          <button class="py-3 px-5 default-bar mx-auto mt-3 w-2/3 rounded" type="button" @click="showModal">
+            placeholder="Correo" v-model="correo"
+          />
+          <button class="py-3 px-5 default-bar mx-auto mt-3 w-2/3 rounded" type="button" @click="sendPasswordRecoverRequest">
             Enviar
           </button>
         </form>
       </div>
 
-      <CModal alignment="center" :visible="visible">
+      <CModal alignment="center" :visible="visible" @close="closeModal">
         <CModalBody>
           <div class="grid w-full gap-3 pb-3">
-            <img src="@/assets/Nav/X.svg" alt="Close alert" @click="closeModal" class="justify-self-end" />
-            <h2 class="text-center text-xl font-bold text-gray-500 w-3/4 mx-auto">
+            <img
+              src="@/assets/Nav/X.svg"
+              alt="Close alert"
+              @click="closeModal"
+              class="justify-self-end"
+            />
+            <h2
+              class="text-center text-xl font-bold text-gray-500 w-3/4 mx-auto"
+            >
               Correo enviado
             </h2>
             <div class="mx-auto text-center">
               <p class="text-gray-400 text-sm w-3/4 mx-auto">
-                Las instrucciones para recuperar la clave de su cuenta, fueron enviadas al correo: {{ correo }}
+                Las instrucciones para recuperar la clave de su cuenta, fueron enviadas al correo: {{ correo  }}
               </p>
             </div>
           </div>
@@ -53,15 +66,18 @@
 
 <script allowJs>
 import { CModal, CModalBody } from "@coreui/vue";
-import { IonPage, IonContent, IonToolbar, IonHeader } from "@ionic/vue";
+import * as authService from '@/services/auth.service.js'
+import { emitAlert } from "@/libs/alert.js";
+import router from "@/router/index";
+import { IonContent, IonHeader, IonPage, IonToolbar } from "@ionic/vue";
 export default {
   components: {
-    IonPage,
-    IonContent,
-    IonToolbar,
-    IonHeader,
     CModal,
     CModalBody,
+    IonContent,
+    IonPage,
+    IonHeader,
+    IonToolbar
   },
   data() {
     return {
@@ -70,12 +86,21 @@ export default {
     };
   },
   methods: {
+    async sendPasswordRecoverRequest(){
+      try {
+        await authService.recoverPassword(this.correo);
+        this.showModal();
+      } catch (error) {
+        emitAlert(error.message, 'error');
+      }
+    },
     showModal() {
       this.visible = true;
     },
     closeModal() {
       // Close the menu by setting menuOpen to false
       this.visible = false;
+      router.push('/app/auth/signin');
     },
   },
 };

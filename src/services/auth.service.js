@@ -1,6 +1,18 @@
 import instance from "../libs/axios.js";
 import { getToken, getMultiuserToken, removeToken, removeMultiuserToken } from "../libs/storage.js";
 
+export const recoverPassword = async (email) => {
+  try {
+    const { data } = await instance.post(
+      "/auth/reset-password",
+      {correo: email}
+    );
+    return data;
+  } catch (error) {
+    throw new Error(error.response.data.message);
+  }
+};
+
 export const createUserAccount = async (schema) => {
   try {
     const { data } = await instance.post("/auth", schema);

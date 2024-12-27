@@ -291,7 +291,7 @@ Aliquam pretium libero in quam gravida, sed ornare eros efficitur. Nam vitae mat
             </div>
             <div class="grid gap-1 items-center">
               <label for="entregaFecha" class="text-gray-700 w-full">Fecha Entrega</label>
-              <input v-model="delivery.fecha_entrega" id="entregaFecha" type="date" :min="today"
+              <input v-model="delivery.fecha_entrega" id="entregaFecha" type="date" :min="minDate" :max="maxDate"
                 class="bg-transparent border-2 border-gray-300 xs:px-1 px-2 py-3 rounded-md text-gray-600" />
             </div>
             <div class="grid gap-1 w-full items-center">
@@ -369,7 +369,6 @@ export default {
   },
   data() {
     return {
-      today: new Date().toISOString().split('T')[0],
       startIndex: 1,
       visible: false,
       loading: false,
@@ -425,6 +424,26 @@ export default {
 
       reception_points: []
     };
+  },
+  computed: {
+    // Fecha mínima (hoy)
+    minDate() {
+      const today = new Date();
+      return today.toISOString().split('T')[0];
+    },
+    // Fecha máxima (6 meses desde hoy)
+    maxDate() {
+      const today = new Date();
+      const maxDate = new Date(today);
+      maxDate.setMonth(today.getMonth() + 6);
+
+      // Asegurarse de que el día sea válido si el mes tiene menos días
+      if (maxDate.getDate() < today.getDate()) {
+        maxDate.setDate(0); // Último día del mes anterior
+      }
+
+      return maxDate.toISOString().split('T')[0];
+    }
   },
   async created() {
     this.mapDeliveries();
@@ -607,6 +626,7 @@ export default {
     addNewEntregas() {
       if (this.cantidadEntrega) {
         let i = this.cantidadEntrega;
+        this.deliveries = [];
         while (i > 0) {
           const deliverySchema = { ...this.delivery }
           deliverySchema.cantidad = this.conditions.cantidad / (this.cantidadEntrega);

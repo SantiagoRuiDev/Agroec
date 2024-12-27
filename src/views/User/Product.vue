@@ -3,9 +3,9 @@
     <ion-header>
       <ion-toolbar color="tertiary">
         <div class="flex items-center mx-auto w-11/12">
-          <RouterLink to="/app/market">
+          <button @click="goBack">
             <img src="@/assets/Arrow.svg" alt="Back" class="w-4 h-4" />
-          </RouterLink>
+          </button>
           <h2 class="text-center mx-auto">Ofertas de {{ Producto }}</h2>
         </div>
       </ion-toolbar>
@@ -45,5 +45,10 @@ export default {
       Producto: this.$route.params.name,
     };
   },
+  methods: {
+    goBack() {
+      this.$router.go(-1);
+    }
+  }
 };
 </script>

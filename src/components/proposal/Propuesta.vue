@@ -59,7 +59,7 @@
       </div>
       <div class="form-input grid gap-1">
         <label for="delivery" class="text-gray-700">Fecha de entrega</label>
-        <input type="date" id="delivery" v-model="schema.valida_hasta" :min="today"
+        <input type="date" id="delivery" v-model="schema.valida_hasta" :min="minDate" :max="maxDate"
           class="bg-gray-50 border p-2 rounded-md text-gray-600" />
       </div>
       <div class="form-input grid gap-1">
@@ -168,7 +168,6 @@ export default {
   },
   data() {
     return {
-      today: new Date().toISOString().split('T')[0],
       sale: null,
       details: false,
       offerSaw: false,
@@ -198,6 +197,26 @@ export default {
   async created() {
     await this.getSale()
     await this.getReceptionPoints();
+  },
+  computed: {
+    // Fecha mínima (hoy)
+    minDate() {
+      const today = new Date();
+      return today.toISOString().split('T')[0];
+    },
+    // Fecha máxima (6 meses desde hoy)
+    maxDate() {
+      const today = new Date();
+      const maxDate = new Date(today);
+      maxDate.setMonth(today.getMonth() + 6);
+
+      // Asegurarse de que el día sea válido si el mes tiene menos días
+      if (maxDate.getDate() < today.getDate()) {
+        maxDate.setDate(0); // Último día del mes anterior
+      }
+
+      return maxDate.toISOString().split('T')[0];
+    }
   },
   methods: {
     checkQuantity(){

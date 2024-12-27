@@ -111,7 +111,7 @@
       <div class="grid mt-3 gap-2">
         <label for="Validez" class="text-gray-500 font-bold text-sm">Valida hasta:</label>
         <input type="date" name="Validez"
-          v-model="schema.valida_hasta"  :min="today"
+          v-model="schema.valida_hasta"  :min="minDate" :max="maxDate"
           class="w-full text-gray-500 mx-auto bg-transparent border-2 border-gray-300 px-3 py-3 rounded-md" />
       </div>
 
@@ -193,6 +193,26 @@ export default {
   },
   props: {
     Licitacion: String,
+  },
+  computed: {
+    // Fecha mínima (hoy)
+    minDate() {
+      const today = new Date();
+      return today.toISOString().split('T')[0];
+    },
+    // Fecha máxima (6 meses desde hoy)
+    maxDate() {
+      const today = new Date();
+      const maxDate = new Date(today);
+      maxDate.setMonth(today.getMonth() + 9);
+
+      // Asegurarse de que el día sea válido si el mes tiene menos días
+      if (maxDate.getDate() < today.getDate()) {
+        maxDate.setDate(0); // Último día del mes anterior
+      }
+
+      return maxDate.toISOString().split('T')[0];
+    }
   },
   data() {
     return {
